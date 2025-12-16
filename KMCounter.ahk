@@ -44,9 +44,29 @@ IfNotExist, KMCounter.ini
 return
 
 CreateGui1:
+  Gui, Destroy  ; Destroy any existing GUI to prevent duplicate variable errors
   ControlList:=LoadControlList(layout)                          ; 控件布局信息在此处创建
   Opt   := ControlList.Opt
   scale := A_ScreenDPI/96
+  
+  ; Debug: Check for duplicate Hwnd values
+  HwndList := {}
+  duplicateFound := false
+  for k, control in ControlList
+  {
+    if (control.Hwnd != "")
+    {
+      if (HwndList.HasKey(control.Hwnd))
+      {
+        MsgBox, Found duplicate Hwnd: %control.Hwnd% at index %k% (previously at %HwndList[control.Hwnd]%)
+        duplicateFound := true
+      }
+      HwndList[control.Hwnd] := k
+    }
+  }
+  if (!duplicateFound)
+    MsgBox, No duplicate Hwnd values found!
+  
   Gui, -DPIScale +HwndhWin                                      ; 禁止系统 DPI 缩放
   Gui, Color, % Opt.BackgroundColor, % Opt.BackgroundColor
   Gui, Font, % "S" Opt.FontSize//scale, % Opt.Font              ; 高分屏下缩小字号
@@ -766,19 +786,19 @@ LoadControlList(layout:="")
     , VerticalSpacing,   "+" VerticalSpacing            ; 区域垂直间距
     , "",                ""]                            ; ESC-F1 间距（计算得到）
 
-  , w    :=  KeyW                                       ; w h 不带数字的是普通按键的宽高，带数字则表示第n行特殊按键的宽高。
-  , h    :=  KeyH
-  , w2   :=  w*2+10                                     ; BackSpace
-  , w3   := (w*13 + w2 - w*12 + m.1*0)/2                ; Tab      \
-  , w4   := (w*13 + w2 - w*11 + m.1*1)/2                ; CapsLock Enter
-  , w5   := (w*13 + w2 - w*10 + m.1*2)/2                ; Shift
-  , w6_1 :=  w3                                         ; Ctrl
-  , w6_2 :=  w6_1-10                                    ; Win      Alt
-  , w6_3 := (w*13 + w2 - w6_1*2 - w6_2*4 + m.1*7)       ; Space
+  w    :=  KeyW                                       ; w h 不带数字的是普通按键的宽高，带数字则表示第n行特殊按键的宽高。
+  h    :=  KeyH
+  w2   :=  w*2+10                                     ; BackSpace
+  w3   := (w*13 + w2 - w*12 + m.1*0)/2                ; Tab      \
+  w4   := (w*13 + w2 - w*11 + m.1*1)/2                ; CapsLock Enter
+  w5   := (w*13 + w2 - w*10 + m.1*2)/2                ; Shift
+  w6_1 :=  w3                                         ; Ctrl
+  w6_2 :=  w6_1-10                                    ; Win      Alt
+  w6_3 := (w*13 + w2 - w6_1*2 - w6_2*4 + m.1*7)       ; Space
 
-  , m7   := (w*13 + w2 - w*13 + m.1*4)/3                ; ESC-F1 间距
-  , m.7  :=  m7
-  , m.8  :=  "+" m7
+  m7   := (w*13 + w2 - w*13 + m.1*4)/3                ; ESC-F1 间距
+  m.7  :=  m7
+  m.8  :=  "+" m7
 
   list:=[]
   ; 第一行
@@ -978,56 +998,50 @@ MultiLanguage:
   else
   {
     L_menu_统计:="Statistics"
-    L_menu_设置:="Setting"
-    L_menu_开机启动:="Start-Up"
-    L_menu_布局定制:="Custom Layout"
+    L_menu_设置:="Settings"
+    L_menu_开机启动:="Run at Startup"
+    L_menu_布局定制:="Layout Customization"
     L_menu_退出:="Exit"
 
-    L_gui1_当前显示数据:="Date"
-    L_gui1_LV标题:="Item|Today|This Week|This Month|Total"
-    L_gui1_鼠标移动:="MouseMove"
-    L_gui1_键盘敲击:="Keystrokes"
-    L_gui1_左键点击:="LButton"
-    L_gui1_右键点击:="RButton"
-    L_gui1_中键点击:="MButton"
-    L_gui1_滚轮滚动:="Wheel"
-    L_gui1_滚轮横滚:="HWheel"
-    L_gui1_侧键点击:="XButton"
-    L_gui1_屏幕尺寸:="Monitor"
+    L_gui1_当前显示数据:="Current Data"
+    L_gui1_LV标题:="Item|Today|Week|Month|Total"
+    L_gui1_鼠标移动:="Mouse Movement"
+    L_gui1_键盘敲击:="Keyboard Clicks"
+    L_gui1_左键点击:="Left Clicks"
+    L_gui1_右键点击:="Right Clicks"
+    L_gui1_中键点击:="Middle Clicks"
+    L_gui1_滚轮滚动:="Wheel Scrolls"
+    L_gui1_滚轮横滚:="Wheel Tilt"
+    L_gui1_侧键点击:="Side Clicks"
+    L_gui1_屏幕尺寸:="Screen Size"
     L_gui1_米:="m"
-    L_gui1_次:="  "
-    L_gui1_寸:="inch"
-    L_gui1_msgbox:="Not enough keystroke data today to generate a heatmap."
+    L_gui1_次:="times"
+    L_gui1_寸:="in"
+    L_gui1_msgbox:="Insufficient keystrokes today to generate a heatmap."
 
-    L_gui2_设置:="Setting"
+    L_gui2_设置:="Settings"
     L_gui2_历史数据:="History Data"
-    L_gui2_sub1:="Set history data retention time."
+    L_gui2_sub1:="Set how long to keep historical data."
     L_gui2_存储:="Storage"
-    L_gui2_天:="Days"
-    L_gui2_屏幕尺寸:="Monitor Size"
-    L_gui2_sub2:="Set the actual size of the monitor."
-    L_gui2_屏幕宽:="Width"
-    L_gui2_屏幕高:="Height"
+    L_gui2_天:="days"
+    L_gui2_屏幕尺寸:="Screen Size"
+    L_gui2_sub2:="Set the actual size of your monitor."
+    L_gui2_屏幕宽:="Screen Width"
+    L_gui2_屏幕高:="Screen Height"
     L_gui2_毫米:="mm"
     L_gui2_键盘布局:="Keyboard Layout"
-    L_gui2_sub3:="Set keyboard heatmap size."
+    L_gui2_sub3:="Set the size of the keyboard heatmap."
     L_gui2_键宽:="Key Width"
     L_gui2_键高:="Key Height"
     L_gui2_键间距:="Key Spacing"
     L_gui2_区域水平间距:="Horizontal Spacing"
     L_gui2_区域垂直间距:="Vertical Spacing"
-    L_gui2_像素:="Pixel"
+    L_gui2_像素:="pixels"
     L_gui2_取消:="Cancel"
     L_gui2_保存:="Save"
     L_gui2_键盘外观:="Keyboard Appearance"
     L_gui2_字体大小:="Font Size"
     L_gui2_号:="pt"
-    L_gui2_高亮颜色:="Highlight Color"
-    L_gui2_起始颜色:="Start Color"
-    L_gui2_结束颜色:="End Color"
-
-    L_welcome_main:="欢迎使用 KMCounter"
-    L_welcome_sub:="KMCounter 将常驻托盘菜单为你统计所需信息。`n点击托盘图标即可查看统计结果。"
   }
 return
 

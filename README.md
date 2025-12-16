@@ -1,70 +1,54 @@
 # KMCounter
 
-A customizable keyboard interface for counting key presses with modern design features.
+A keyboard counter application with customizable interface.
 
 ## Features
+- Keyboard key press counting
+- Customizable font size
+- Vertically centered key letters
+- English language support
+- Customizable key highlight colors
+- "Restore default" option in settings
 
-- **Customizable font size** for keyboard interface
-- Vertically centered key letters for modern look
-- **English language support** for keyboard and settings
-- **Customizable key highlight colors** (hex color codes for gradient start/end)
-- "Restore default" option in settings menu
+## Requirements
+- AutoHotkey v1.1.x (for running the script directly)
+- AutoHotkey Compiler (for compiling to EXE)
 
-## Compilation Instructions
+## How to Run Directly
 
-To compile KMCounter.ahk into an executable file, follow these steps:
+1. Download and install AutoHotkey from [https://www.autohotkey.com/](https://www.autohotkey.com/)
+2. Double-click on `KMCounter.ahk` to run the application
 
-### 1. Install AutoHotkey
+## How to Compile to EXE
 
-Download and install AutoHotkey from the official website:
-https://www.autohotkey.com/download/
+1. Download and install AutoHotkey from [https://www.autohotkey.com/](https://www.autohotkey.com/)
+2. Locate the AutoHotkey Compiler (`Ahk2Exe.exe`):
+   - Usually found at `C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe`
+3. Open `Ahk2Exe.exe`
+4. In the "Source" field, browse to select `KMCounter.ahk`
+5. In the "Destination" field, specify where you want the compiled EXE to be saved
+6. Click the "Convert" button to compile the application
 
-### 2. Locate Ahk2Exe Compiler
+## Customization
 
-After installation, the compiler can be found at:
-`C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe`
+You can customize the following settings through the settings menu:
+- Keyboard appearance (font size, colors)
+- Language (Chinese/English)
+- Key highlight colors
+- Keyboard layout dimensions
 
-### 3. Compile the Script
+## Troubleshooting
 
-#### Method 1: Using Command Line
+### "The same variable cannot be used for more than one control" error
+This error occurs if the GUI is not properly destroyed before recreation. The script now includes a `Gui, Destroy` command at the beginning of the GUI creation function to prevent this issue.
 
-Open Command Prompt or PowerShell and run:
+### Language Support
+The application automatically detects the system language and switches between Chinese and English interfaces. You can modify the `MultiLanguage` section in the script to customize translations.
 
-```powershell
-"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in KMCounter.ahk /out KMCounter.exe
-```
+## Files
+- `KMCounter.ahk`: Main application script
+- `find_duplicate_hwnd.ps1`: PowerShell script for debugging duplicate Hwnd values
+- `test_fix.ahk`: Test script for verifying GUI creation fixes
 
-#### Method 2: Using GUI Interface
-
-1. Double-click on `Ahk2Exe.exe` from the compiler directory
-2. Click "Browse" next to "Source (script file)" and select `KMCounter.ahk`
-3. Click "Browse" next to "Destination (EXE file)" and specify where to save `KMCounter.exe`
-4. Click "Convert" to compile the script
-
-## Usage
-
-### Running from Source
-
-Double-click `KMCounter.ahk` to run the script directly (requires AutoHotkey installation).
-
-### Running as Executable
-
-After compilation, double-click `KMCounter.exe` to run the application.
-
-### Settings
-
-Right-click on the system tray icon and select "Settings" to:
-- Adjust font size
-- Change highlight colors (enter hex color codes)
-- Restore default settings
-
-## Configuration File
-
-Settings are saved in `KMCounter.ini` and include:
-- Font size
-- Highlight colors
-- Layout parameters
-
-## Support
-
-For issues or questions, please check the source code comments or create an issue on the project's GitHub repository.
+## License
+[MIT License](LICENSE)

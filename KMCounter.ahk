@@ -72,8 +72,8 @@ CreateGui1:
       ; 增加 v变量 ，形如 “keysc123” 。
       ; 完全是给 WM_MOUSEMOVE 用的，因为 A_GuiControl 只显示文本或 v变量 。
       p.=" vkey" control.Hwnd
-      ; 创建按键。 Edit 控件比 Text 控件多一条白色细边框，更好看一些。
-      Gui, Add, Edit, % "C" Opt.TextColor " Center ReadOnly -WantCtrlA -TabStop -Vscroll" p, % control.Text
+      ; 创建按键。使用 Text 控件并添加边框，实现更好的垂直居中效果。
+      Gui, Add, Text, % "C" Opt.TextColor " Center -WantCtrlA -TabStop +Border" p, % control.Text
     }
     else if (control.Hwnd="Message")
     {
@@ -205,8 +205,24 @@ CreateGui2:
   Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vlkvs, % layout.kvs
   Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_像素%
 
+  ; 键盘外观
+  Gui, 2:Font, s19 Bold cEEEEEE, 微软雅黑
+  Gui, 2:Add, Text, x16 yp+48 w216 h30 +0x200, %L_gui2_键盘外观%
+  Gui, 2:Font
+  Gui, 2:Font, cEEEEEE, 微软雅黑
+  Gui, 2:Add, Text, x16 yp+40 w85 h23, %L_gui2_字体大小%:
+  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vlfs, % layout.fs
+  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_号%
+  
+  Gui, 2:Add, Text, x16 yp+40 w85 h23, %L_gui2_高亮颜色%:
+  Gui, 2:Add, Text, x16 yp+32 w85 h23, %L_gui2_起始颜色%:
+  Gui, 2:Add, Edit, x104 yp-2 w85 h19 -Multi vhighlightStart, % layout.highlightStart
+  Gui, 2:Add, Text, x16 yp+32 w85 h23, %L_gui2_结束颜色%:
+  Gui, 2:Add, Edit, x104 yp-2 w85 h19 -Multi vhighlightEnd, % layout.highlightEnd
+
   Gui, 2:Add, Button, x16 yp+48 w80 h30 gCancelSetting hwndhBT1, %L_gui2_取消%
   Gui, 2:Add, Button, x140 yp+0 w80 h30 gSaveSetting hwndhBT2, %L_gui2_保存%
+  Gui, 2:Add, Button, x16 yp+40 w204 h30 gRestoreDefaultSetting hwndhBT3, %L_gui2_恢复默认%
 
   Opt1 := [0, 0xff708090, , 0xffeeeeee, 5, 0xff444444]  ; 按钮正常时候的样子
   Opt2 := [0, 0xffeeeeee, , 0xff708090, 5, 0xff444444]  ; 鼠标在按钮上的样子
@@ -215,8 +231,10 @@ CreateGui2:
     MsgBox, 0, ImageButton Error btn1, % ImageButton.LastError
   if !(ImageButton.Create(hBT2, Opt1, Opt2, , , Opt5))
     MsgBox, 0, ImageButton Error btn1, % ImageButton.LastError
+  if !(ImageButton.Create(hBT3, Opt1, Opt2, , , Opt5))
+    MsgBox, 0, ImageButton Error btn3, % ImageButton.LastError
 
-  Gui, 2:Show, w235 h622 Hide
+  Gui, 2:Show, w235 h820 Hide
 }
 return
 
@@ -231,9 +249,61 @@ SaveSetting:
   ; 限制历史数据存储天数最小值为0，默认值为30。
   DataStorageDays := NonNull_Ret(dsd, 30, 0)
   UpdateDeviceCaps(dw, dh)
-  UpdateLayout(lkw, lkh, lks, lkhs, lkvs)
+  UpdateLayout(lkw, lkh, lks, lkhs, lkvs, lfs, highlightStart, highlightEnd)
   ; 直接重启以便更新设置
   gosub, Reload
+return
+
+RestoreDefaultSetting:
+  ; 重置所有设置为默认值
+  ratio := A_ScreenWidth<1920 ? A_ScreenWidth/1920 : 1
+  
+  ; 恢复历史数据存储天数默认值
+  DataStorageDays := 30
+  GuiControl, 2:, dsd, % DataStorageDays
+  
+  ; 恢复屏幕尺寸默认值（空值表示自动计算）
+  GuiControl, 2:, dw, 
+  GuiControl, 2:, dh, 
+  UpdateDeviceCaps("", "")
+  
+  ; 恢复键盘布局默认值
+  defaultKw := Round(52*ratio)
+  defaultKh := Round(45*ratio)
+  defaultKs := Round(2*ratio)
+  defaultKhs := Round(10*ratio)
+  defaultKvs := Round(10*ratio)
+  defaultFs := 9
+  defaultHighlightStart := "EEEEEE"
+  defaultHighlightEnd := "B26C65"
+  
+  GuiControl, 2:, lkw, % defaultKw
+  GuiControl, 2:, lkh, % defaultKh
+  GuiControl, 2:, lks, % defaultKs
+  GuiControl, 2:, lkhs, % defaultKhs
+  GuiControl, 2:, lkvs, % defaultKvs
+  GuiControl, 2:, lfs, % defaultFs
+  GuiControl, 2:, highlightStart, % defaultHighlightStart
+  GuiControl, 2:, highlightEnd, % defaultHighlightEnd
+  
+  ; 更新布局设置
+  UpdateLayout(defaultKw, defaultKh, defaultKs, defaultKhs, defaultKvs, defaultFs, defaultHighlightStart, defaultHighlightEnd)
+  
+  ; 保存默认值到INI文件
+  IniWrite, 30, KMCounter.ini, history, storage
+  IniDelete, KMCounter.ini, devicecaps, w
+  IniDelete, KMCounter.ini, devicecaps, h
+  IniWrite, % defaultKw, KMCounter.ini, layout, kw
+  IniWrite, % defaultKh, KMCounter.ini, layout, kh
+  IniWrite, % defaultKs, KMCounter.ini, layout, ks
+  IniWrite, % defaultKhs, KMCounter.ini, layout, khs
+  IniWrite, % defaultKvs, KMCounter.ini, layout, kvs
+  IniWrite, 9, KMCounter.ini, layout, fs
+  IniWrite, EEEEEEEE, KMCounter.ini, layout, highlightStart
+  IniWrite, B26C65, KMCounter.ini, layout, highlightEnd
+  
+  ; 显示恢复成功提示
+  MsgBox, 0x40040, %L_gui2_恢复默认%, % "已恢复默认设置！"
 return
 
 Reload:
@@ -301,12 +371,15 @@ MenuHandler:
   if (A_ThisMenuItem = L_menu_设置)
   {
     GuiControl, 2:, dw,   % devicecaps.w
-    GuiControl, 2:, dh,   % devicecaps.h
-    GuiControl, 2:, lkw,  % layout.kw
-    GuiControl, 2:, lkh,  % layout.kh
-    GuiControl, 2:, lks,  % layout.ks
-    GuiControl, 2:, lkhs, % layout.khs
-    GuiControl, 2:, lkvs, % layout.kvs
+  GuiControl, 2:, dh,   % devicecaps.h
+  GuiControl, 2:, lkw,  % layout.kw
+  GuiControl, 2:, lkh,  % layout.kh
+  GuiControl, 2:, lks,  % layout.ks
+  GuiControl, 2:, lkhs, % layout.khs
+  GuiControl, 2:, lkvs, % layout.kvs
+  GuiControl, 2:, lfs,  % layout.fs
+  GuiControl, 2:, highlightStart, % layout.highlightStart
+  GuiControl, 2:, highlightEnd, % layout.highlightEnd
     Gui, 2:Show, , %L_gui2_设置%
   }
 
@@ -360,7 +433,7 @@ ShowHeatMap:
   if (keyboard[date].keystrokes >= 100)
   {
     ; 获取一组渐变色
-    colors   := getcolors(0xEEEEEE, 0xB26C65, 100)
+    colors   := getcolors("0x" layout.highlightStart, "0x" layout.highlightEnd, 100)
     ; 将总量的1成设置为对比量
     maxcount := keyboard[date].keystrokes / 10
     for k, count in keyboard[date]
@@ -497,6 +570,9 @@ LoadData(date)
   layout.ks    := IniRead("KMCounter.ini", "layout", "ks",  Round(2*ratio))   ; 键间距
   layout.khs   := IniRead("KMCounter.ini", "layout", "khs", Round(10*ratio))  ; 区域水平间距
   layout.kvs   := IniRead("KMCounter.ini", "layout", "kvs", Round(10*ratio))  ; 区域垂直间距
+  layout.fs    := IniRead("KMCounter.ini", "layout", "fs",  9)                ; 字体大小
+  layout.highlightStart := IniRead("KMCounter.ini", "layout", "highlightStart", "EEEEEE")  ; 高亮起始颜色
+  layout.highlightEnd := IniRead("KMCounter.ini", "layout", "highlightEnd", "B26C65")  ; 高亮结束颜色
   ; 获取鼠标信息
   for k, v in ["lbcount", "rbcount", "mbcount", "xbcount", "wheel", "hwheel", "move"]
   {
@@ -531,6 +607,9 @@ SaveData()
   IniWrite(layout.ks,     "KMCounter.ini", "layout", "ks")
   IniWrite(layout.khs,    "KMCounter.ini", "layout", "khs")
   IniWrite(layout.kvs,    "KMCounter.ini", "layout", "kvs")
+  IniWrite(layout.fs,     "KMCounter.ini", "layout", "fs")
+  IniWrite(layout.highlightStart, "KMCounter.ini", "layout", "highlightStart")
+  IniWrite(layout.highlightEnd, "KMCounter.ini", "layout", "highlightEnd")
   ; 保存鼠标信息
   for k, v in ["lbcount", "rbcount", "mbcount", "xbcount", "wheel", "hwheel", "move"]
   {
@@ -670,13 +749,16 @@ UpdateDeviceCaps(w:="", h:="")
   devicecaps.size := (Sqrt(devicecaps.w**2 + devicecaps.h**2)/25.4)         ; 英寸 勾股求斜边
 }
 
-UpdateLayout(lkw, lkh, lks, lkhs, lkvs)
+UpdateLayout(lkw, lkh, lks, lkhs, lkvs, lfs, highlightStart:="EEEEEE", highlightEnd:="B26C65")
 {
   layout.kw  := lkw
   layout.kh  := lkh
   layout.ks  := lks
   layout.khs := lkhs
   layout.kvs := lkvs
+  layout.fs  := lfs
+  layout.highlightStart := highlightStart
+  layout.highlightEnd := highlightEnd
 }
 
 IniRead(Filename, Section:="", Key:="", Default:=""){
@@ -872,7 +954,7 @@ LoadControlList(layout:="")
                  , "sc82",  "sc83"]
 
   ; Color 没有 0x 前缀。背景色影响 GUI 信息框 当日按键数据太少时的按键。不影响数据量足够后的按键。
-  list.Opt := {Font:"comic sans ms", FontSize:9, BackgroundColor:"EEEEEE", TextColor:"575757"}
+  list.Opt := {Font:"comic sans ms", FontSize:NonNull_Ret(layout.fs, 9, 6), BackgroundColor:"EEEEEE", TextColor:"575757"}
 
   return, list
 }
@@ -922,6 +1004,61 @@ MultiLanguage:
     L_gui2_像素:="像素"
     L_gui2_取消:="取消"
     L_gui2_保存:="保存"
+    L_gui2_键盘外观:="键盘外观"
+    L_gui2_字体大小:="字体大小"
+    L_gui2_号:="号"
+    
+  }
+  else
+  {
+    L_menu_统计:="Statistics"
+    L_menu_设置:="Setting"
+    L_menu_开机启动:="Start-Up"
+    L_menu_布局定制:="Custom Layout"
+    L_menu_退出:="Exit"
+
+    L_gui1_当前显示数据:="Date"
+    L_gui1_LV标题:="Item|Today|This Week|This Month|Total"
+    L_gui1_鼠标移动:="MouseMove"
+    L_gui1_键盘敲击:="Keystrokes"
+    L_gui1_左键点击:="LButton"
+    L_gui1_右键点击:="RButton"
+    L_gui1_中键点击:="MButton"
+    L_gui1_滚轮滚动:="Wheel"
+    L_gui1_滚轮横滚:="HWheel"
+    L_gui1_侧键点击:="XButton"
+    L_gui1_屏幕尺寸:="Monitor"
+    L_gui1_米:="m"
+    L_gui1_次:="  "
+    L_gui1_寸:="inch"
+    L_gui1_msgbox:="Not enough keystroke data today to generate a heatmap."
+
+    L_gui2_设置:="Setting"
+    L_gui2_历史数据:="History Data"
+    L_gui2_sub1:="Set history data retention time."
+    L_gui2_存储:="Storage"
+    L_gui2_天:="Days"
+    L_gui2_屏幕尺寸:="Monitor Size"
+    L_gui2_sub2:="Set the actual size of the monitor."
+    L_gui2_屏幕宽:="Width"
+    L_gui2_屏幕高:="Height"
+    L_gui2_毫米:="mm"
+    L_gui2_键盘布局:="Keyboard Layout"
+    L_gui2_sub3:="Set keyboard heatmap size."
+    L_gui2_键宽:="Key Width"
+    L_gui2_键高:="Key Height"
+    L_gui2_键间距:="Key Spacing"
+    L_gui2_区域水平间距:="Horizontal Spacing"
+    L_gui2_区域垂直间距:="Vertical Spacing"
+    L_gui2_像素:="Pixel"
+    L_gui2_取消:="Cancel"
+    L_gui2_保存:="Save"
+    L_gui2_键盘外观:="Keyboard Appearance"
+    L_gui2_字体大小:="Font Size"
+    L_gui2_号:="pt"
+    L_gui2_高亮颜色:="Highlight Color"
+    L_gui2_起始颜色:="Start Color"
+    L_gui2_结束颜色:="End Color"
 
     L_welcome_main:="欢迎使用 KMCounter"
     L_welcome_sub:="KMCounter 将常驻托盘菜单为你统计所需信息。`n点击托盘图标即可查看统计结果。"
@@ -970,6 +1107,12 @@ MultiLanguage:
     L_gui2_像素:="px"
     L_gui2_取消:="Cancel"
     L_gui2_保存:="Save"
+    L_gui2_键盘外观:="Keyboard Appearance"
+    L_gui2_字体大小:="Font Size"
+    L_gui2_号:="pt"
+    L_gui2_高亮颜色:="Highlight Color"
+    L_gui2_起始颜色:="Start Color"
+    L_gui2_结束颜色:="End Color"
 
     L_welcome_main:="Welcome to KMCounter"
     L_welcome_sub:="KMCounter will stay in the tray menu for statistics.`nClick the tray icon to view the results."

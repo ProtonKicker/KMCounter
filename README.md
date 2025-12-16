@@ -1,71 +1,70 @@
-# KMCounter  
-Use heatmap to show mouse and keyboard usage.  
-使用热力图显示鼠标与键盘使用情况的工具。  
+# KMCounter
 
-## Usage (用法)  
-* After running, KMCounter will stay in the tray menu for statistics, click the tray icon to view the results when needed.  
-* 运行后，KMCounter 将常驻托盘菜单进行统计，需要时点击托盘图标查看结果。  
-![](https://raw.githubusercontent.com/telppa/KMCounter/main/screenshots/4.png)  
+A customizable keyboard interface for counting key presses with modern design features.
 
-* On the GUI of statistics, PageUp and PageDown or Up and Down or Mouse Wheel can view the historical statistics.  
-* 在统计界面下，使用 翻页键 或 上下键 或 鼠标滚轮 可以查看历史结果。  
-![](https://raw.githubusercontent.com/telppa/KMCounter/main/screenshots/3.gif)  
+## Features
 
-## Features (特性)  
-> Multi-Language  
-> Mouse      Info  
-> Keyboard   Info  
-> Single Key Info  
-> History    Info  
+- **Customizable font size** for keyboard interface
+- Vertically centered key letters for modern look
+- **English language support** for keyboard and settings
+- **Customizable key highlight colors** (hex color codes for gradient start/end)
+- "Restore default" option in settings menu
 
-> 支持查看鼠标信息。  
-> 支持查看键盘信息。  
-> 支持查看单键信息。  
-> 支持查看历史信息。  
-> 支持设置历史时长。  
-> 支持设置屏幕尺寸。  
-> 支持设置键盘布局。  
-> 支持设置开机启动。  
-> 支持区分真实模拟。  
-> 支持高分辨率屏幕。  
-> 支持低分辨率屏幕。  
-> 更准确的统计方法。  
-> 更完善的数据管理。  
-> 键盘布局总是对齐。  
-> 默认使用莫兰迪色。  
-> 不想用了直接删除。  
-> 不写系统不留垃圾。  
+## Compilation Instructions
 
-## Note (注意)  
-* KMCounter uses the hook to statistics mouse and keyboard info, so antivirus may be a false alarm risk, just add to the trust list.  
-* KMCounter 使用钩子统计键鼠使用情况，所以杀软可能会误报风险，加白名单即可。  
+To compile KMCounter.ahk into an executable file, follow these steps:
 
-## Download (下载)  
-* ver 3.7  
-[Github Releases](https://github.com/telppa/KMCounter/releases)  
-[蓝奏云](https://ahk.lanzoux.com/iK6zunucjqf)  
+### 1. Install AutoHotkey
 
-## Screenshots (截图)  
-![](https://raw.githubusercontent.com/telppa/KMCounter/main/screenshots/3.gif)  
-![](https://raw.githubusercontent.com/telppa/KMCounter/main/screenshots/1.png)  
-![](https://raw.githubusercontent.com/telppa/KMCounter/main/screenshots/2.png)  
-![](https://raw.githubusercontent.com/telppa/KMCounter/main/screenshots/4.png)  
+Download and install AutoHotkey from the official website:
+https://www.autohotkey.com/download/
 
-## 4 ways to customize your own keyboard layout (4种方法定制键盘布局)  
-1. Modify the LoadControlList() in the code.  
-   修改 LoadControlList() 相关代码。  
+### 2. Locate Ahk2Exe Compiler
 
-2. Have more than a thousand people with the same needs.  
-   有1000人以上具有相同需求。  
+After installation, the compiler can be found at:
+`C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe`
 
-3. I have the same keyboard.  
-   我有一个同样的键盘。  
+### 3. Compile the Script
 
-4. Donate 100RMB or more.  
-   捐赠 100RMB 以上。  
+#### Method 1: Using Command Line
 
-## Thanks (感谢)  
-[fwt](https://www.autoahk.com/archives/35133)  
-[SKAN](https://www.autohotkey.com/boards/viewtopic.php?f=6&t=76881)  
-[just me](https://github.com/AHK-just-me)  
-[robodesign](https://github.com/marius-sucan)  
+Open Command Prompt or PowerShell and run:
+
+```powershell
+"C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in KMCounter.ahk /out KMCounter.exe
+```
+
+#### Method 2: Using GUI Interface
+
+1. Double-click on `Ahk2Exe.exe` from the compiler directory
+2. Click "Browse" next to "Source (script file)" and select `KMCounter.ahk`
+3. Click "Browse" next to "Destination (EXE file)" and specify where to save `KMCounter.exe`
+4. Click "Convert" to compile the script
+
+## Usage
+
+### Running from Source
+
+Double-click `KMCounter.ahk` to run the script directly (requires AutoHotkey installation).
+
+### Running as Executable
+
+After compilation, double-click `KMCounter.exe` to run the application.
+
+### Settings
+
+Right-click on the system tray icon and select "Settings" to:
+- Adjust font size
+- Change highlight colors (enter hex color codes)
+- Restore default settings
+
+## Configuration File
+
+Settings are saved in `KMCounter.ini` and include:
+- Font size
+- Highlight colors
+- Layout parameters
+
+## Support
+
+For issues or questions, please check the source code comments or create an issue on the project's GitHub repository.

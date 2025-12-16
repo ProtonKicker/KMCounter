@@ -8,7 +8,7 @@ https://github.com/telppa/KMCounter
 https://www.autoahk.com/archives/35147
 */
 ;编译信息
-;@Ahk2Exe-Bin Unicode 32*
+;;@Ahk2Exe-Bin Unicode 32* ; Commented out for compilation compatibility
 ;@Ahk2Exe-SetName KMCounter
 ;@Ahk2Exe-SetVersion 3.7
 ;@Ahk2Exe-SetCopyright telppa (2021 - )

@@ -1024,8 +1024,12 @@ btt(text="", x="", y="", delay=0, style="") {
 JSEncode(obj) {
     if (IsObject(obj)) {
         isArray := true
-        for k, v in obj
-            if (k != A_Index) { isArray := false; break }
+        for k, v in obj {
+            if (k != A_Index) {
+                isArray := false
+                break
+            }
+        }
         if (isArray) {
             s := "["
             for k, v in obj

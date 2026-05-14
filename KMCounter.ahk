@@ -19,7 +19,13 @@ global APPName:="KMCounter", ver:=3.8
      , devicecaps:={}, layout:={}
      , hHookMouse, mouse:={}
      , hHookKeyboard, keyboard:={}
-     , ControlColors:={}, ControlBrushes:={}
+      , ControlColors:={}, ControlBrushes:={}
+      , themes:={Blue:{bg:"1E1E1E", text:"D4D4D4", accent:"3B82F6", key:"3A3A3C", hs:"3A3A3C", he:"3B82F6"}
+                 ,Red:{bg:"1E1E1E", text:"D4D4D4", accent:"EF4444", key:"3A3A3C", hs:"3A3A3C", he:"EF4444"}
+                 ,Orange:{bg:"1E1E1E", text:"D4D4D4", accent:"F97316", key:"3A3A3C", hs:"3A3A3C", he:"F97316"}
+                 ,Purple:{bg:"1E1E1E", text:"D4D4D4", accent:"A855F7", key:"3A3A3C", hs:"3A3A3C", he:"A855F7"}
+                 ,Green:{bg:"1E1E1E", text:"D4D4D4", accent:"22C55E", key:"3A3A3C", hs:"3A3A3C", he:"22C55E"}}
+      , currentTheme:="Blue"
 
 gosub, MultiLanguage
 gosub, Welcome
@@ -59,7 +65,8 @@ CreateGui1:
   Gui, Add, Text, x16 y12 wauto h28 Section, %APPName%
   Gui, Font, s8 c64748B, Microsoft YaHei
   Gui, Add, Text, xs+90 ys+7 wauto h16, v%ver%
-  Gui, Font, s10 c3B82F6, Microsoft YaHei
+  t_accent := themes[currentTheme].accent
+  Gui, Font, % "s10 c" t_accent, Microsoft YaHei
   Gui, Add, Text, x+25 ys+3 wauto h22 vDateDisplay
 
   Gui, Font, s9 c64748B, Microsoft YaHei
@@ -82,12 +89,19 @@ CreateGui1:
       Gui, Add, Text, % "C" Opt.TextColor " Center -WantCtrlA -TabStop" p, % control.Text
       GuiControlGet, hCtrl, Hwnd, % "key" control.Hwnd
       MakeRoundRect(hCtrl, control.w, control.h, 4)
+      ; Pre-color key with default theme grey
+      t_key := themes[currentTheme].key
+      ChangeControlColor(control.Hwnd, t_key, themes[currentTheme].text)
     }
     else if (control.Hwnd="Message")
     {
       p.=" vmsg" control.Hwnd
       Gui, Add, ListView, % "C" Opt.TextColor " Count10 -Hdr -HScroll" p, % L_gui1_LV标题
       GuiControlGet, hLV, Hwnd, msgMessage
+      t_bgr := "0x" . SubStr(themes[currentTheme].bg, 5, 2) . SubStr(themes[currentTheme].bg, 3, 2) . SubStr(themes[currentTheme].bg, 1, 2)
+      t_clr := "0x" . SubStr(themes[currentTheme].text, 5, 2) . SubStr(themes[currentTheme].text, 3, 2) . SubStr(themes[currentTheme].text, 1, 2)
+      DllCall("SendMessage", "Ptr", hLV, "UInt", 0x1026, "Ptr", 0, "Ptr", t_bgr)
+      DllCall("SendMessage", "Ptr", hLV, "UInt", 0x1024, "Ptr", 0, "Ptr", t_clr)
       for k1, field in [L_gui1_鼠标移动, L_gui1_键盘敲击
                       , L_gui1_左键点击, L_gui1_右键点击, L_gui1_中键点击
                       , L_gui1_滚轮滚动, L_gui1_滚轮横滚
@@ -227,8 +241,8 @@ return
 
 SaveSetting:
   Gui, 2:Submit
-  ; Clamp storage days min=0, default=30
-  DataStorageDays := NonNull_Ret(dsd, 30, 0)
+  ; Clamp storage days min=0, default=9999
+  DataStorageDays := NonNull_Ret(dsd, 9999, 0)
   UpdateDeviceCaps(dw, dh)
   UpdateLayout(lkw, lkh, lks, lkhs, lkvs, lfs, highlightStart, highlightEnd)
   ; Reload to apply settings
@@ -237,10 +251,8 @@ return
 
 RestoreDefaultSetting:
   ; Reset all to defaults
-  ratio := A_ScreenWidth<1920 ? A_ScreenWidth/1920 : 1
-  
   ; Restore default storage days
-  DataStorageDays := 30
+  DataStorageDays := 9999
   GuiControl, 2:, dsd, % DataStorageDays
   
   ; Restore default screen size (empty=auto)
@@ -249,14 +261,15 @@ RestoreDefaultSetting:
   UpdateDeviceCaps("", "")
   
   ; Restore default keyboard layout
-  defaultKw := Round(52*ratio)
-  defaultKh := Round(45*ratio)
-  defaultKs := Round(2*ratio)
-  defaultKhs := Round(10*ratio)
-  defaultKvs := Round(10*ratio)
-  defaultFs := 9
-  defaultHighlightStart := "D1D5DB"
-  defaultHighlightEnd := "3B82F6"
+  t := themes[currentTheme]
+  defaultKw := Min(Round((A_ScreenWidth-76)/15), 120)
+  defaultKh := Round(defaultKw*0.88)
+  defaultKs := 2
+  defaultKhs := 4
+  defaultKvs := 4
+  defaultFs := Round(defaultKw/6)
+  defaultHighlightStart := t.hs
+  defaultHighlightEnd := t.he
   
   GuiControl, 2:, lkw, % defaultKw
   GuiControl, 2:, lkh, % defaultKh
@@ -271,7 +284,7 @@ RestoreDefaultSetting:
   UpdateLayout(defaultKw, defaultKh, defaultKs, defaultKhs, defaultKvs, defaultFs, defaultHighlightStart, defaultHighlightEnd)
   
   ; Save defaults to INI
-  IniWrite, 30, KMCounter.ini, history, storage
+  IniWrite, 9999, KMCounter.ini, history, storage
   IniDelete, KMCounter.ini, devicecaps, w
   IniDelete, KMCounter.ini, devicecaps, h
   IniWrite, % defaultKw, KMCounter.ini, layout, kw
@@ -279,9 +292,9 @@ RestoreDefaultSetting:
   IniWrite, % defaultKs, KMCounter.ini, layout, ks
   IniWrite, % defaultKhs, KMCounter.ini, layout, khs
   IniWrite, % defaultKvs, KMCounter.ini, layout, kvs
-  IniWrite, 9, KMCounter.ini, layout, fs
-  IniWrite, D1D5DB, KMCounter.ini, layout, highlightStart
-  IniWrite, 3B82F6, KMCounter.ini, layout, highlightEnd
+  IniWrite, % defaultFs, KMCounter.ini, layout, fs
+  IniWrite, % defaultHighlightStart, KMCounter.ini, layout, highlightStart
+  IniWrite, % defaultHighlightEnd, KMCounter.ini, layout, highlightEnd
   
   ; Show success message
   MsgBox, 0x40040, % L_gui2_恢复默认, % L_gui2_已恢复
@@ -301,22 +314,31 @@ return
 
 CreateMenu:
 {
-  Menu, Tray, NoStandard                           ; Hide default AHK menu
-  Menu, Tray, Tip, %APPName% v%ver%                ; Tray tip
-  Menu, Tray, Add, %L_menu_统计%,     MenuHandler  ; Create menu item
+  Menu, Tray, NoStandard
+  Menu, Tray, Tip, %APPName% v%ver%
+
+  ; Theme submenu
+  Menu, ThemeMenu, Add, Blue, ThemeHandler
+  Menu, ThemeMenu, Add, Red, ThemeHandler
+  Menu, ThemeMenu, Add, Orange, ThemeHandler
+  Menu, ThemeMenu, Add, Purple, ThemeHandler
+  Menu, ThemeMenu, Add, Green, ThemeHandler
+  Menu, ThemeMenu, Check, % currentTheme
+
+  Menu, Tray, Add, %L_menu_统计%,     MenuHandler
   Menu, Tray, Add, %L_menu_设置%,     MenuHandler
-  Menu, Tray, Add                                  ; Separator
+  Menu, Tray, Add
+  Menu, Tray, Add, Theme, :ThemeMenu
+  Menu, Tray, Add
   Menu, Tray, Add, %L_menu_开机启动%, MenuHandler
-  Menu, Tray, Add, %L_menu_布局定制%, MenuHandler
   Menu, Tray, Add
   Menu, Tray, Add, %L_menu_退出%,     MenuHandler
-  Menu, Tray, Default, %L_menu_统计%               ; Set Statistics as default
+  Menu, Tray, Default, %L_menu_统计%
 
-  ; Removed ImagePutHIcon calls and menu icons for compilation compatibility
   if (!A_IsCompiled)
-    Menu, Tray, Icon, resouces\%APPName%.ico         ; Load tray icon
+    Menu, Tray, Icon, resouces\%APPName%.ico
 
-  IfExist, %A_Startup%\%APPName%.Lnk                 ; Check startup folder for shortcut
+  IfExist, %A_Startup%\%APPName%.Lnk
     Menu, Tray, Check, %L_menu_开机启动%
 }
 return
@@ -357,14 +379,14 @@ MenuHandler:
     }
   }
 
-  if (A_ThisMenuItem = L_menu_布局定制)
-  {
-    Run, https://github.com/telppa/KMCounter
-    Run, https://www.autoahk.com/archives/35147
-  }
-
   if (A_ThisMenuItem = L_menu_退出)
     ExitApp
+return
+
+ThemeHandler:
+  currentTheme := A_ThisMenuItem
+  IniWrite, % currentTheme, KMCounter.ini, theme, name
+  gosub, Reload
 return
 
 ShowSettings:
@@ -421,9 +443,9 @@ ShowHeatMap:
   }
   else
   {
-    ; Show insufficient data message
+    t := themes[currentTheme]
     for k, count in keyboard[date]
-      ChangeControlColor(k, Opt.BackgroundColor, Opt.TextColor)
+      ChangeControlColor(k, t.key, t.text)
     MsgBox 0x42040, , %L_gui1_msgbox%
   }
 }
@@ -503,7 +525,7 @@ ExitFunc(ExitReason, ExitCode)
 LoadData(date)
 {
   ; Get storage days
-  DataStorageDays := IniRead("KMCounter.ini", "history", "storage", 30)
+  DataStorageDays := IniRead("KMCounter.ini", "history", "storage", 9999)
   firstday        := EnvAdd(today, -DataStorageDays, "Days", 1, 8)
 
   ; Delete expired data
@@ -529,17 +551,19 @@ LoadData(date)
   ; Get screen info
   devicecaps.w := IniRead("KMCounter.ini", "devicecaps", "w", " ")            ; Pass space to make default empty
   devicecaps.h := IniRead("KMCounter.ini", "devicecaps", "h", " ")
-  UpdateDeviceCaps(devicecaps.w, devicecaps.h)                                ; Update devicecaps
-  ; Load layout
-  ratio        := A_ScreenWidth<1920 ? A_ScreenWidth/1920 : 1                 ; HiDPI screens have DPIScale, skip scaling
-  layout.kw    := IniRead("KMCounter.ini", "layout", "kw",  Round(52*ratio))  ; Key width
-  layout.kh    := IniRead("KMCounter.ini", "layout", "kh",  Round(45*ratio))  ; Key height
-  layout.ks    := IniRead("KMCounter.ini", "layout", "ks",  Round(2*ratio))   ; Key spacing
-  layout.khs   := IniRead("KMCounter.ini", "layout", "khs", Round(10*ratio))  ; Horizontal section spacing
-  layout.kvs   := IniRead("KMCounter.ini", "layout", "kvs", Round(10*ratio))  ; Vertical section spacing
-  layout.fs    := IniRead("KMCounter.ini", "layout", "fs",  9)                ; Font size
-  layout.highlightStart := IniRead("KMCounter.ini", "layout", "highlightStart", "D1D5DB")  ; Highlight start color
-  layout.highlightEnd := IniRead("KMCounter.ini", "layout", "highlightEnd", "3B82F6")  ; Highlight end color
+  UpdateDeviceCaps(devicecaps.w, devicecaps.h)
+  ; Load theme
+  currentTheme := IniRead("KMCounter.ini", "theme", "name", "Blue")
+  t := themes[currentTheme]
+  ; Load layout - key size fills screen width like a real laptop keyboard
+  layout.kw    := IniRead("KMCounter.ini", "layout", "kw",  Min(Round((A_ScreenWidth-76)/15), 120))
+  layout.kh    := IniRead("KMCounter.ini", "layout", "kh",  Round(layout.kw*0.88))
+  layout.ks    := IniRead("KMCounter.ini", "layout", "ks",  2)
+  layout.khs   := IniRead("KMCounter.ini", "layout", "khs", 4)
+  layout.kvs   := IniRead("KMCounter.ini", "layout", "kvs", 4)
+  layout.fs    := IniRead("KMCounter.ini", "layout", "fs",  Round(layout.kw/6))
+  layout.highlightStart := IniRead("KMCounter.ini", "layout", "highlightStart", t.hs)
+  layout.highlightEnd := IniRead("KMCounter.ini", "layout", "highlightEnd", t.he)
   ; Get mouse data
   for k, v in ["lbcount", "rbcount", "mbcount", "xbcount", "wheel", "hwheel", "move"]
   {
@@ -563,6 +587,8 @@ LoadData(date)
 
 SaveData()
 {
+  ; Save theme
+  IniWrite(currentTheme, "KMCounter.ini", "theme", "name")
   ; Save storage days
   IniWrite(DataStorageDays, "KMCounter.ini", "history", "storage")
   ; Save screen info
@@ -921,7 +947,8 @@ LoadControlList(layout:="")
                  , "sc82",  "sc83"]
 
   ; Color without 0x prefix. BG affects keys in info area when data is low.
-  list.Opt := {Font:"Microsoft YaHei", FontSize:NonNull_Ret(layout.fs, 9, 6), BackgroundColor:"F5F6F8", TextColor:"1E293B"}
+  t := themes[currentTheme]
+  list.Opt := {Font:"Microsoft YaHei", FontSize:NonNull_Ret(layout.fs, 9, 6), BackgroundColor:t.bg, TextColor:t.text}
 
   return, list
 }
@@ -932,7 +959,6 @@ MultiLanguage:
     L_menu_统计:="统计"
     L_menu_设置:="设置"
     L_menu_开机启动:="开机启动"
-    L_menu_布局定制:="布局定制"
     L_menu_退出:="退出"
 
     L_gui1_当前显示数据:="当前显示数据"
@@ -981,7 +1007,6 @@ MultiLanguage:
     L_menu_统计:="Statistics"
     L_menu_设置:="Settings"
     L_menu_开机启动:="Run at Startup"
-    L_menu_布局定制:="Layout Customization"
     L_menu_退出:="Exit"
 
     L_gui1_当前显示数据:="Current Data"

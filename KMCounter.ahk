@@ -69,35 +69,35 @@ CreateGui1:
   Gui, Add, Text, x+10 ys w24 h24 Center 0x200 gShowSettings, ⚙
 
   ; Settings bar
+  yb := 56
   Gui, Font, s8 c94A3B8, Microsoft YaHei
-  Gui, Add, Text, xs yp+28 w60 h20, Storage:
+  Gui, Add, Text, % "x10 y" yb " w50 h20", Storage:
   Gui, Font, s8 cD4D4D4, Microsoft YaHei
-  Gui, Add, Edit, x+2 yp-2 w45 h20 Number Limit vdsd1, % DataStorageDays
+  Gui, Add, Edit, % "x63 y" yb-2 " w45 h20 Number Limit vdsd1", % DataStorageDays
   Gui, Font, s8 c94A3B8, Microsoft YaHei
-  Gui, Add, Text, x+2 yp+2 w15 h16, d
+  Gui, Add, Text, % "x112 y" yb " w15 h20", d
+
+  Gui, Add, Text, % "x132 y" yb " w30 h20", Theme:
+  Gui, Font, s8 cD4D4D4, Microsoft YaHei
+  Gui, Add, Text, % "x165 y" yb " w55 h20 vThemeDisplay gThemeCycle", % currentTheme
 
   Gui, Font, s8 c94A3B8, Microsoft YaHei
-  Gui, Add, Text, x+8 yp-2 w25 h20, Theme:
+  Gui, Add, Text, % "x225 y" yb " w18 h20", KW:
   Gui, Font, s8 cD4D4D4, Microsoft YaHei
-  Gui, Add, Text, x+2 yp+2 w60 h16 vThemeDisplay, % currentTheme
+  Gui, Add, Edit, % "x245 y" yb-2 " w35 h20 Number Limit vlkw1", % layout.kw
 
   Gui, Font, s8 c94A3B8, Microsoft YaHei
-  Gui, Add, Text, x+8 yp-2 w14 h20, KW:
+  Gui, Add, Text, % "x283 y" yb " w18 h20", KH:
   Gui, Font, s8 cD4D4D4, Microsoft YaHei
-  Gui, Add, Edit, x+2 yp-2 w35 h20 Number Limit vlkw1, % layout.kw
+  Gui, Add, Edit, % "x303 y" yb-2 " w35 h20 Number Limit vlkh1", % layout.kh
 
   Gui, Font, s8 c94A3B8, Microsoft YaHei
-  Gui, Add, Text, x+4 yp+2 w14 h16, KH:
+  Gui, Add, Text, % "x341 y" yb " w16 h20", FS:
   Gui, Font, s8 cD4D4D4, Microsoft YaHei
-  Gui, Add, Edit, x+2 yp-2 w35 h20 Number Limit vlkh1, % layout.kh
-
-  Gui, Font, s8 c94A3B8, Microsoft YaHei
-  Gui, Add, Text, x+4 yp+2 w14 h16, FS:
-  Gui, Font, s8 cD4D4D4, Microsoft YaHei
-  Gui, Add, Edit, x+2 yp-2 w30 h20 Number Limit vlfs1, % layout.fs
+  Gui, Add, Edit, % "x359 y" yb-2 " w30 h20 Number Limit vlfs1", % layout.fs
 
   Gui, Font, s8 cFFFFFF, Microsoft YaHei
-  Gui, Add, Button, x+6 yp-2 w34 h20 vBtnApply gApplySettings, ✓
+  Gui, Add, Button, % "x393 y" yb-2 " w30 h20 vBtnApply gApplySettings", ✓
 
   ; Keyboard
   Gui, Font, % "S" Opt.FontSize//scale " c" Opt.TextColor, % Opt.Font
@@ -147,7 +147,22 @@ ApplySettings:
   Gui, Submit, NoHide
   DataStorageDays := NonNull_Ret(dsd1, 9999, 0)
   UpdateLayout(lkw1, lkh1, layout.ks, layout.khs, layout.kvs, lfs1, layout.highlightStart, layout.highlightEnd)
-  gosub Reload
+  IniWrite(DataStorageDays, "KMCounter.ini", "history", "storage")
+  IniWrite(layout.kw, "KMCounter.ini", "layout", "kw")
+  IniWrite(layout.kh, "KMCounter.ini", "layout", "kh")
+  IniWrite(layout.fs, "KMCounter.ini", "layout", "fs")
+  gosub CreateGui1
+  gosub ShowHeatMap
+return
+
+ThemeCycle:
+  themeList := ["Blue", "Red", "Orange", "Purple", "Green"]
+  for k, v in themeList
+    if (v = currentTheme)
+      currentTheme := themeList[k = themeList.MaxIndex() ? 1 : k + 1]
+  IniWrite, % currentTheme, KMCounter.ini, theme, name
+  gosub CreateGui1
+  gosub ShowHeatMap
 return
 
 ; Scroll/page keys switch history in stats view
@@ -195,6 +210,7 @@ return
 GuiEscape:
 GuiClose:
   Gui, Hide
+  Gui, 2:Hide
   history:=""
   btt()
 return

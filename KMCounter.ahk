@@ -107,7 +107,8 @@ CreateGui1:
   ComObjConnect(WB, "BrowserEvents")
   Sleep 100
   UpdateBrowserData()
-  Gui, Show, w%tw% h%bh+60%
+  th:=bh+60
+  Gui, Show, w%tw% h%th%
 return
 
 ApplySettings:

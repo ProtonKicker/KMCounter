@@ -1116,10 +1116,20 @@ BrowserEvents_TitleChange(ByRef Text) {
                 history := EnvAdd(history, -1, "Days", 1, 8)
             else
                 history := EnvAdd(history, 1, "Days", 1, 8)
-            if (history > tomorrow) history := firstday
-            if (history < firstday) history := tomorrow
-            if (history = tomorrow) { date := "Total"; gosub ShowHeatMap; break }
-            if (LoadData(history) and date!=history) { date := history; gosub ShowHeatMap; break }
+            if (history > tomorrow)
+                history := firstday
+            if (history < firstday)
+                history := tomorrow
+            if (history = tomorrow) {
+                date := "Total"
+                gosub ShowHeatMap
+                break
+            }
+            if (LoadData(history) and date!=history) {
+                date := history
+                gosub ShowHeatMap
+                break
+            }
         }
     }
 }

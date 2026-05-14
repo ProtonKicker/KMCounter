@@ -21,13 +21,16 @@ jobs:
       - name: Compile KMCounter.exe
         shell: pwsh
         run: |
-          $a2e = Resolve-Path "ahk/Compiler/Ahk2Exe.exe"
-          $base = Resolve-Path "ahk/AutoHotkeyU32.exe"
-          Write-Output "Ahk2Exe: $a2e"
-          Write-Output "Base: $base"
-          & $a2e /in KMCounter.ahk /out KMCounter.exe /base $base /icon resouces/KMCounter.ico
-          if (Test-Path "KMCounter.exe") { Write-Output "SUCCESS: KMCounter.exe created" }
-          else { Write-Output "FAIL: KMCounter.exe not found" }
+          $root = (Get-Location).Path
+          $a2e = Join-Path $root "ahk\Compiler\Ahk2Exe.exe"
+          $base = Join-Path $root "ahk\AutoHotkeyU32.exe"
+          $icon = Join-Path $root "resouces\KMCounter.ico"
+          $in   = Join-Path $root "KMCounter.ahk"
+          $out  = Join-Path $root "KMCounter.exe"
+          & $a2e /in $in /out $out /base $base /icon $icon 2>&1
+          Write-Output "Ahk2Exe exit code: $LASTEXITCODE"
+          if (Test-Path $out) { Write-Output "SUCCESS" }
+          else { Write-Output "FAIL" }
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

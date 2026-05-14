@@ -51,24 +51,6 @@ CreateGui1:
   Opt   := ControlList.Opt
   scale := A_ScreenDPI/96
   
-  ; Debug: Check for duplicate Hwnd values
-  HwndList := {}
-  duplicateFound := false
-  for k, control in ControlList
-  {
-    if (control.Hwnd != "")
-    {
-      if (HwndList.HasKey(control.Hwnd))
-      {
-        MsgBox, Found duplicate Hwnd: %control.Hwnd% at index %k% (previously at %HwndList[control.Hwnd]%)
-        duplicateFound := true
-      }
-      HwndList[control.Hwnd] := k
-    }
-  }
-  if (!duplicateFound)
-    MsgBox, No duplicate Hwnd values found!
-  
   Gui, -DPIScale +HwndhWin                                      ; 禁止系统 DPI 缩放
   Gui, Color, % Opt.BackgroundColor, % Opt.BackgroundColor
   Gui, Font, % "S" Opt.FontSize//scale, % Opt.Font              ; 高分屏下缩小字号

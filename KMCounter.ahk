@@ -2,9 +2,7 @@
 Known issue: display dimensions don't auto-update on monitor change
 */
 /*
-Original project
-https://github.com/telppa/KMCounter
-https://www.autoahk.com/archives/35147
+Original project by telppa
 */
 ;Compile info - All directives removed for compilation compatibility
 
@@ -30,7 +28,7 @@ global APPName:="KMCounter", ver:=3.8
 gosub, MultiLanguage
 gosub, Welcome
 LoadData(today)
-gosub, BlockClickOnGui1
+; Browser handles click interaction
 gosub, CreateMenu
 gosub, CreateGui1
 gosub, CreateGui2
@@ -52,69 +50,25 @@ return
 
 CreateGui1:
   Gui, Destroy
-  ControlList:=LoadControlList(layout)
-  Opt   := ControlList.Opt
-  scale := A_ScreenDPI/96
-
   Gui, -DPIScale +HwndhWin
-  Gui, Color, % Opt.BackgroundColor, % Opt.BackgroundColor
-  Gui, Font, % "S" Opt.FontSize//scale " c" Opt.TextColor, % Opt.Font
-
-  ; Title bar - clean header
-  Gui, Font, s14 Bold c1E293B, Microsoft YaHei
-  Gui, Add, Text, x16 y12 wauto h28 Section, %APPName%
-  Gui, Font, s8 c64748B, Microsoft YaHei
-  Gui, Add, Text, xs+90 ys+7 wauto h16, v%ver%
-  t_accent := themes[currentTheme].accent
-  Gui, Font, % "s11 c" t_accent, Microsoft YaHei
-  Gui, Add, Text, x+25 ys+1 wauto h26 vDateDisplay
-
-  Gui, Font, % "s13 c" t_accent, Microsoft YaHei
-  Gui, Add, Text, x+10 ys-1 w26 h28 Center 0x200 gShowSettings, ⚙
-
-  ; Reset font for keyboard
-  Gui, Font, % "S" Opt.FontSize//scale " c" Opt.TextColor, % Opt.Font
-
-  for k, control in ControlList
-  {
-    p:=""
-    for k1, optname in ["x", "y", "w", "h", "Hwnd"]
-    {
-      if (control[optname]!="")
-        p.=" " optname control[optname]
-    }
-    if (InStr(control.Hwnd, "sc"))
-    {
-      p.=" vkey" control.Hwnd
-      Gui, Add, Text, % "C" Opt.TextColor " Center +0x200 -WantCtrlA -TabStop" p, % control.Text
-      GuiControlGet, hCtrl, Hwnd, % "key" control.Hwnd
-      MakeRoundRect(hCtrl, control.w, control.h, 4)
-      ; Pre-color key with default theme grey
-      t_key := themes[currentTheme].key
-      ChangeControlColor(control.Hwnd, t_key, themes[currentTheme].text)
-    }
-    else if (control.Hwnd="Message")
-    {
-      p.=" vmsg" control.Hwnd
-      Gui, Add, ListView, % "C" Opt.TextColor " Count10 -Hdr -HScroll" p, % L_gui1_LV标题
-      GuiControlGet, hLV, Hwnd, msgMessage
-      t_bgr := "0x" . SubStr(themes[currentTheme].bg, 5, 2) . SubStr(themes[currentTheme].bg, 3, 2) . SubStr(themes[currentTheme].bg, 1, 2)
-      t_clr := "0x" . SubStr(themes[currentTheme].text, 5, 2) . SubStr(themes[currentTheme].text, 3, 2) . SubStr(themes[currentTheme].text, 1, 2)
-      DllCall("SendMessage", "Ptr", hLV, "UInt", 0x1026, "Ptr", 0, "Ptr", t_bgr)
-      DllCall("SendMessage", "Ptr", hLV, "UInt", 0x1024, "Ptr", 0, "Ptr", t_clr)
-      for k1, field in [L_gui1_鼠标移动, L_gui1_键盘敲击
-                      , L_gui1_左键点击, L_gui1_右键点击, L_gui1_中键点击
-                      , L_gui1_滚轮滚动, L_gui1_滚轮横滚
-                      , L_gui1_侧键点击
-                      , L_gui1_屏幕尺寸]
-        LV_Add("", field)
-      LV_ModifyCol(1, 160)
-      LV_ModifyCol(2, (control.w-160-40)//2)
-      LV_ModifyCol(3, (control.w-160-40)//2)
-    }
-  }
-
-  Gui, Show, Hide
+  kw:=layout.kw, kh:=layout.kh, ks:=layout.ks, khs:=layout.khs, kvs:=layout.kvs
+  w2:=kw*2+10, w3:=(kw*13 + w2 - kw*11 + ks)//2, w4:=(kw*13 + w2 - kw*10 + ks)//2, w5:=(kw*13 + w2 - kw*10 + ks*2)//2
+  w6_1:=w3, w6_2:=w6_1-10, w6_3:=kw*13 + w2 - w6_1*2 - w6_2*4 + ks*7
+  m7:=(w2+ks*4)//3
+  main_w:=13*kw+12*ks+w2+khs*2, side_w:=kw*4+ks*3+khs*2+20
+  total_w:=main_w+side_w+ks*2+48, total_h:=kh*6+kvs*5+340
+  Gui, Color, 1E1E1E, 1E1E1E
+  Gui, Add, ActiveX, vWB x0 y0 w%total_w% h%total_h%, Shell.Explorer
+  html:=GenerateKeyboardHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,main_w,side_w,total_w)
+  WB.Navigate("about:blank")
+  while WB.ReadyState<4
+    Sleep 10
+  WB.Document.Write(html)
+  WB.Document.Close()
+  ComObjConnect(WB, "BrowserEvents")
+  Sleep 100
+  UpdateBrowserData()
+  Gui, Show, w%total_w% h%total_h%
 return
 
 ; Scroll/page keys switch history in stats view
@@ -433,84 +387,40 @@ return
 
 ShowHeatMap:
 {
-  GuiControl, , DateDisplay, % date = tomorrow ? "Total" : date
+  Gui, Show
+  UpdateBrowserData()
+}
+return
 
-  Gui, Show, , % Format("{1} v{2} | {3} - {4}", APPName, ver, L_gui1_当前显示数据, date)
-  ; Show text stats first
-  LV_Modify(1,,, Format("{:.2f} {2}", mouse[date].move,          L_gui1_米), Format("{:.2f} {2}", mouse.total.move,          L_gui1_米))
-  LV_Modify(2,,, Format("{1} {2}",    keyboard[date].keystrokes, L_gui1_次), Format("{1} {2}",    keyboard.total.keystrokes, L_gui1_次))
-  LV_Modify(3,,, Format("{1} {2}",    mouse[date].lbcount,       L_gui1_次), Format("{1} {2}",    mouse.total.lbcount,       L_gui1_次))
-  LV_Modify(4,,, Format("{1} {2}",    mouse[date].rbcount,       L_gui1_次), Format("{1} {2}",    mouse.total.rbcount,       L_gui1_次))
-  LV_Modify(5,,, Format("{1} {2}",    mouse[date].mbcount,       L_gui1_次), Format("{1} {2}",    mouse.total.mbcount,       L_gui1_次))
-  LV_Modify(6,,, Format("{1} {2}",    mouse[date].wheel,         L_gui1_次), Format("{1} {2}",    mouse.total.wheel,         L_gui1_次))
-  LV_Modify(7,,, Format("{1} {2}",    mouse[date].hwheel,        L_gui1_次), Format("{1} {2}",    mouse.total.hwheel,        L_gui1_次))
-  LV_Modify(8,,, Format("{1} {2}",    mouse[date].xbcount,       L_gui1_次), Format("{1} {2}",    mouse.total.xbcount,       L_gui1_次))
-  LV_Modify(9,,, Format("{:.1f} {2}", devicecaps.size,           L_gui1_寸))
-  ; Wait for enough data to avoid color errors
-  if (keyboard[date].keystrokes >= 100)
-  {
-    ; Generate gradient colors
-    colors   := getcolors("0x" layout.highlightStart, "0x" layout.highlightEnd, 100)
-    ; Set 10% of total as comparison
-    maxcount := keyboard[date].keystrokes / 10
-    for k, count in keyboard[date]
-    {
-      ; Count >= max => darkest
-      if (count >= maxcount)
-        color := colors[100]
-      ; Count < 1% of max => lightest
-      else if (count < maxcount/100)
-        color := colors[1]
-      ; Color by percentage of max
-      else
-        color := colors[Floor(count/maxcount*100)]
-
-      ; Apply key color
-      ChangeControlColor(k, color, Opt.TextColor)
+BrowserEvents_TitleChange(ByRef Text) {
+  global history, date, today, tomorrow, firstday, DataStorageDays
+  if (Text = "settings" or Text = "c:settings")
+    gosub ShowSettings
+  else if (SubStr(Text, 1, 2) = "c:") {
+    cmd := SubStr(Text, 3)
+    if (cmd = "w-1" or cmd = "n-1") {
+      NonNull(history, today)
+      loop 2 {
+        history := EnvAdd(history, -1, "Days", 1, 8)
+        if (history > tomorrow) history := firstday
+        if (history < firstday) history := tomorrow
+        if (history = tomorrow) { date := "Total"; gosub ShowHeatMap; break }
+        if (LoadData(history) and date!=history) { date := history; gosub ShowHeatMap; break }
+      }
+    } else if (cmd = "w1" or cmd = "n1") {
+      NonNull(history, today)
+      loop 2 {
+        history := EnvAdd(history, 1, "Days", 1, 8)
+        if (history > tomorrow) history := firstday
+        if (history < firstday) history := tomorrow
+        if (history = tomorrow) { date := "Total"; gosub ShowHeatMap; break }
+        if (LoadData(history) and date!=history) { date := history; gosub ShowHeatMap; break }
+      }
     }
   }
-  else
-  {
-    t := themes[currentTheme]
-    for k, count in keyboard[date]
-      ChangeControlColor(k, t.key, t.text)
-    MsgBox 0x42040, , %L_gui1_msgbox%
-  }
-}
-return
-
-WM_MOUSEMOVE()
-{
-  static init:=OnMessage(0x200, "WM_MOUSEMOVE")
-  global date, L_gui1_次
-  if (A_Gui = 1 and SubStr(A_GuiControl, 1, 3) = "key")
-  {
-    key:=SubStr(A_GuiControl, 4)
-    if (keyboard[date].HasKey(key))
-      btt(keyboard[date][key] " " L_gui1_次,,,,"Style2")
-    else
-      btt()
-  }
-  else
-    btt()
 }
 
-BlockClickOnGui1:
-{
-  OnMessage(0x0201, "BlockClick")   ; LButton down
-  OnMessage(0x0202, "BlockClick")   ; LButton up
-  OnMessage(0x0203, "BlockClick")   ; LButton double
-  OnMessage(0x0204, "BlockClick")   ; RButton down
-  OnMessage(0x0205, "BlockClick")   ; RButton up
-  OnMessage(0x0206, "BlockClick")   ; RButton double
-}
-return
 
-BlockClick(wParam, lParam, msg, hwnd)
-{
-  if (A_Gui=1)
-    return, 0
-}
 
 ExitFunc(ExitReason, ExitCode)
 {
@@ -807,7 +717,7 @@ LoadControlList(layout:="")
 
   list:=[]
   ; Row 1
-  list.push({Hwnd:"sc1",  Text:"Esc", x:"", y:"", w:w, h:h})
+  list.push({Hwnd:"sc1",  Text:"Esc", x:"m", y:"", w:w, h:h})
   list.push({Hwnd:"sc59", Text:"F1",  x:m.8, y:"", w:w, h:h})
   list.push({Hwnd:"sc60", Text:"F2",  x:m.2, y:"", w:w, h:h})
   list.push({Hwnd:"sc61", Text:"F3",  x:m.2, y:"", w:w, h:h})
@@ -931,7 +841,7 @@ LoadControlList(layout:="")
   ; Stats area below keyboard, full width
     temp1:="m"
   , temp2:=13*w + m.1*12 + w2 + m.3*2
-  , temp3:=220
+  , temp3:=300
   list.push({Hwnd:"Message", Text:"",      x:temp1, y:"m+" . (h*8 + m.1*7 + m.3*3), w:temp2, h:temp3})
 
   ; Color without 0x prefix. BG affects keys in info area when data is low.
@@ -1094,10 +1004,168 @@ NonNull_Ret(var, default, min) {
 }
 
 btt(text="", x="", y="", delay=0, style="") {
-    ; Simple tooltip function implementation
     if (text = "") {
         ToolTip
         return
     }
     ToolTip, %text%, %x%, %y%, 1
+}
+
+JSEncode(obj) {
+    if (IsObject(obj)) {
+        isArray := true
+        for k, v in obj
+            if (k != A_Index) { isArray := false; break }
+        if (isArray) {
+            s := "["
+            for k, v in obj
+                s .= JSEncode(v) ","
+            return SubStr(s, 1, StrLen(s)-1) "]"
+        }
+        s := "{"
+        for k, v in obj
+            s .= """" k """:" JSEncode(v) ","
+        return SubStr(s, 1, StrLen(s)-1) "}"
+    }
+    if obj is number
+        return obj
+    return """" StrReplace(StrReplace(StrReplace(obj, "\", "\\"), """", "\"""), "`n", "\n") """"
+}
+
+UpdateBrowserData() {
+    global WB, date, mouse, keyboard, layout, devicecaps, themes, currentTheme
+    global L_gui1_鼠标移动, L_gui1_键盘敲击, L_gui1_左键点击, L_gui1_右键点击, L_gui1_中键点击
+    global L_gui1_滚轮滚动, L_gui1_滚轮横滚, L_gui1_侧键点击, L_gui1_屏幕尺寸, L_gui1_米, L_gui1_次, L_gui1_寸
+    global tomorrow, APPName, ver
+    if !IsObject(WB)
+        return
+    data := {}
+    data.date := date = tomorrow ? "Total" : date
+    data.title := Format("{1} v{2}", APPName, ver)
+    data.accent := themes[currentTheme].accent
+    data.hs := layout.highlightStart
+    data.he := layout.highlightEnd
+    data.keys := {}
+    if keyboard.HasKey(date)
+        for k, v in keyboard[date]
+            data.keys[k] := v
+    data.totalKeystrokes := keyboard[date].keystrokes
+    data.stats := []
+    data.stats.Push({n:L_gui1_鼠标移动, t:Format("{:.2f} {2}", mouse[date].move, L_gui1_米), t2:Format("{:.2f} {2}", mouse.total.move, L_gui1_米)})
+    data.stats.Push({n:L_gui1_键盘敲击, t:keyboard[date].keystrokes " " L_gui1_次, t2:keyboard.total.keystrokes " " L_gui1_次})
+    data.stats.Push({n:L_gui1_左键点击, t:mouse[date].lbcount " " L_gui1_次, t2:mouse.total.lbcount " " L_gui1_次})
+    data.stats.Push({n:L_gui1_右键点击, t:mouse[date].rbcount " " L_gui1_次, t2:mouse.total.rbcount " " L_gui1_次})
+    data.stats.Push({n:L_gui1_中键点击, t:mouse[date].mbcount " " L_gui1_次, t2:mouse.total.mbcount " " L_gui1_次})
+    data.stats.Push({n:L_gui1_滚轮滚动, t:mouse[date].wheel " " L_gui1_次, t2:mouse.total.wheel " " L_gui1_次})
+    data.stats.Push({n:L_gui1_滚轮横滚, t:mouse[date].hwheel " " L_gui1_次, t2:mouse.total.hwheel " " L_gui1_次})
+    data.stats.Push({n:L_gui1_侧键点击, t:mouse[date].xbcount " " L_gui1_次, t2:mouse.total.xbcount " " L_gui1_次})
+    data.stats.Push({n:L_gui1_屏幕尺寸, t:Format("{:.1f} {2}", devicecaps.size, L_gui1_寸), t2:""})
+    try WB.document.parentWindow.updateData(JSEncode(data))
+}
+
+K(text, sc, w) {
+    return "<div class='k' data-s='" sc "' style='width:" w "px'>" text "</div>"
+}
+G(w) {
+    return "<div class='g' style='width:" w "px'></div>"
+}
+
+GenerateKeyboardHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,mw,sw,tw) {
+    t:=themes[currentTheme]
+    kfs:=kw<60?9:kw<80?11:13
+    return "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>"
+    . "*{margin:0;padding:0;box-sizing:border-box}body{background:#1E1E1E;font-family:Microsoft YaHei,sans-serif;color:#D4D4D4;overflow:hidden;user-select:none}"
+    . ".hdr{display:flex;align-items:center;padding:12px 16px 8px;gap:12px;font-size:14px}"
+    . ".hdr .t{font-weight:700;color:#fff;font-size:16px}.hdr .v{color:#64748B;font-size:11px;margin-top:2px}"
+    . ".hdr .d{color:#" t.accent ";margin-left:auto;font-size:13px}"
+    . ".hdr .g{color:#" t.accent ";font-size:18px;cursor:pointer;width:26px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px}"
+    . ".hdr .g:hover{background:rgba(255,255,255,0.08)}"
+    . ".cols{display:flex;gap:8px;padding:4px 16px 12px}"
+    . ".row{display:flex;gap:" ks "px;margin-bottom:" kvs "px}"
+    . ".k{height:" kh "px;background:#3A3A3C;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:" kfs "px;color:#D4D4D4;box-shadow:0 1px 3px rgba(0,0,0,0.3);transition:background .15s,transform .12s,box-shadow .12s;cursor:default;position:relative;flex-shrink:0}"
+    . ".k:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,0.4);z-index:1}"
+    . ".k .tt{display:none;position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#2A2A2C;color:#D4D4D4;padding:3px 8px;border-radius:4px;font-size:11px;white-space:nowrap;pointer-events:none;z-index:10;box-shadow:0 2px 6px rgba(0,0,0,0.5)}"
+    . ".k:hover .tt{display:block}"
+    . ".g{flex-shrink:0}"
+    ; Side panel
+    . ".side{display:flex;flex-direction:column;gap:" kvs "px;flex-shrink:0}"
+    . ".sec{display:flex;flex-direction:column;gap:" ks "px}"
+    . ".sec .r{display:flex;gap:" ks "px}"
+    ; Numpad grid
+    . ".np{display:grid;grid-template-columns:repeat(4," kw "px);gap:" ks "px}"
+    . ".np .k{width:auto !important}"
+    . ".np .k-t{grid-row:span 2;height:auto}"
+    . ".np .k-w{grid-column:span 2}"
+    ; Stats
+    . ".st{background:#252528;border-radius:8px;margin:0 16px 12px;padding:0;overflow:hidden}"
+    . ".st table{width:100%;border-collapse:collapse;font-size:12px}"
+    . ".st th{background:#2A2A2D;color:#94A3B8;padding:6px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px}"
+    . ".st td{padding:4px 12px;border-top:1px solid #2E2E30}"
+    . ".st tr:first-child td{border-top:none}"
+    . ".st tr:nth-child(even) td{background:rgba(255,255,255,0.015)}"
+    . ".st .tv{text-align:right;color:#A0A0A4;font-variant-numeric:tabular-nums}"
+    . "</style></head><body>"
+    ; Header
+    . "<div class='hdr'>"
+    . "<span class='t'>KMCounter</span><span class='v'>v3.8</span>"
+    . "<span class='d' id='dt'>" today "</span>"
+    . "<span class='g' onclick='document.title=`"settings`";setTimeout(function(){document.title=``},50)'>⚙</span>"
+    . "</div>"
+    ; Keyboard
+    . "<div class='cols'>"
+    . "<div class='main'>"
+    ; Row 1: Esc + F1-F12
+    . "<div class='row'>" K("Esc","sc1",kw) G(m7)
+    . K("F1","sc59",kw) K("F2","sc60",kw) K("F3","sc61",kw) K("F4","sc62",kw) G(m7)
+    . K("F5","sc63",kw) K("F6","sc64",kw) K("F7","sc65",kw) K("F8","sc66",kw) G(m7)
+    . K("F9","sc67",kw) K("F10","sc68",kw) K("F11","sc87",kw) K("F12","sc88",kw)
+    . "</div>"
+    ; Row 2
+    . "<div class='row'>" K("`","sc41",kw) K("1","sc2",kw) K("2","sc3",kw) K("3","sc4",kw) K("4","sc5",kw) K("5","sc6",kw) K("6","sc7",kw) K("7","sc8",kw) K("8","sc9",kw) K("9","sc10",kw) K("0","sc11",kw) K("-","sc12",kw) K("=","sc13",kw) K("BackSpace","sc14",w2) "</div>"
+    ; Row 3
+    . "<div class='row'>" K("Tab","sc15",w3) K("q","sc16",kw) K("w","sc17",kw) K("e","sc18",kw) K("r","sc19",kw) K("t","sc20",kw) K("y","sc21",kw) K("u","sc22",kw) K("i","sc23",kw) K("o","sc24",kw) K("p","sc25",kw) K("[","sc26",kw) K("]","sc27",kw) K("\\","sc43",w3) "</div>"
+    ; Row 4
+    . "<div class='row'>" K("CapsLock","sc58",w4) K("a","sc30",kw) K("s","sc31",kw) K("d","sc32",kw) K("f","sc33",kw) K("g","sc34",kw) K("h","sc35",kw) K("j","sc36",kw) K("k","sc37",kw) K("l","sc38",kw) K(";","sc39",kw) K("'","sc40",kw) K("Enter","sc28",w4) "</div>"
+    ; Row 5
+    . "<div class='row'>" K("Shift","sc42",w5) K("z","sc44",kw) K("x","sc45",kw) K("c","sc46",kw) K("v","sc47",kw) K("b","sc48",kw) K("n","sc49",kw) K("m","sc50",kw) K(",","sc51",kw) K(".","sc52",kw) K("/","sc53",kw) K("Shift","sc310",w5) "</div>"
+    ; Row 6
+    . "<div class='row'>" K("Ctrl","sc29",w6_1) K("Win","sc347",w6_2) K("Alt","sc56",w6_2) K("Space","sc57",w6_3) K("Alt","sc312",w6_2) K("Win","sc348",w6_2) K("Ctrl","sc285",w6_1) "</div>"
+    . "</div>" ; end main
+    ; Side panel
+    . "<div class='side'>"
+    . "<div class='sec'><div class='r'>" K("Insert","sc338",kw) K("Home","sc327",kw) K("PageUp","sc329",kw) "</div><div class='r'>" K("Delete","sc339",kw) K("End","sc335",kw) K("PageDn","sc337",kw) "</div></div>"
+    . "<div class='sec'><div class='r'>" K("▲","sc328",kw) "</div><div class='r'>" K("◀","sc331",kw) K("▼","sc336",kw) K("▶","sc333",kw) "</div></div>"
+    . "<div class='sec' style='margin-left:-2px'>"
+    . "<div class='np'>" K("Num`nLock","sc325",kw) K("/","sc309",kw) K("*","sc55",kw) K("-","sc74",kw)
+    . K("7","sc71",kw) K("8","sc72",kw) K("9","sc73",kw) "<div class='k k-t' data-s='sc78' style='height:" (kh*2+ks) "px;grid-row:span 2'>+</div>"
+    . K("4","sc75",kw) K("5","sc76",kw) K("6","sc77",kw)
+    . K("1","sc79",kw) K("2","sc80",kw) K("3","sc81",kw)
+    . "<div class='k k-w' data-s='sc82' style='grid-column:span 2'>0</div>" K(".","sc83",kw)
+    . "</div></div>"
+    . "</div>" ; end side
+    . "</div>" ; end cols
+    ; Stats
+    . "<div class='st'><table><thead><tr><th>Item</th><th style='text-align:right'>Today</th><th style='text-align:right'>Total</th></tr></thead><tbody id='tb'>"
+    . "<tr><td>Mouse Movement</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    . "<tr><td>Keyboard Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    . "<tr><td>Left Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    . "<tr><td>Right Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    . "<tr><td>Middle Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    . "<tr><td>Wheel Scrolls</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    . "<tr><td>Wheel Tilt</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    . "<tr><td>Side Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    . "<tr><td>Screen Size</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    . "</tbody></table></div>"
+    ; JavaScript
+    . "<script>var gc=[];function gg(c1,c2,n){var i,r1=parseInt(c1.substr(0,2),16),g1=parseInt(c1.substr(2,2),16),b1=parseInt(c1.substr(4,2),16),r2=parseInt(c2.substr(0,2),16),g2=parseInt(c2.substr(2,2),16),b2=parseInt(c2.substr(4,2),16),rd=(r2-r1)/(n-1),gd=(g2-g1)/(n-1),bd=(b2-b1)/(n-1);gc=[];for(i=0;i<n;i++){var r=Math.round(r1+rd*i),g=Math.round(g1+gd*i),b=Math.round(b1+bd*i);gc.push('#'+(r<16?'0':'')+r.toString(16)+(g<16?'0':'')+g.toString(16)+(b<16?'0':'')+b.toString(16))}}"
+    . "function ud(d){var dt=document.getElementById('dt');if(dt)dt.textContent=d.date;"
+    . "var ks=d.keys||{},mk=d.totalKeystrokes/10||1;gg(d.hs,d.he,100);"
+    . "var els=document.querySelectorAll('.k[data-s]');for(var i=0;i<els.length;i++){var e=els[i],sc=e.getAttribute('data-s'),cnt=parseInt(ks[sc])||0;"
+    . "if(cnt>=mk)e.style.background='#'+d.he;else if(cnt<mk/100)e.style.background='#3A3A3C';else e.style.background=gc[Math.floor(cnt/mk*100)-1]||gc[0];"
+    . "var tt=e.querySelector('.tt');if(!tt){tt=document.createElement('div');tt.className='tt';e.appendChild(tt)}tt.textContent=cnt}"
+    . "var tb=document.getElementById('tb');if(tb&&d.stats){tb.innerHTML='';for(var i=0;i<d.stats.length;i++){var s=d.stats[i];tb.innerHTML+='<tr><td>'+s.n+'</td><td class=\"tv\">'+s.t+'</td><td class=\"tv\">'+s.t2+'</td></tr>'}}}"
+    . "function sc(c){document.title='c:'+c;setTimeout(function(){document.title=''},50)}"
+    . "document.addEventListener('wheel',function(e){if(e.deltaY>0)sc('w-1');else if(e.deltaY<0)sc('w1')},{passive:true})"
+    . "document.addEventListener('keydown',function(e){var k=e.key;if(k==='PageDown'||k==='ArrowDown'){sc('n-1');e.preventDefault()}else if(k==='PageUp'||k==='ArrowUp'){sc('n1');e.preventDefault()}})"
+    . "</script></body></html>"
 }

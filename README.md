@@ -35,9 +35,9 @@ Grab the latest `KMCounter.exe` from the [Releases](https://github.com/ProtonKic
 1. Install [AutoHotkey v1.1](https://www.autohotkey.com/)
 2. Double-click `KMCounter.ahk`
 
-## Data
+## Privacy
 
-Usage data is stored in `KMCounter.ini` (plain text in the same folder). No phoning home, no analytics, no internet connection needed.
+This app is entirely offline. Nothing leaves your machine.
 
 ## License
 
@@ -45,4 +45,4 @@ MIT
 
 ---
 
-*Originally created by [telppa](https://www.autoahk.com/archives/35147). This is a hard fork — the codebase has diverged significantly and will not be contributed back to the original project.*
+*Originally by telppa. Hard fork — codebase has diverged significantly.*

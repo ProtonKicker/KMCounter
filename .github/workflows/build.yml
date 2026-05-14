@@ -11,22 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install AutoHotkey v1.1
-        run: choco install autohotkey -y --no-progress
-
-      - name: Find Ahk2Exe and compile
+      - name: Download AutoHotkey v1.1 portable
         shell: pwsh
         run: |
-          $paths = @(
-            "C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe"
-          )
-          $paths += Get-ChildItem "C:\Program Files\AutoHotkey" -Directory | ForEach-Object {
-            Join-Path $_.FullName "Compiler\Ahk2Exe.exe"
-          }
-          $a2e = $paths | Where-Object { Test-Path $_ } | Select-Object -First 1
-          if (-not $a2e) { throw "Ahk2Exe.exe not found in any expected location" }
-          Write-Output "Ahk2Exe found at: $a2e"
-          & $a2e /in KMCounter.ahk /out KMCounter.exe /icon resouces/KMCounter.ico
+          Invoke-WebRequest -Uri "https://www.autohotkey.com/download/1.1/AutoHotkey_1.1.37.02.zip" -OutFile ahk.zip
+          7z x ahk.zip -oahk | Out-Null
+          Get-ChildItem ahk\Compiler
+
+      - name: Compile KMCounter.exe
+        shell: pwsh
+        run: |
+          .\ahk\Compiler\Ahk2Exe.exe /in KMCounter.ahk /out KMCounter.exe /icon resouces/KMCounter.ico
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

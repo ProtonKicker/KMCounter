@@ -281,7 +281,7 @@ RestoreDefaultSetting:
   IniWrite, 3B82F6, KMCounter.ini, layout, highlightEnd
   
   ; Show success message
-  MsgBox, 0x40040, %L_gui2_恢复默认%, % L_gui2_已恢复%
+  MsgBox, 0x40040, % L_gui2_恢复默认, % L_gui2_已恢复
 return
 
 Reload:

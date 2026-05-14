@@ -11,24 +11,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download AHK v1.1 + Ahk2Exe
+      - name: Install AutoHotkey via Scoop
         shell: pwsh
         run: |
-          curl.exe -sL "https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.1.37.02/AutoHotkey_1.1.37.02_setup.exe" -o ahk_setup.exe
-          7z x ahk_setup.exe -oahk | Out-Null
+          scoop install autohotkey@1.1.37.02 2>&1
 
-      - name: Test Ahk2Exe
+      - name: Compile KMCounter.exe
         shell: pwsh
         run: |
-          Write-Output "=== Check Ahk2Exe.exe exists ==="
-          Test-Path "ahk\Compiler\Ahk2Exe.exe"
-          Write-Output "=== Run Ahk2Exe with no args ==="
-          & ".\ahk\Compiler\Ahk2Exe.exe" 2>&1
-          Write-Output "=== Exit code: $LASTEXITCODE ==="
-          Write-Output "=== Try compiling via AutoHotkey script ==="
-          & ".\ahk\AutoHotkeyU32.exe" ".\ahk\Compiler\Ahk2Exe.ahk" /in "KMCounter.ahk" /out "KMCounter.exe" 2>&1
-          Write-Output "=== AHK exit code: $LASTEXITCODE ==="
-          Test-Path "KMCounter.exe"
+          $ahk = (Get-ChildItem "$env:USERPROFILE\scoop\apps\autohotkey\*\AutoHotkeyU32.exe" | Select-Object -First 1).FullName
+          $compiler = Join-Path (Split-Path $ahk) "Compiler\Ahk2Exe.exe"
+          Write-Output "AHK: $ahk"
+          Write-Output "Ahk2Exe: $compiler"
+          & $compiler /in KMCounter.ahk /out KMCounter.exe /icon resouces/KMCounter.ico 2>&1
+          Write-Output "Exit: $LASTEXITCODE"
+          if (Test-Path "KMCounter.exe") { Write-Output "SUCCESS" }
+          else { Write-Output "FAIL" }
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

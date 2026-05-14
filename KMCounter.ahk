@@ -62,6 +62,12 @@ CreateGui1:
   Gui, Font, s10 c3B82F6, Microsoft YaHei
   Gui, Add, Text, x+25 ys+3 wauto h22 vDateDisplay
 
+  Gui, Font, s9 c64748B, Microsoft YaHei
+  Gui, Add, Text, x+15 ys+3 w20 h22 Center 0x200 gShowSettings, ⚙
+
+  ; Reset font for keyboard
+  Gui, Font, % "S" Opt.FontSize//scale " c" Opt.TextColor, % Opt.Font
+
   for k, control in ControlList
   {
     p:=""
@@ -155,41 +161,38 @@ CreateGui2:
   Gui, 2:Font
 
   Gui, 2:Font, s11 Bold c3B82F6, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+50 w360 h24, %L_gui2_历史数据%
-  Gui, 2:Font
-  Gui, 2:Font, c475569, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+28 w360 h20, %L_gui2_sub1%
-  Gui, 2:Add, Text, x20 yp+28 w80 h23, %L_gui2_存储%:
+  Gui, 2:Add, Text, x20 yp+30 w360 h20, %L_gui2_sub1%
+  Gui, 2:Add, Text, x20 yp+30 w80 h23, %L_gui2_存储%:
   Gui, 2:Add, Edit, x105 yp-2 w70 h23 Number Limit -Multi vdsd, % DataStorageDays
   Gui, 2:Add, Text, x183 yp+2 w40 h23, %L_gui2_天%
 
   Gui, 2:Font, s11 Bold c3B82F6, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+40 w360 h24, %L_gui2_屏幕尺寸%
+  Gui, 2:Add, Text, x20 yp+44 w360 h24, %L_gui2_屏幕尺寸%
   Gui, 2:Font
   Gui, 2:Font, c475569, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+28 w360 h20, %L_gui2_sub2%
-  Gui, 2:Add, Text, x20 yp+26 w80 h23, %L_gui2_屏幕宽%:
+  Gui, 2:Add, Text, x20 yp+30 w360 h20, %L_gui2_sub2%
+  Gui, 2:Add, Text, x20 yp+28 w80 h23, %L_gui2_屏幕宽%:
   Gui, 2:Add, Edit, x105 yp-2 w70 h23 Number Limit -Multi vdw, % devicecaps.w
   Gui, 2:Add, Text, x183 yp+2 w40 h23, %L_gui2_毫米%
-  Gui, 2:Add, Text, x20 yp+32 w80 h23, %L_gui2_屏幕高%:
+  Gui, 2:Add, Text, x20 yp+34 w80 h23, %L_gui2_屏幕高%:
   Gui, 2:Add, Edit, x105 yp-2 w70 h23 Number Limit -Multi vdh, % devicecaps.h
   Gui, 2:Add, Text, x183 yp+2 w40 h23, %L_gui2_毫米%
 
   Gui, 2:Font, s11 Bold c3B82F6, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+40 w360 h24, %L_gui2_键盘布局%
+  Gui, 2:Add, Text, x20 yp+44 w360 h24, %L_gui2_键盘布局%
   Gui, 2:Font
   Gui, 2:Font, c475569, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+28 w360 h20, %L_gui2_sub3%
-  Gui, 2:Add, Text, x20 yp+26 w80 h23, %L_gui2_键宽%:
+  Gui, 2:Add, Text, x20 yp+30 w360 h20, %L_gui2_sub3%
+  Gui, 2:Add, Text, x20 yp+28 w80 h23, %L_gui2_键宽%:
   Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlkw, % layout.kw
   Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_像素%
   Gui, 2:Add, Text, x220 yp-25 w80 h23, %L_gui2_键高%:
   Gui, 2:Add, Edit, x270 yp-2 w60 h23 Number Limit -Multi vlkh, % layout.kh
   Gui, 2:Add, Text, x338 yp+2 w40 h23, %L_gui2_像素%
-  Gui, 2:Add, Text, x20 yp+32 w80 h23, %L_gui2_键间距%:
+  Gui, 2:Add, Text, x20 yp+34 w80 h23, %L_gui2_键间距%:
   Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlks, % layout.ks
   Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_像素%
-  Gui, 2:Add, Text, x20 yp+32 w100 h23, %L_gui2_区域水平间距%:
+  Gui, 2:Add, Text, x20 yp+34 w100 h23, %L_gui2_区域水平间距%:
   Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlkhs, % layout.khs
   Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_像素%
   Gui, 2:Add, Text, x220 yp-25 w100 h23, %L_gui2_区域垂直间距%:
@@ -197,22 +200,22 @@ CreateGui2:
   Gui, 2:Add, Text, x338 yp+2 w40 h23, %L_gui2_像素%
 
   Gui, 2:Font, s11 Bold c3B82F6, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+40 w360 h24, %L_gui2_键盘外观%
+  Gui, 2:Add, Text, x20 yp+44 w360 h24, %L_gui2_键盘外观%
   Gui, 2:Font
   Gui, 2:Font, c475569, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+28 w80 h23, %L_gui2_字体大小%:
+  Gui, 2:Add, Text, x20 yp+30 w80 h23, %L_gui2_字体大小%:
   Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlfs, % layout.fs
   Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_号%
-  Gui, 2:Add, Text, x20 yp+32 w80 h23, %L_gui2_起始颜色%:
+  Gui, 2:Add, Text, x20 yp+34 w80 h23, %L_gui2_起始颜色%:
   Gui, 2:Add, Edit, x105 yp-2 w120 h23 -Multi vhighlightStart, % layout.highlightStart
-  Gui, 2:Add, Text, x20 yp+32 w80 h23, %L_gui2_结束颜色%:
+  Gui, 2:Add, Text, x20 yp+34 w80 h23, %L_gui2_结束颜色%:
   Gui, 2:Add, Edit, x105 yp-2 w120 h23 -Multi vhighlightEnd, % layout.highlightEnd
 
-  Gui, 2:Add, Button, x20 yp+48 w100 h30 gCancelSetting, %L_gui2_取消%
+  Gui, 2:Add, Button, x20 yp+50 w100 h30 gCancelSetting, %L_gui2_取消%
   Gui, 2:Add, Button, x130 yp+0 w100 h30 gSaveSetting, %L_gui2_保存%
   Gui, 2:Add, Button, x240 yp+0 w130 h30 gRestoreDefaultSetting, %L_gui2_恢复默认%
 
-  Gui, 2:Show, w400 h640 Hide
+  Gui, 2:Show, w400 h700 Hide
 }
 return
 
@@ -362,6 +365,20 @@ MenuHandler:
 
   if (A_ThisMenuItem = L_menu_退出)
     ExitApp
+return
+
+ShowSettings:
+  GuiControl, 2:, dw,   % devicecaps.w
+  GuiControl, 2:, dh,   % devicecaps.h
+  GuiControl, 2:, lkw,  % layout.kw
+  GuiControl, 2:, lkh,  % layout.kh
+  GuiControl, 2:, lks,  % layout.ks
+  GuiControl, 2:, lkhs, % layout.khs
+  GuiControl, 2:, lkvs, % layout.kvs
+  GuiControl, 2:, lfs,  % layout.fs
+  GuiControl, 2:, highlightStart, % layout.highlightStart
+  GuiControl, 2:, highlightEnd, % layout.highlightEnd
+  Gui, 2:Show, , %L_gui2_设置%
 return
 
 ShowHeatMap:
@@ -910,7 +927,7 @@ LoadControlList(layout:="")
 }
 
 MultiLanguage:
-  if (A_Language="0804")
+  if (false)  ; Force English; Chinese strings kept for future use
   {
     L_menu_统计:="统计"
     L_menu_设置:="设置"

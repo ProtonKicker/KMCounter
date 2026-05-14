@@ -1,7 +1,6 @@
 
 KMCounter.ini
 todo.txt
-*.exe
 *.log
 *.pyc
 __pycache__/

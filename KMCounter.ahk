@@ -398,24 +398,34 @@ BrowserEvents_TitleChange(ByRef Text) {
     gosub ShowSettings
   else if (SubStr(Text, 1, 2) = "c:") {
     cmd := SubStr(Text, 3)
-    if (cmd = "w-1" or cmd = "n-1") {
-      NonNull(history, today)
-      loop 2 {
-        history := EnvAdd(history, -1, "Days", 1, 8)
-        if (history > tomorrow) history := firstday
-        if (history < firstday) history := tomorrow
-        if (history = tomorrow) { date := "Total"; gosub ShowHeatMap; break }
-        if (LoadData(history) and date!=history) { date := history; gosub ShowHeatMap; break }
-      }
-    } else if (cmd = "w1" or cmd = "n1") {
-      NonNull(history, today)
-      loop 2 {
-        history := EnvAdd(history, 1, "Days", 1, 8)
-        if (history > tomorrow) history := firstday
-        if (history < firstday) history := tomorrow
-        if (history = tomorrow) { date := "Total"; gosub ShowHeatMap; break }
-        if (LoadData(history) and date!=history) { date := history; gosub ShowHeatMap; break }
-      }
+    if (cmd = "w-1" or cmd = "n-1")
+      NavigateHistory(-1)
+    else if (cmd = "w1" or cmd = "n1")
+      NavigateHistory(1)
+  }
+}
+
+NavigateHistory(dir) {
+  global history, date, today, tomorrow, firstday, DataStorageDays
+  NonNull(history, today)
+  loop 2 {
+    if (dir = -1)
+      history := EnvAdd(history, -1, "Days", 1, 8)
+    else
+      history := EnvAdd(history, 1, "Days", 1, 8)
+    if (history > tomorrow)
+      history := firstday
+    if (history < firstday)
+      history := tomorrow
+    if (history = tomorrow) {
+      date := "Total"
+      gosub ShowHeatMap
+      break
+    }
+    if (LoadData(history) and date!=history) {
+      date := history
+      gosub ShowHeatMap
+      break
     }
   }
 }

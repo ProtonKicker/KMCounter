@@ -42,3 +42,7 @@ Usage data is stored in `KMCounter.ini` (plain text in the same folder). No phon
 ## License
 
 MIT
+
+---
+
+*Originally created by [telppa](https://www.autoahk.com/archives/35147). This is a hard fork — the codebase has diverged significantly and will not be contributed back to the original project.*

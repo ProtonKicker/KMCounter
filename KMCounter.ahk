@@ -1087,99 +1087,71 @@ G(w) {
 GenerateKeyboardHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,mw,sw,tw) {
     t:=themes[currentTheme]
     kfs:=kw<60?9:kw<80?11:13
-    return "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>"
-    . "*{margin:0;padding:0;box-sizing:border-box}body{background:#1E1E1E;font-family:Microsoft YaHei,sans-serif;color:#D4D4D4;overflow:hidden;user-select:none}"
-    . ".hdr{display:flex;align-items:center;padding:12px 16px 8px;gap:12px;font-size:14px}"
-    . ".hdr .t{font-weight:700;color:#fff;font-size:16px}.hdr .v{color:#64748B;font-size:11px;margin-top:2px}"
-    . ".hdr .d{color:#" t.accent ";margin-left:auto;font-size:13px}"
-    . ".hdr .g{color:#" t.accent ";font-size:18px;cursor:pointer;width:26px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px}"
-    . ".hdr .g:hover{background:rgba(255,255,255,0.08)}"
-    . ".cols{display:flex;gap:8px;padding:4px 16px 12px}"
-    . ".row{display:flex;gap:" ks "px;margin-bottom:" kvs "px}"
-    . ".k{height:" kh "px;background:#3A3A3C;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:" kfs "px;color:#D4D4D4;box-shadow:0 1px 3px rgba(0,0,0,0.3);transition:background .15s,transform .12s,box-shadow .12s;cursor:default;position:relative;flex-shrink:0}"
-    . ".k:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,0.4);z-index:1}"
-    . ".k .tt{display:none;position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#2A2A2C;color:#D4D4D4;padding:3px 8px;border-radius:4px;font-size:11px;white-space:nowrap;pointer-events:none;z-index:10;box-shadow:0 2px 6px rgba(0,0,0,0.5)}"
-    . ".k:hover .tt{display:block}"
-    . ".g{flex-shrink:0}"
-    ; Side panel
-    . ".side{display:flex;flex-direction:column;gap:" kvs "px;flex-shrink:0}"
-    . ".sec{display:flex;flex-direction:column;gap:" ks "px}"
-    . ".sec .r{display:flex;gap:" ks "px}"
-    ; Numpad grid
-    . ".np{display:grid;grid-template-columns:repeat(4," kw "px);gap:" ks "px}"
-    . ".np .k{width:auto !important}"
-    . ".np .k-t{grid-row:span 2;height:auto}"
-    . ".np .k-w{grid-column:span 2}"
-    ; Stats
-    . ".st{background:#252528;border-radius:8px;margin:0 16px 12px;padding:0;overflow:hidden}"
-    . ".st table{width:100%;border-collapse:collapse;font-size:12px}"
-    . ".st th{background:#2A2A2D;color:#94A3B8;padding:6px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px}"
-    . ".st td{padding:4px 12px;border-top:1px solid #2E2E30}"
-    . ".st tr:first-child td{border-top:none}"
-    . ".st tr:nth-child(even) td{background:rgba(255,255,255,0.015)}"
-    . ".st .tv{text-align:right;color:#A0A0A4;font-variant-numeric:tabular-nums}"
-    . "</style></head><body>"
-    ; Header
-    . "<div class='hdr'>"
-    . "<span class='t'>KMCounter</span><span class='v'>v3.8</span>"
-    . "<span class='d' id='dt'>" today "</span>"
-    . "<span class='g' onclick='document.title=`"settings`";setTimeout(function(){document.title=``},50)'>⚙</span>"
-    . "</div>"
-    ; Keyboard
-    . "<div class='cols'>"
-    . "<div class='main'>"
-    ; Row 1: Esc + F1-F12
-    . "<div class='row'>" K("Esc","sc1",kw) G(m7)
-    . K("F1","sc59",kw) K("F2","sc60",kw) K("F3","sc61",kw) K("F4","sc62",kw) G(m7)
-    . K("F5","sc63",kw) K("F6","sc64",kw) K("F7","sc65",kw) K("F8","sc66",kw) G(m7)
-    . K("F9","sc67",kw) K("F10","sc68",kw) K("F11","sc87",kw) K("F12","sc88",kw)
-    . "</div>"
-    ; Row 2
-    . "<div class='row'>" K("`","sc41",kw) K("1","sc2",kw) K("2","sc3",kw) K("3","sc4",kw) K("4","sc5",kw) K("5","sc6",kw) K("6","sc7",kw) K("7","sc8",kw) K("8","sc9",kw) K("9","sc10",kw) K("0","sc11",kw) K("-","sc12",kw) K("=","sc13",kw) K("BackSpace","sc14",w2) "</div>"
-    ; Row 3
-    . "<div class='row'>" K("Tab","sc15",w3) K("q","sc16",kw) K("w","sc17",kw) K("e","sc18",kw) K("r","sc19",kw) K("t","sc20",kw) K("y","sc21",kw) K("u","sc22",kw) K("i","sc23",kw) K("o","sc24",kw) K("p","sc25",kw) K("[","sc26",kw) K("]","sc27",kw) K("\\","sc43",w3) "</div>"
-    ; Row 4
-    . "<div class='row'>" K("CapsLock","sc58",w4) K("a","sc30",kw) K("s","sc31",kw) K("d","sc32",kw) K("f","sc33",kw) K("g","sc34",kw) K("h","sc35",kw) K("j","sc36",kw) K("k","sc37",kw) K("l","sc38",kw) K(";","sc39",kw) K("'","sc40",kw) K("Enter","sc28",w4) "</div>"
-    ; Row 5
-    . "<div class='row'>" K("Shift","sc42",w5) K("z","sc44",kw) K("x","sc45",kw) K("c","sc46",kw) K("v","sc47",kw) K("b","sc48",kw) K("n","sc49",kw) K("m","sc50",kw) K(",","sc51",kw) K(".","sc52",kw) K("/","sc53",kw) K("Shift","sc310",w5) "</div>"
-    ; Row 6
-    . "<div class='row'>" K("Ctrl","sc29",w6_1) K("Win","sc347",w6_2) K("Alt","sc56",w6_2) K("Space","sc57",w6_3) K("Alt","sc312",w6_2) K("Win","sc348",w6_2) K("Ctrl","sc285",w6_1) "</div>"
-    . "</div>" ; end main
-    ; Side panel
-    . "<div class='side'>"
-    . "<div class='sec'><div class='r'>" K("Insert","sc338",kw) K("Home","sc327",kw) K("PageUp","sc329",kw) "</div><div class='r'>" K("Delete","sc339",kw) K("End","sc335",kw) K("PageDn","sc337",kw) "</div></div>"
-    . "<div class='sec'><div class='r'>" K("▲","sc328",kw) "</div><div class='r'>" K("◀","sc331",kw) K("▼","sc336",kw) K("▶","sc333",kw) "</div></div>"
-    . "<div class='sec' style='margin-left:-2px'>"
-    . "<div class='np'>" K("Num`nLock","sc325",kw) K("/","sc309",kw) K("*","sc55",kw) K("-","sc74",kw)
-    . K("7","sc71",kw) K("8","sc72",kw) K("9","sc73",kw) "<div class='k k-t' data-s='sc78' style='height:" (kh*2+ks) "px;grid-row:span 2'>+</div>"
-    . K("4","sc75",kw) K("5","sc76",kw) K("6","sc77",kw)
-    . K("1","sc79",kw) K("2","sc80",kw) K("3","sc81",kw)
-    . "<div class='k k-w' data-s='sc82' style='grid-column:span 2'>0</div>" K(".","sc83",kw)
-    . "</div></div>"
-    . "</div>" ; end side
-    . "</div>" ; end cols
-    ; Stats
-    . "<div class='st'><table><thead><tr><th>Item</th><th style='text-align:right'>Today</th><th style='text-align:right'>Total</th></tr></thead><tbody id='tb'>"
-    . "<tr><td>Mouse Movement</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
-    . "<tr><td>Keyboard Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
-    . "<tr><td>Left Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
-    . "<tr><td>Right Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
-    . "<tr><td>Middle Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
-    . "<tr><td>Wheel Scrolls</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
-    . "<tr><td>Wheel Tilt</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
-    . "<tr><td>Side Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
-    . "<tr><td>Screen Size</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
-    . "</tbody></table></div>"
-    ; JavaScript
-    . "<script>var gc=[];function gg(c1,c2,n){var i,r1=parseInt(c1.substr(0,2),16),g1=parseInt(c1.substr(2,2),16),b1=parseInt(c1.substr(4,2),16),r2=parseInt(c2.substr(0,2),16),g2=parseInt(c2.substr(2,2),16),b2=parseInt(c2.substr(4,2),16),rd=(r2-r1)/(n-1),gd=(g2-g1)/(n-1),bd=(b2-b1)/(n-1);gc=[];for(i=0;i<n;i++){var r=Math.round(r1+rd*i),g=Math.round(g1+gd*i),b=Math.round(b1+bd*i);gc.push('#'+(r<16?'0':'')+r.toString(16)+(g<16?'0':'')+g.toString(16)+(b<16?'0':'')+b.toString(16))}}"
-    . "function ud(d){var dt=document.getElementById('dt');if(dt)dt.textContent=d.date;"
-    . "var ks=d.keys||{},mk=d.totalKeystrokes/10||1;gg(d.hs,d.he,100);"
-    . "var els=document.querySelectorAll('.k[data-s]');for(var i=0;i<els.length;i++){var e=els[i],sc=e.getAttribute('data-s'),cnt=parseInt(ks[sc])||0;"
-    . "if(cnt>=mk)e.style.background='#'+d.he;else if(cnt<mk/100)e.style.background='#3A3A3C';else e.style.background=gc[Math.floor(cnt/mk*100)-1]||gc[0];"
-    . "var tt=e.querySelector('.tt');if(!tt){tt=document.createElement('div');tt.className='tt';e.appendChild(tt)}tt.textContent=cnt}"
-    . "var tb=document.getElementById('tb');if(tb&&d.stats){tb.innerHTML='';for(var i=0;i<d.stats.length;i++){var s=d.stats[i];tb.innerHTML+='<tr><td>'+s.n+'</td><td class=\"tv\">'+s.t+'</td><td class=\"tv\">'+s.t2+'</td></tr>'}}}"
-    . "function sc(c){document.title='c:'+c;setTimeout(function(){document.title=''},50)}"
-    . "document.addEventListener('wheel',function(e){if(e.deltaY>0)sc('w-1');else if(e.deltaY<0)sc('w1')},{passive:true})"
-    . "document.addEventListener('keydown',function(e){var k=e.key;if(k==='PageDown'||k==='ArrowDown'){sc('n-1');e.preventDefault()}else if(k==='PageUp'||k==='ArrowUp'){sc('n1');e.preventDefault()}})"
-    . "</script></body></html>"
+    h := "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'><style>"
+    h .= "*{margin:0;padding:0;box-sizing:border-box}body{background:#1E1E1E;font-family:Microsoft YaHei,sans-serif;color:#D4D4D4;overflow:hidden;user-select:none}"
+    h .= ".hdr{display:flex;align-items:center;padding:12px 16px 8px;gap:12px;font-size:14px}"
+    h .= ".hdr .t{font-weight:700;color:#fff;font-size:16px}.hdr .v{color:#64748B;font-size:11px;margin-top:2px}"
+    h .= ".hdr .d{color:#" t.accent ";margin-left:auto;font-size:13px}"
+    h .= ".hdr .g{color:#" t.accent ";font-size:18px;cursor:pointer;width:26px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:4px}"
+    h .= ".hdr .g:hover{background:rgba(255,255,255,0.08)}"
+    h .= ".cols{display:flex;gap:8px;padding:4px 16px 12px}"
+    h .= ".row{display:flex;gap:" ks "px;margin-bottom:" kvs "px}"
+    h .= ".k{height:" kh "px;background:#3A3A3C;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:" kfs "px;color:#D4D4D4;box-shadow:0 1px 3px rgba(0,0,0,0.3);transition:background .15s,transform .12s,box-shadow .12s;cursor:default;position:relative;flex-shrink:0}"
+    h .= ".k:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,0.4);z-index:1}"
+    h .= ".k .tt{display:none;position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);background:#2A2A2C;color:#D4D4D4;padding:3px 8px;border-radius:4px;font-size:11px;white-space:nowrap;pointer-events:none;z-index:10;box-shadow:0 2px 6px rgba(0,0,0,0.5)}"
+    h .= ".k:hover .tt{display:block}"
+    h .= ".g{flex-shrink:0}"
+    h .= ".side{display:flex;flex-direction:column;gap:" kvs "px;flex-shrink:0}"
+    h .= ".sec{display:flex;flex-direction:column;gap:" ks "px}"
+    h .= ".sec .r{display:flex;gap:" ks "px}"
+    h .= ".np{display:grid;grid-template-columns:repeat(4," kw "px);gap:" ks "px}"
+    h .= ".np .k{width:auto !important}"
+    h .= ".np .k-t{grid-row:span 2;height:auto}"
+    h .= ".np .k-w{grid-column:span 2}"
+    h .= ".st{background:#252528;border-radius:8px;margin:0 16px 12px;padding:0;overflow:hidden}"
+    h .= ".st table{width:100%;border-collapse:collapse;font-size:12px}"
+    h .= ".st th{background:#2A2A2D;color:#94A3B8;padding:6px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px}"
+    h .= ".st td{padding:4px 12px;border-top:1px solid #2E2E30}"
+    h .= ".st tr:first-child td{border-top:none}"
+    h .= ".st tr:nth-child(even) td{background:rgba(255,255,255,0.015)}"
+    h .= ".st .tv{text-align:right;color:#A0A0A4;font-variant-numeric:tabular-nums}"
+    h .= "</style></head><body>"
+    h .= "<div class='hdr'>"
+    h .= "<span class='t'>KMCounter</span><span class='v'>v3.8</span>"
+    h .= "<span class='d' id='dt'>" today "</span>"
+    h .= "<span class='g' onclick='document.title=`"settings`";setTimeout(function(){document.title=``},50)'>⚙</span>"
+    h .= "</div>"
+    h .= "<div class='cols'>"
+    h .= "<div class='main'>"
+    h .= "<div class='row'>" K("Esc","sc1",kw) G(m7) K("F1","sc59",kw) K("F2","sc60",kw) K("F3","sc61",kw) K("F4","sc62",kw) G(m7) K("F5","sc63",kw) K("F6","sc64",kw) K("F7","sc65",kw) K("F8","sc66",kw) G(m7) K("F9","sc67",kw) K("F10","sc68",kw) K("F11","sc87",kw) K("F12","sc88",kw) "</div>"
+    h .= "<div class='row'>" K("``","sc41",kw) K("1","sc2",kw) K("2","sc3",kw) K("3","sc4",kw) K("4","sc5",kw) K("5","sc6",kw) K("6","sc7",kw) K("7","sc8",kw) K("8","sc9",kw) K("9","sc10",kw) K("0","sc11",kw) K("-","sc12",kw) K("=","sc13",kw) K("BackSpace","sc14",w2) "</div>"
+    h .= "<div class='row'>" K("Tab","sc15",w3) K("q","sc16",kw) K("w","sc17",kw) K("e","sc18",kw) K("r","sc19",kw) K("t","sc20",kw) K("y","sc21",kw) K("u","sc22",kw) K("i","sc23",kw) K("o","sc24",kw) K("p","sc25",kw) K("[","sc26",kw) K("]","sc27",kw) K("\","sc43",w3) "</div>"
+    h .= "<div class='row'>" K("CapsLock","sc58",w4) K("a","sc30",kw) K("s","sc31",kw) K("d","sc32",kw) K("f","sc33",kw) K("g","sc34",kw) K("h","sc35",kw) K("j","sc36",kw) K("k","sc37",kw) K("l","sc38",kw) K(";","sc39",kw) K("'","sc40",kw) K("Enter","sc28",w4) "</div>"
+    h .= "<div class='row'>" K("Shift","sc42",w5) K("z","sc44",kw) K("x","sc45",kw) K("c","sc46",kw) K("v","sc47",kw) K("b","sc48",kw) K("n","sc49",kw) K("m","sc50",kw) K(",","sc51",kw) K(".","sc52",kw) K("/","sc53",kw) K("Shift","sc310",w5) "</div>"
+    h .= "<div class='row'>" K("Ctrl","sc29",w6_1) K("Win","sc347",w6_2) K("Alt","sc56",w6_2) K("Space","sc57",w6_3) K("Alt","sc312",w6_2) K("Win","sc348",w6_2) K("Ctrl","sc285",w6_1) "</div>"
+    h .= "</div>"
+    h .= "<div class='side'>"
+    h .= "<div class='sec'><div class='r'>" K("Insert","sc338",kw) K("Home","sc327",kw) K("PageUp","sc329",kw) "</div><div class='r'>" K("Delete","sc339",kw) K("End","sc335",kw) K("PageDn","sc337",kw) "</div></div>"
+    h .= "<div class='sec'><div class='r'>" K("▲","sc328",kw) "</div><div class='r'>" K("◀","sc331",kw) K("▼","sc336",kw) K("▶","sc333",kw) "</div></div>"
+    h .= "<div class='sec' style='margin-left:-2px'>"
+    h .= "<div class='np'>" K("Num`nLock","sc325",kw) K("/","sc309",kw) K("*","sc55",kw) K("-","sc74",kw)
+    h .= K("7","sc71",kw) K("8","sc72",kw) K("9","sc73",kw)
+    h .= "<div class='k k-t' data-s='sc78' style='height:" (kh*2+ks) "px;grid-row:span 2'>+</div>"
+    h .= K("4","sc75",kw) K("5","sc76",kw) K("6","sc77",kw)
+    h .= K("1","sc79",kw) K("2","sc80",kw) K("3","sc81",kw)
+    h .= "<div class='k k-w' data-s='sc82' style='grid-column:span 2'>0</div>" K(".","sc83",kw)
+    h .= "</div></div>"
+    h .= "</div>"
+    h .= "</div>"
+    h .= "<div class='st'><table><thead><tr><th>Item</th><th style='text-align:right'>Today</th><th style='text-align:right'>Total</th></tr></thead><tbody id='tb'>"
+    h .= "<tr><td>Mouse Movement</td><td class='tv'>-</td><td class='tv'>-</td></tr><tr><td>Keyboard Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr><tr><td>Left Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr><tr><td>Right Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr><tr><td>Middle Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr><tr><td>Wheel Scrolls</td><td class='tv'>-</td><td class='tv'>-</td></tr><tr><td>Wheel Tilt</td><td class='tv'>-</td><td class='tv'>-</td></tr><tr><td>Side Clicks</td><td class='tv'>-</td><td class='tv'>-</td></tr><tr><td>Screen Size</td><td class='tv'>-</td><td class='tv'>-</td></tr>"
+    h .= "</tbody></table></div>"
+    h .= "<script>var gc=[];function gg(c1,c2,n){var i,r1=parseInt(c1.substr(0,2),16),g1=parseInt(c1.substr(2,2),16),b1=parseInt(c1.substr(4,2),16),r2=parseInt(c2.substr(0,2),16),g2=parseInt(c2.substr(2,2),16),b2=parseInt(c2.substr(4,2),16),rd=(r2-r1)/(n-1),gd=(g2-g1)/(n-1),bd=(b2-b1)/(n-1);gc=[];for(i=0;i<n;i++){var r=Math.round(r1+rd*i),g=Math.round(g1+gd*i),b=Math.round(b1+bd*i);gc.push('#'+(r<16?'0':'')+r.toString(16)+(g<16?'0':'')+g.toString(16)+(b<16?'0':'')+b.toString(16))}}"
+    h .= "function ud(d){var dt=document.getElementById('dt');if(dt)dt.textContent=d.date;var ks=d.keys||{},mk=d.totalKeystrokes/10||1;gg(d.hs,d.he,100);var els=document.querySelectorAll('.k[data-s]');for(var i=0;i<els.length;i++){var e=els[i],sc=e.getAttribute('data-s'),cnt=parseInt(ks[sc])||0;if(cnt>=mk)e.style.background='#'+d.he;else if(cnt<mk/100)e.style.background='#3A3A3C';else e.style.background=gc[Math.floor(cnt/mk*100)-1]||gc[0];var tt=e.querySelector('.tt');if(!tt){tt=document.createElement('div');tt.className='tt';e.appendChild(tt)}tt.textContent=cnt}"
+    h .= "var tb=document.getElementById('tb');if(tb&&d.stats){tb.innerHTML='';for(var i=0;i<d.stats.length;i++){var s=d.stats[i];tb.innerHTML+='<tr><td>'+s.n+'</td><td class=\"tv\">'+s.t+'</td><td class=\"tv\">'+s.t2+'</td></tr>'}}}"
+    h .= "function sc(c){document.title='c:'+c;setTimeout(function(){document.title=''},50)}"
+    h .= "document.addEventListener('wheel',function(e){if(e.deltaY>0)sc('w-1');else if(e.deltaY<0)sc('w1')},{passive:true})"
+    h .= "document.addEventListener('keydown',function(e){var k=e.key;if(k==='PageDown'||k==='ArrowDown'){sc('n-1');e.preventDefault()}else if(k==='PageUp'||k==='ArrowUp'){sc('n1');e.preventDefault()}})"
+    h .= "</script></body></html>"
+    return h
 }

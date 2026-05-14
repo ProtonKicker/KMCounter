@@ -11,13 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile with Ahk2Exe
-        uses: cennis91/action-ahk2exe@main
+      - name: Compile KMCounter (AHK v1.1)
+        uses: tamo/action-Ahk2Exe@main
         with:
-          in: KMCounter.ahk
-          out: KMCounter.exe
-          icon: resouces/KMCounter.ico
-          base: 'Unicode 32-bit.bin'
+          src: KMCounter.ahk
+          taghead: v1.1.
+          base: AutoHotkeyU32.exe
+          opt: /icon resouces/KMCounter.ico
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

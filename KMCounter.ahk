@@ -66,11 +66,11 @@ CreateGui1:
   Gui, Font, s8 c64748B, Microsoft YaHei
   Gui, Add, Text, xs+90 ys+7 wauto h16, v%ver%
   t_accent := themes[currentTheme].accent
-  Gui, Font, % "s10 c" t_accent, Microsoft YaHei
-  Gui, Add, Text, x+25 ys+3 wauto h22 vDateDisplay
+  Gui, Font, % "s11 c" t_accent, Microsoft YaHei
+  Gui, Add, Text, x+25 ys+1 wauto h26 vDateDisplay
 
-  Gui, Font, s9 c64748B, Microsoft YaHei
-  Gui, Add, Text, x+15 ys+3 w20 h22 Center 0x200 gShowSettings, ⚙
+  Gui, Font, % "s13 c" t_accent, Microsoft YaHei
+  Gui, Add, Text, x+10 ys-1 w26 h28 Center 0x200 gShowSettings, ⚙
 
   ; Reset font for keyboard
   Gui, Font, % "S" Opt.FontSize//scale " c" Opt.TextColor, % Opt.Font
@@ -86,7 +86,7 @@ CreateGui1:
     if (InStr(control.Hwnd, "sc"))
     {
       p.=" vkey" control.Hwnd
-      Gui, Add, Text, % "C" Opt.TextColor " Center -WantCtrlA -TabStop" p, % control.Text
+      Gui, Add, Text, % "C" Opt.TextColor " Center +0x200 -WantCtrlA -TabStop" p, % control.Text
       GuiControlGet, hCtrl, Hwnd, % "key" control.Hwnd
       MakeRoundRect(hCtrl, control.w, control.h, 4)
       ; Pre-color key with default theme grey
@@ -108,9 +108,9 @@ CreateGui1:
                       , L_gui1_侧键点击
                       , L_gui1_屏幕尺寸]
         LV_Add("", field)
-      LV_ModifyCol(1, 100)
-      LV_ModifyCol(2, (control.w-100-40)//2)
-      LV_ModifyCol(3, (control.w-100-40)//2)
+      LV_ModifyCol(1, 160)
+      LV_ModifyCol(2, (control.w-160-40)//2)
+      LV_ModifyCol(3, (control.w-160-40)//2)
     }
   }
 
@@ -170,66 +170,61 @@ CreateGui2:
 {
   Gui, 2:Color, F5F6F8, F5F6F8
 
-  Gui, 2:Font, s16 Bold c1E293B, Microsoft YaHei
-  Gui, 2:Add, Text, x20 y20 w360 h30 +0x200, %L_gui2_设置%
-  Gui, 2:Font
+  Gui, 2:Font, s14 Bold c1E293B, Microsoft YaHei
+  Gui, 2:Add, Text, x20 y16 w360 h28, %L_gui2_设置%
 
-  Gui, 2:Font, s11 Bold c3B82F6, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+30 w360 h20, %L_gui2_sub1%
-  Gui, 2:Add, Text, x20 yp+30 w80 h23, %L_gui2_存储%:
-  Gui, 2:Add, Edit, x105 yp-2 w70 h23 Number Limit -Multi vdsd, % DataStorageDays
-  Gui, 2:Add, Text, x183 yp+2 w40 h23, %L_gui2_天%
+  Gui, 2:Font, s10 c475569, Microsoft YaHei
+  Gui, 2:Add, Text, x20 yp+36 w340 h18, %L_gui2_历史数据%
+  Gui, 2:Add, Text, x20 yp+22 w340 h16, %L_gui2_sub1%
+  Gui, 2:Add, Text, x20 yp+22 w50 h22, %L_gui2_存储%:
+  Gui, 2:Add, Edit, x75 yp-2 w60 h24 Number Limit -Multi vdsd, % DataStorageDays
+  Gui, 2:Add, Text, x140 yp+3 w40 h18, %L_gui2_天%
 
-  Gui, 2:Font, s11 Bold c3B82F6, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+44 w360 h24, %L_gui2_屏幕尺寸%
-  Gui, 2:Font
+  Gui, 2:Add, Text, x20 yp+32 w340 h18, %L_gui2_屏幕尺寸%
+  Gui, 2:Add, Text, x20 yp+22 w340 h16, %L_gui2_sub2%
+  Gui, 2:Add, Text, x20 yp+22 w45 h22, %L_gui2_屏幕宽%:
+  Gui, 2:Add, Edit, x70 yp-2 w60 h24 Number Limit -Multi vdw, % devicecaps.w
+  Gui, 2:Add, Text, x135 yp+3 w25 h18, mm
+  Gui, 2:Add, Text, x165 yp-25 w45 h22, %L_gui2_屏幕高%:
+  Gui, 2:Add, Edit, x215 yp-2 w60 h24 Number Limit -Multi vdh, % devicecaps.h
+  Gui, 2:Add, Text, x280 yp+3 w25 h18, mm
+
+  Gui, 2:Add, Text, x20 yp+32 w340 h18, %L_gui2_键盘布局%
+  Gui, 2:Add, Text, x20 yp+22 w340 h16, %L_gui2_sub3%
+  Gui, 2:Add, Text, x20 yp+22 w45 h22, %L_gui2_键宽%:
+  Gui, 2:Add, Edit, x70 yp-2 w55 h24 Number Limit -Multi vlkw, % layout.kw
+  Gui, 2:Add, Text, x130 yp+3 w20 h18, px
+  Gui, 2:Add, Text, x155 yp-25 w45 h22, %L_gui2_键高%:
+  Gui, 2:Add, Edit, x205 yp-2 w55 h24 Number Limit -Multi vlkh, % layout.kh
+  Gui, 2:Add, Text, x265 yp+3 w20 h18, px
+
+  Gui, 2:Add, Text, x20 yp+30 w50 h22, %L_gui2_键间距%:
+  Gui, 2:Add, Edit, x75 yp-2 w50 h24 Number Limit -Multi vlks, % layout.ks
+  Gui, 2:Add, Text, x130 yp+3 w20 h18, px
+
+  Gui, 2:Add, Text, x20 yp+30 w55 h22, %L_gui2_区域水平间距%:
+  Gui, 2:Add, Edit, x80 yp-2 w50 h24 Number Limit -Multi vlkhs, % layout.khs
+  Gui, 2:Add, Text, x135 yp+3 w20 h18, px
+  Gui, 2:Add, Text, x160 yp-25 w55 h22, %L_gui2_区域垂直间距%:
+  Gui, 2:Add, Edit, x220 yp-2 w50 h24 Number Limit -Multi vlkvs, % layout.kvs
+  Gui, 2:Add, Text, x275 yp+3 w20 h18, px
+
+  Gui, 2:Add, Text, x20 yp+32 w340 h18, %L_gui2_键盘外观%
   Gui, 2:Font, c475569, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+30 w360 h20, %L_gui2_sub2%
-  Gui, 2:Add, Text, x20 yp+28 w80 h23, %L_gui2_屏幕宽%:
-  Gui, 2:Add, Edit, x105 yp-2 w70 h23 Number Limit -Multi vdw, % devicecaps.w
-  Gui, 2:Add, Text, x183 yp+2 w40 h23, %L_gui2_毫米%
-  Gui, 2:Add, Text, x20 yp+34 w80 h23, %L_gui2_屏幕高%:
-  Gui, 2:Add, Edit, x105 yp-2 w70 h23 Number Limit -Multi vdh, % devicecaps.h
-  Gui, 2:Add, Text, x183 yp+2 w40 h23, %L_gui2_毫米%
+  Gui, 2:Add, Text, x20 yp+22 w40 h22, %L_gui2_字体大小%:
+  Gui, 2:Add, Edit, x65 yp-2 w50 h24 Number Limit -Multi vlfs, % layout.fs
+  Gui, 2:Add, Text, x120 yp+3 w20 h18, pt
 
-  Gui, 2:Font, s11 Bold c3B82F6, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+44 w360 h24, %L_gui2_键盘布局%
-  Gui, 2:Font
-  Gui, 2:Font, c475569, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+30 w360 h20, %L_gui2_sub3%
-  Gui, 2:Add, Text, x20 yp+28 w80 h23, %L_gui2_键宽%:
-  Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlkw, % layout.kw
-  Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_像素%
-  Gui, 2:Add, Text, x220 yp-25 w80 h23, %L_gui2_键高%:
-  Gui, 2:Add, Edit, x270 yp-2 w60 h23 Number Limit -Multi vlkh, % layout.kh
-  Gui, 2:Add, Text, x338 yp+2 w40 h23, %L_gui2_像素%
-  Gui, 2:Add, Text, x20 yp+34 w80 h23, %L_gui2_键间距%:
-  Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlks, % layout.ks
-  Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_像素%
-  Gui, 2:Add, Text, x20 yp+34 w100 h23, %L_gui2_区域水平间距%:
-  Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlkhs, % layout.khs
-  Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_像素%
-  Gui, 2:Add, Text, x220 yp-25 w100 h23, %L_gui2_区域垂直间距%:
-  Gui, 2:Add, Edit, x270 yp-2 w60 h23 Number Limit -Multi vlkvs, % layout.kvs
-  Gui, 2:Add, Text, x338 yp+2 w40 h23, %L_gui2_像素%
+  Gui, 2:Add, Text, x20 yp+30 w40 h22, %L_gui2_起始颜色%:
+  Gui, 2:Add, Edit, x65 yp-2 w85 h24 -Multi vhighlightStart, % layout.highlightStart
+  Gui, 2:Add, Text, x20 yp+30 w40 h22, %L_gui2_结束颜色%:
+  Gui, 2:Add, Edit, x65 yp-2 w85 h24 -Multi vhighlightEnd, % layout.highlightEnd
 
-  Gui, 2:Font, s11 Bold c3B82F6, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+44 w360 h24, %L_gui2_键盘外观%
-  Gui, 2:Font
-  Gui, 2:Font, c475569, Microsoft YaHei
-  Gui, 2:Add, Text, x20 yp+30 w80 h23, %L_gui2_字体大小%:
-  Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlfs, % layout.fs
-  Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_号%
-  Gui, 2:Add, Text, x20 yp+34 w80 h23, %L_gui2_起始颜色%:
-  Gui, 2:Add, Edit, x105 yp-2 w120 h23 -Multi vhighlightStart, % layout.highlightStart
-  Gui, 2:Add, Text, x20 yp+34 w80 h23, %L_gui2_结束颜色%:
-  Gui, 2:Add, Edit, x105 yp-2 w120 h23 -Multi vhighlightEnd, % layout.highlightEnd
+  Gui, 2:Add, Button, x20 yp+40 w90 h28 gCancelSetting, %L_gui2_取消%
+  Gui, 2:Add, Button, x120 yp+0 w90 h28 gSaveSetting, %L_gui2_保存%
+  Gui, 2:Add, Button, x220 yp+0 w110 h28 gRestoreDefaultSetting, %L_gui2_恢复默认%
 
-  Gui, 2:Add, Button, x20 yp+50 w100 h30 gCancelSetting, %L_gui2_取消%
-  Gui, 2:Add, Button, x130 yp+0 w100 h30 gSaveSetting, %L_gui2_保存%
-  Gui, 2:Add, Button, x240 yp+0 w130 h30 gRestoreDefaultSetting, %L_gui2_恢复默认%
-
-  Gui, 2:Show, w400 h700 Hide
+  Gui, 2:Show, w380 h600 Hide
 }
 return
 
@@ -262,8 +257,8 @@ RestoreDefaultSetting:
   
   ; Restore default keyboard layout
   t := themes[currentTheme]
-  defaultKw := Min(Round((A_ScreenWidth-76)/15), 120)
-  defaultKh := Round(defaultKw*0.88)
+  defaultKw := Min(Max(Round((A_ScreenWidth-500)/15), 55), 100)
+  defaultKh := Round(defaultKw*0.92)
   defaultKs := 2
   defaultKhs := 4
   defaultKvs := 4
@@ -453,45 +448,15 @@ return
 
 WM_MOUSEMOVE()
 {
-  static init:=OnMessage(0x200, "WM_MOUSEMOVE"), IsMessageMaximized:=0
-  global date, L_gui1_次, ControlList
-  if (A_Gui = 1)
+  static init:=OnMessage(0x200, "WM_MOUSEMOVE")
+  global date, L_gui1_次
+  if (A_Gui = 1 and SubStr(A_GuiControl, 1, 3) = "key")
   {
-    if (A_GuiControl = "msgMessage")
-    {
-      if (IsMessageMaximized = 0)
-      {
-        ; Expand info on mouse hover
-        GuiControl, Move, msgMessage, % "h" layout.kh*6+layout.khs+layout.ks*4
-        ; Show headers
-        GuiControl, +Hdr, msgMessage
-        ; Hide keys to prevent overlap
-        for k, v in ControlList.Covered
-          GuiControl, Hide, % "key" v
-        IsMessageMaximized := 1
-      }
-    }
+    key:=SubStr(A_GuiControl, 4)
+    if (keyboard[date].HasKey(key))
+      btt(keyboard[date][key] " " L_gui1_次,,,,"Style2")
     else
-    {
-      if (IsMessageMaximized = 1)
-      {
-        ; Restore info to compact
-        GuiControl, Move, msgMessage, % "h" layout.kh
-        ; Hide headers
-        GuiControl, -Hdr, msgMessage
-        ; Show keys
-        for k, v in ControlList.Covered
-          GuiControl, Show, % "key" v
-        IsMessageMaximized := 0
-      }
-
-      ; Show key count on hover
-      key:=SubStr(A_GuiControl, 4)
-      if (keyboard[date].HasKey(key))
-        btt(keyboard[date][key] " " L_gui1_次,,,,"Style2")
-      else
-        btt()
-    }
+      btt()
   }
   else
     btt()
@@ -556,8 +521,8 @@ LoadData(date)
   currentTheme := IniRead("KMCounter.ini", "theme", "name", "Blue")
   t := themes[currentTheme]
   ; Load layout - key size fills screen width like a real laptop keyboard
-  layout.kw    := IniRead("KMCounter.ini", "layout", "kw",  Min(Round((A_ScreenWidth-76)/15), 120))
-  layout.kh    := IniRead("KMCounter.ini", "layout", "kh",  Round(layout.kw*0.88))
+  layout.kw    := IniRead("KMCounter.ini", "layout", "kw",  Min(Max(Round((A_ScreenWidth-500)/15), 55), 100))
+  layout.kh    := IniRead("KMCounter.ini", "layout", "kh",  Round(layout.kw*0.92))
   layout.ks    := IniRead("KMCounter.ini", "layout", "ks",  2)
   layout.khs   := IniRead("KMCounter.ini", "layout", "khs", 4)
   layout.kvs   := IniRead("KMCounter.ini", "layout", "kvs", 4)
@@ -888,8 +853,8 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc348", Text:"Win",   x:m.2, y:"",  w:w6_2, h:h})
   list.push({Hwnd:"sc285", Text:"Ctrl",  x:m.2, y:"",  w:w6_1, h:h})
 
-  ; Position nav keys, align height with row 2
-  temp1:="m+" h+m.3 " Section"
+  ; Position nav keys, bottom-aligned with main keyboard
+  temp1:="m+" (h*2 + m.1*2 + m.3) " Section"
   list.push({Hwnd:"sc338", Text:"Insert", x:m.6, y:temp1, w:w, h:h})
   list.push({Hwnd:"sc327", Text:"Home",   x:m.2, y:"",    w:w, h:h})
   list.push({Hwnd:"sc329", Text:"PageUp", x:m.2, y:"",    w:w, h:h})
@@ -897,16 +862,16 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc335", Text:"End",    x:m.2, y:"",    w:w, h:h})
   list.push({Hwnd:"sc337", Text:"PageDn", x:m.2, y:"",    w:w, h:h})
 
-  ; Position arrow keys, align height with row 5
-  temp1:="s+" w+m.1, temp2:="+" h+2*m.1
+  ; Position arrow keys, bottom-aligned with main keyboard
+  temp1:="s+" w+m.1, temp2:="+" (m.1*3 + m.3*3)
   list.push({Hwnd:"sc328", Text:"▲", x:temp1, y:temp2, w:w, h:h})
   list.push({Hwnd:"sc331", Text:"◀", x:"s",   y:m.2,   w:w, h:h})
   list.push({Hwnd:"sc336", Text:"▼", x:m.2,   y:"",    w:w, h:h})
   list.push({Hwnd:"sc333", Text:"▶", x:m.2,   y:"",    w:w, h:h})
 
-  ; Position numpad, align height with row 2
-  temp1:="m+" h+m.3 " Section"
-  list.push({Hwnd:"sc325", Text:"NumLock", x:m.6, y:temp1, w:w, h:h})
+  ; Position numpad, bottom-aligned with main keyboard
+  temp1:="m+" (h*2 + m.1*2 + m.3) " Section"
+  list.push({Hwnd:"sc325", Text:"Num`nLock", x:m.6, y:temp1, w:w, h:h})
   list.push({Hwnd:"sc309", Text:"/",       x:m.2, y:"",    w:w, h:h})
   list.push({Hwnd:"sc55",  Text:"*",       x:m.2, y:"",    w:w, h:h})
   list.push({Hwnd:"sc74",  Text:"-",       x:m.2, y:"",    w:w, h:h})
@@ -925,17 +890,16 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc79",  Text:"1",       x:"s", y:temp1, w:w, h:h})
   list.push({Hwnd:"sc80",  Text:"2",       x:m.2, y:"",    w:w, h:h})
   list.push({Hwnd:"sc81",  Text:"3",       x:m.2, y:"",    w:w, h:h})
-  list.push({Hwnd:"sc284", Text:"Enter",   x:m.2, y:"",    w:w, h:h*2+m.1})
   ; Numpad row 5
   temp1:="s+" (h+m.1)*4
   list.push({Hwnd:"sc82", Text:"0",        x:"s", y:temp1, w:w*2+m.1, h:h})
   list.push({Hwnd:"sc83", Text:".",        x:m.2, y:"",    w:w,       h:h})
 
-  ; Message area position
-    temp1:="m+" w*13+Round(m.7*3)+m.1*9+m.5
-  , temp2:=w*7+m.1*5+m.5
-  , temp3:=h
-  list.push({Hwnd:"Message", Text:"",      x:temp1, y:"m", w:temp2, h:temp3})
+  ; Stats area below keyboard, full width
+    temp1:="m"
+  , temp2:=13*w + m.1*12 + w2 + m.3*2
+  , temp3:=220
+  list.push({Hwnd:"Message", Text:"",      x:temp1, y:"m+" . (h*6 + m.1*5 + m.3*3), w:temp2, h:temp3})
 
   ; Keys covered by expanded message
   list.Covered := ["sc338", "sc327", "sc329", "sc339", "sc335", "sc337"  ; Nav keys
@@ -943,7 +907,7 @@ LoadControlList(layout:="")
                  , "sc325", "sc309", "sc55",  "sc74"                     ; Numpad
                  , "sc71",  "sc72",  "sc73",  "sc78"
                  , "sc75",  "sc76",  "sc77"
-                 , "sc79",  "sc80",  "sc81",  "sc284"
+                 , "sc79",  "sc80",  "sc81"
                  , "sc82",  "sc83"]
 
   ; Color without 0x prefix. BG affects keys in info area when data is low.

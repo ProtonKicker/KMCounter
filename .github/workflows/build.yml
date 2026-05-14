@@ -11,12 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile KMCounter (AHK v1.1)
-        uses: tamo/action-Ahk2Exe@main
-        with:
-          src: KMCounter.ahk
-          taghead: v1.1.
-          opt: /icon resouces/KMCounter.ico
+      - name: Install AutoHotkey v1.1
+        run: choco install autohotkey -y --no-progress
+
+      - name: Compile KMCounter.exe
+        run: |
+          & "C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" `
+            /in KMCounter.ahk `
+            /out KMCounter.exe `
+            /icon resouces/KMCounter.ico
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

@@ -14,12 +14,19 @@ jobs:
       - name: Install AutoHotkey v1.1
         run: choco install autohotkey -y --no-progress
 
-      - name: Compile KMCounter.exe
+      - name: Find Ahk2Exe and compile
+        shell: pwsh
         run: |
-          & "C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" `
-            /in KMCounter.ahk `
-            /out KMCounter.exe `
-            /icon resouces/KMCounter.ico
+          $paths = @(
+            "C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe"
+          )
+          $paths += Get-ChildItem "C:\Program Files\AutoHotkey" -Directory | ForEach-Object {
+            Join-Path $_.FullName "Compiler\Ahk2Exe.exe"
+          }
+          $a2e = $paths | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $a2e) { throw "Ahk2Exe.exe not found in any expected location" }
+          Write-Output "Ahk2Exe found at: $a2e"
+          & $a2e /in KMCounter.ahk /out KMCounter.exe /icon resouces/KMCounter.ico
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

@@ -11,17 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download AutoHotkey v1.1 portable
+      - name: Download AHK v1.1 + Ahk2Exe
         shell: pwsh
         run: |
-          Invoke-WebRequest -Uri "https://www.autohotkey.com/download/1.1/AutoHotkey_1.1.37.02.zip" -OutFile ahk.zip
-          7z x ahk.zip -oahk | Out-Null
-          Get-ChildItem ahk\Compiler
+          curl.exe -sL "https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.1.37.02/AutoHotkey_1.1.37.02_setup.exe" -o ahk_setup.exe
+          7z x ahk_setup.exe -oahk | Out-Null
+          Get-ChildItem ahk -Name | Select-String "AutoHotkey" | ForEach-Object { Write-Output $_ }
 
       - name: Compile KMCounter.exe
         shell: pwsh
         run: |
-          .\ahk\Compiler\Ahk2Exe.exe /in KMCounter.ahk /out KMCounter.exe /icon resouces/KMCounter.ico
+          .\ahk\Compiler\Ahk2Exe.exe /in KMCounter.ahk /out KMCounter.exe /base .\ahk\AutoHotkeyU32.exe /icon resouces/KMCounter.ico
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

@@ -13,7 +13,7 @@ https://www.autoahk.com/archives/35147
 #SingleInstance Force
 SetBatchLines, -1
 
-global APPName:="KMCounter", ver:=3.7
+global APPName:="KMCounter", ver:=3.8
      , today:=SubStr(A_Now, 1, 8)
      , tomorrow:=EnvAdd(today, 1, "Days", 1, 8)
      , DataStorageDays, firstday
@@ -46,42 +46,78 @@ IfNotExist, KMCounter.ini
 return
 
 CreateGui1:
-  Gui, Destroy  ; Destroy any existing GUI to prevent duplicate variable errors
-  ControlList:=LoadControlList(layout)                          ; 控件布局信息在此处创建
+  Gui, Destroy
+  sidebar_w := 200
+
+  ControlList:=LoadControlList(layout, sidebar_w)
   Opt   := ControlList.Opt
   scale := A_ScreenDPI/96
-  
-  Gui, -DPIScale +HwndhWin                                      ; 禁止系统 DPI 缩放
-  Gui, Color, % Opt.BackgroundColor, % Opt.BackgroundColor
-  Gui, Font, % "S" Opt.FontSize//scale, % Opt.Font              ; 高分屏下缩小字号
+
+  win_w := A_ScreenWidth
+  win_h := A_ScreenHeight
+
+  Gui, -DPIScale +HwndhWin -Caption +Border +Owner
+  Gui, Color, 0F172A, 0F172A
+
+  ; === Custom Title Bar ===
+  Gui, Font, s12 Bold cF1F5F9, Microsoft YaHei
+  Gui, Add, Text, x20 y10 wauto h26 Section tsTitle, %APPName%
+  Gui, Font, s8 c64748B, Microsoft YaHei
+  Gui, Add, Text, xs+90 ys+5 wauto h16, v%ver%
+
+  Gui, Font, s10 c94A3B8, Microsoft YaHei
+  Gui, Add, Text, x+20 ys-2 wauto h24 +0x200, |
+  Gui, Font, s10 cF1F5F9, Microsoft YaHei
+  Gui, Add, Text, x+6 ys-2 wauto h24 +0x200 vDateDisplay
+
+  Gui, Font, s16 c64748B, Microsoft YaHei
+  Gui, Add, Text, % "x" win_w-36 " y5 w28 h26 Center 0x200 gGuiClose", ×
+
+  Gui, Add, Progress, x0 y46 w%win_w% h1 Background334155 Disabled
+
+  ; === Left Sidebar (PowerToys-style) ===
+  Gui, Font, s11 Bold c3B82F6, Microsoft YaHei
+  Gui, Add, Text, x15 y62 w%sidebar_w%-30 h30 +0x200 gShowStats, ● Statistics
+
+  Gui, Font, s11 c94A3B8, Microsoft YaHei
+  Gui, Add, Text, x15 yp+38 w%sidebar_w%-30 h30 +0x200 gShowSettings, ○ Settings
+
+  Gui, Add, Progress, x15 yp+44 w%sidebar_w%-30 h1 Background334155 Disabled
+
+  Gui, Font, s9 c94A3B8, Microsoft YaHei
+  Gui, Add, Text, x15 yp+16 w%sidebar_w%-30 h18 vSidebarDate, %L_gui1_当前显示数据%
+
+  Gui, Font, s10 cF1F5F9, Microsoft YaHei
+  Gui, Add, Text, x15 yp+22 w%sidebar_w%-30 h22 vSidebarKeys, ...
+  Gui, Add, Text, x15 yp+26 w%sidebar_w%-30 h22 vSidebarMouse, ...
+
+  ; Vertical divider
+  Gui, Add, Progress, % "x" sidebar_w " y47 w1 h" win_h-46 " Background334155 Disabled"
+
+  ; === Keyboard Layout ===
+  Gui, Font, % "S" Opt.FontSize//scale " c" Opt.TextColor, % Opt.Font
   for k, control in ControlList
   {
     p:=""
     for k1, optname in ["x", "y", "w", "h", "Hwnd"]
     {
-      ; 构造控件所需参数。当 xywhHwnd 不为空，则
-      ; p:="x+123 y+123 w123 h123 Hwndsc123 " 或 p:="xm+123 ys+123 w123 h123 Hwndsc123 " 等等
-      ; 任意为空，则对应的项消失，例如 xy 为空，则
-      ; p:="w123 h123 Hwndsc123 "
       if (control[optname]!="")
         p.=" " optname control[optname]
     }
     if (InStr(control.Hwnd, "sc"))
     {
-      ; 增加 v变量 ，形如 “keysc123” 。
-      ; 完全是给 WM_MOUSEMOVE 用的，因为 A_GuiControl 只显示文本或 v变量 。
       p.=" vkey" control.Hwnd
-      ; 创建按键。使用 Text 控件，圆角处理实现现代外观。
       Gui, Add, Text, % "C" Opt.TextColor " Center -WantCtrlA -TabStop" p, % control.Text
       GuiControlGet, hCtrl, Hwnd, % "key" control.Hwnd
       MakeRoundRect(hCtrl, control.w, control.h, 4)
     }
     else if (control.Hwnd="Message")
     {
-      ; 增加 v变量 ，形如 “msgMessage” 。
       p.=" vmsg" control.Hwnd
-      ; 创建信息框
-      Gui, Add, ListView, % "C" Opt.TextColor " +Grid Count10 -Hdr -HScroll" p, % L_gui1_LV标题
+      Gui, Add, ListView, % "C" Opt.TextColor " Count10 -Hdr -HScroll" p, % L_gui1_LV标题
+      GuiControlGet, hLV, Hwnd, msgMessage
+      DllCall("SendMessage", "Ptr", hLV, "UInt", 0x1026, "Ptr", 0, "Ptr", 0x002A170F)
+      DllCall("SendMessage", "Ptr", hLV, "UInt", 0x1024, "Ptr", 0, "Ptr", 0x00F0E8E2)
       for k1, field in [L_gui1_鼠标移动, L_gui1_键盘敲击
                       , L_gui1_左键点击, L_gui1_右键点击, L_gui1_中键点击
                       , L_gui1_滚轮滚动, L_gui1_滚轮横滚
@@ -93,6 +129,7 @@ CreateGui1:
       LV_ModifyCol(3, (control.w-100-40)//2)
     }
   }
+
   Gui, Show, Hide
 return
 
@@ -323,25 +360,10 @@ return
 
 MenuHandler:
   if (A_ThisMenuItem = L_menu_统计)
-  {
-    date := today
-    gosub, ShowHeatMap
-  }
+    gosub, ShowStats
 
   if (A_ThisMenuItem = L_menu_设置)
-  {
-    GuiControl, 2:, dw,   % devicecaps.w
-  GuiControl, 2:, dh,   % devicecaps.h
-  GuiControl, 2:, lkw,  % layout.kw
-  GuiControl, 2:, lkh,  % layout.kh
-  GuiControl, 2:, lks,  % layout.ks
-  GuiControl, 2:, lkhs, % layout.khs
-  GuiControl, 2:, lkvs, % layout.kvs
-  GuiControl, 2:, lfs,  % layout.fs
-  GuiControl, 2:, highlightStart, % layout.highlightStart
-  GuiControl, 2:, highlightEnd, % layout.highlightEnd
-    Gui, 2:Show, , %L_gui2_设置%
-  }
+    gosub, ShowSettings
 
   if (A_ThisMenuItem = L_menu_开机启动)
   {
@@ -367,10 +389,34 @@ MenuHandler:
     ExitApp
 return
 
+ShowStats:
+  date := today
+  gosub, ShowHeatMap
+return
+
+ShowSettings:
+  GuiControl, 2:, dw,   % devicecaps.w
+  GuiControl, 2:, dh,   % devicecaps.h
+  GuiControl, 2:, lkw,  % layout.kw
+  GuiControl, 2:, lkh,  % layout.kh
+  GuiControl, 2:, lks,  % layout.ks
+  GuiControl, 2:, lkhs, % layout.khs
+  GuiControl, 2:, lkvs, % layout.kvs
+  GuiControl, 2:, lfs,  % layout.fs
+  GuiControl, 2:, highlightStart, % layout.highlightStart
+  GuiControl, 2:, highlightEnd, % layout.highlightEnd
+  Gui, 2:Show, , %L_gui2_设置%
+return
+
 ShowHeatMap:
 {
-  ; 一定要先 Show 再设置按键颜色，否则不定时出错  
-  Gui, Show, , % Format("{1} v{2} | {3} - {4}", APPName, ver, L_gui1_当前显示数据, date)
+  GuiControl, , DateDisplay, % date = tomorrow ? "Total" : date
+  
+  GuiControl, , SidebarDate, % date = tomorrow ? "Total" : date = today ? L_gui1_当前显示数据 : date
+  GuiControl, , SidebarKeys, % keyboard[date].keystrokes " " L_gui1_次
+  GuiControl, , SidebarMouse, % Format("{:.2f} {2}", mouse[date].move, L_gui1_米)
+  
+  Gui, Show, % "x0 y0 w" A_ScreenWidth " h" A_ScreenHeight, % Format("{1} v{2}", APPName, ver)
   ; 先显示文字统计信息
   LV_Modify(1,,, Format("{:.2f} {2}", mouse[date].move,          L_gui1_米), Format("{:.2f} {2}", mouse.total.move,          L_gui1_米))
   LV_Modify(2,,, Format("{1} {2}",    keyboard[date].keystrokes, L_gui1_次), Format("{1} {2}",    keyboard.total.keystrokes, L_gui1_次))
@@ -474,7 +520,11 @@ return
 BlockClick(wParam, lParam, msg, hwnd)
 {
   if (A_Gui=1)
-    return, 0                       ; 必须返回0才能丢掉消息实现屏蔽的效果
+  {
+    MouseGetPos, mx, my
+    if (mx > 200 and my > 46)       ; Block clicks in keyboard area only
+      return, 0
+  }
 }
 
 ExitFunc(ExitReason, ExitCode)
@@ -739,7 +789,7 @@ MouseGetClassNN(){
 }
 
 ; 此函数储存了每个按键之间的大小与距离关系，实现了自定义键盘大小。
-LoadControlList(layout:="")
+LoadControlList(layout:="", xOffset:=0)
 {
   KeyW              := NonNull_Ret(layout.kw,  52, 30)  ; 限制按键宽度最小值为30
   KeyH              := NonNull_Ret(layout.kh,  45, 25)  ; 限制按键高度最小值为25（可以正常显示1行文本的最小高度）
@@ -768,7 +818,7 @@ LoadControlList(layout:="")
 
   list:=[]
   ; 第一行
-  list.push({Hwnd:"sc1",  Text:"Esc", x:"",  y:"", w:w, h:h})
+  list.push({Hwnd:"sc1",  Text:"Esc", x:(xOffset ? "m+" . xOffset : ""), y:"", w:w, h:h})
   list.push({Hwnd:"sc59", Text:"F1",  x:m.8, y:"", w:w, h:h})
   list.push({Hwnd:"sc60", Text:"F2",  x:m.2, y:"", w:w, h:h})
   list.push({Hwnd:"sc61", Text:"F3",  x:m.2, y:"", w:w, h:h})
@@ -782,7 +832,7 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc87", Text:"F11", x:m.2, y:"", w:w, h:h})
   list.push({Hwnd:"sc88", Text:"F12", x:m.2, y:"", w:w, h:h})
   ; 第二行
-  list.push({Hwnd:"sc41", Text:"``",        x:"m", y:m.4, w:w,  h:h})
+  list.push({Hwnd:"sc41", Text:"``",        x:"m+" . xOffset, y:m.4, w:w,  h:h})
   list.push({Hwnd:"sc2",  Text:"1",         x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc3",  Text:"2",         x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc4",  Text:"3",         x:m.2, y:"",  w:w,  h:h})
@@ -797,7 +847,7 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc13", Text:"=",         x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc14", Text:"BackSpace", x:m.2, y:"",  w:w2, h:h})
   ; 第三行
-  list.push({Hwnd:"sc15", Text:"Tab", x:"m", y:m.2, w:w3, h:h})
+  list.push({Hwnd:"sc15", Text:"Tab", x:"m+" . xOffset, y:m.2, w:w3, h:h})
   list.push({Hwnd:"sc16", Text:"q",   x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc17", Text:"w",   x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc18", Text:"e",   x:m.2, y:"",  w:w,  h:h})
@@ -812,7 +862,7 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc27", Text:"]",   x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc43", Text:"\",   x:m.2, y:"",  w:w3, h:h})
   ; 第四行
-  list.push({Hwnd:"sc58", Text:"CapsLock", x:"m", y:m.2, w:w4, h:h})
+  list.push({Hwnd:"sc58", Text:"CapsLock", x:"m+" . xOffset, y:m.2, w:w4, h:h})
   list.push({Hwnd:"sc30", Text:"a",        x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc31", Text:"s",        x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc32", Text:"d",        x:m.2, y:"",  w:w,  h:h})
@@ -826,7 +876,7 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc40", Text:"'",        x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc28", Text:"Enter",    x:m.2, y:"",  w:w4, h:h})
   ; 第五行
-  list.push({Hwnd:"sc42", Text:"Shift", x:"m", y:m.2, w:w5, h:h})
+  list.push({Hwnd:"sc42", Text:"Shift", x:"m+" . xOffset, y:m.2, w:w5, h:h})
   list.push({Hwnd:"sc44", Text:"z",     x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc45", Text:"x",     x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc46", Text:"c",     x:m.2, y:"",  w:w,  h:h})
@@ -839,7 +889,7 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc53", Text:"/",     x:m.2, y:"",  w:w,  h:h})
   list.push({Hwnd:"sc310", Text:"Shift", x:m.2, y:"",  w:w5, h:h})
   ; 第六行
-  list.push({Hwnd:"sc29",  Text:"Ctrl",  x:"m", y:m.2, w:w6_1, h:h})
+  list.push({Hwnd:"sc29",  Text:"Ctrl",  x:"m+" . xOffset, y:m.2, w:w6_1, h:h})
   list.push({Hwnd:"sc347", Text:"Win",   x:m.2, y:"",  w:w6_2, h:h})
   list.push({Hwnd:"sc56",  Text:"Alt",   x:m.2, y:"",  w:w6_2, h:h})
   list.push({Hwnd:"sc57",  Text:"Space", x:m.2, y:"",  w:w6_3, h:h})
@@ -890,10 +940,10 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc82", Text:"0",        x:"s", y:temp1, w:w*2+m.1, h:h})
   list.push({Hwnd:"sc83", Text:".",        x:m.2, y:"",    w:w,       h:h})
 
-  ; 信息框
-    temp1:="m+" w*13+Round(m.7*3)+m.1*9+m.5
-  , temp2:=w*7+m.1*5+m.5    ; 与 翻页键区域 + 数字键盘区域 等宽
-  , temp3:=h                ; 与 单个按键等高
+  ; Message area position
+    temp1:="m+" . (xOffset + w*13 + Round(m.7*3) + m.1*9 + m.5)
+  , temp2:=w*7+m.1*5+m.5
+  , temp3:=h
   list.push({Hwnd:"Message", Text:"",      x:temp1, y:"m", w:temp2, h:temp3})
 
   ; 信息框放大后会被遮挡的按键列表
@@ -906,7 +956,7 @@ LoadControlList(layout:="")
                  , "sc82",  "sc83"]
 
   ; Color 没有 0x 前缀。背景色影响 GUI 信息框 当日按键数据太少时的按键。不影响数据量足够后的按键。
-  list.Opt := {Font:"Microsoft YaHei", FontSize:NonNull_Ret(layout.fs, 9, 6), BackgroundColor:"F0F2F5", TextColor:"1A2332"}
+  list.Opt := {Font:"Microsoft YaHei", FontSize:NonNull_Ret(layout.fs, 9, 6), BackgroundColor:"0F172A", TextColor:"E2E8F0"}
 
   return, list
 }

@@ -1,0 +1,25 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile KMCounter (AHK v1.1)
+        uses: tamo/action-Ahk2Exe@main
+        with:
+          src: KMCounter.ahk
+          taghead: v1.1.
+          opt: /icon resouces/KMCounter.ico
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KMCounter
+          path: KMCounter.exe

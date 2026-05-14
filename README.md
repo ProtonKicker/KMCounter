@@ -1,54 +1,44 @@
 # KMCounter
 
-A keyboard counter application with customizable interface.
+**Turn your typing data into ergonomic insights.**
+
+KMCounter is a keyboard & mouse usage tracker with a live heatmap overlay. It logs every keystroke and click, then visualizes your patterns directly on a rendered keyboard — so you can see, at a glance, which fingers are doing the heavy lifting, which keys are neglected, and where your hands might be straining.
+
+## What it helps with
+
+- **Keyboard layout optimization** — Thinking of switching to Colemak, Workman, or a custom layout? A month of KMCounter data shows your actual finger-travel patterns. You'll know exactly which keys to optimize.
+- **Hotkey habit awareness** — Discover unconscious shortcuts, overused modifiers, or keys you keep reaching for that aren't mapped to anything.
+- **Typing pattern analysis** — For Chinese Pinyin (or any IME) users: see which keys you hit most during composition or which you frequently mistype, and adjust your input method or keyboard accordingly.
+- **Ergonomic self-audit** — Mouse distance, scroll frequencies, ring-finger vs pinky load — hard data to back up your next keyboard or layout decision.
 
 ## Features
-- Keyboard key press counting
-- Customizable font size
-- Vertically centered key letters
-- English language support
-- Customizable key highlight colors
-- "Restore default" option in settings
+
+- Real-time keyboard heatmap with color gradient
+- Key press counting (per-key, daily + totals)
+- Mouse movement distance, clicks, wheel scrolls
+- History browsing (PgUp/PgDn) across past days
+- Auto-reset on day rollover
+- Modern rounded-key UI with dark settings panel
+- Chinese & English UI
 
 ## Requirements
-- AutoHotkey v1.1.x (for running the script directly)
-- AutoHotkey Compiler (for compiling to EXE)
+
+- Windows 7+ (compiled EXE included, no dependencies)
+- Or AutoHotkey v1.1.x to run the script directly
+
+## Download
+
+Grab the latest `KMCounter.exe` from the [Releases](https://github.com/ProtonKicker/KMCounter/releases) page or the Actions artifacts tab.
 
 ## How to Run Directly
 
-1. Download and install AutoHotkey from [https://www.autohotkey.com/](https://www.autohotkey.com/)
-2. Double-click on `KMCounter.ahk` to run the application
+1. Install [AutoHotkey v1.1](https://www.autohotkey.com/)
+2. Double-click `KMCounter.ahk`
 
-## How to Compile to EXE
+## Data
 
-1. Download and install AutoHotkey from [https://www.autohotkey.com/](https://www.autohotkey.com/)
-2. Locate the AutoHotkey Compiler (`Ahk2Exe.exe`):
-   - Usually found at `C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe`
-3. Open `Ahk2Exe.exe`
-4. In the "Source" field, browse to select `KMCounter.ahk`
-5. In the "Destination" field, specify where you want the compiled EXE to be saved
-6. Click the "Convert" button to compile the application
-
-## Customization
-
-You can customize the following settings through the settings menu:
-- Keyboard appearance (font size, colors)
-- Language (Chinese/English)
-- Key highlight colors
-- Keyboard layout dimensions
-
-## Troubleshooting
-
-### "The same variable cannot be used for more than one control" error
-This error occurs if the GUI is not properly destroyed before recreation. The script now includes a `Gui, Destroy` command at the beginning of the GUI creation function to prevent this issue.
-
-### Language Support
-The application automatically detects the system language and switches between Chinese and English interfaces. You can modify the `MultiLanguage` section in the script to customize translations.
-
-## Files
-- `KMCounter.ahk`: Main application script
-- `find_duplicate_hwnd.ps1`: PowerShell script for debugging duplicate Hwnd values
-- `test_fix.ahk`: Test script for verifying GUI creation fixes
+Usage data is stored in `KMCounter.ini` (plain text in the same folder). No phoning home, no analytics, no internet connection needed.
 
 ## License
-[MIT License](LICENSE)
+
+MIT

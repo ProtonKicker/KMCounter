@@ -20,6 +20,7 @@ global APPName:="KMCounter", ver:=3.7
      , devicecaps:={}, layout:={}
      , hHookMouse, mouse:={}
      , hHookKeyboard, keyboard:={}
+     , ControlColors:={}, ControlBrushes:={}
 
 gosub, MultiLanguage                    ; 多语言支持
 gosub, Welcome                          ; 首次使用时显示欢迎信息
@@ -32,8 +33,9 @@ gosub, CreateGui2                       ; 预先创建 GUI2 以便需要时加�
 HookMouse()                             ; 鼠标钩子
 HookKeyboard()                          ; 键盘钩子
 
-SetTimer, Reload, % countdown()         ; 设置一个计时器用于跨夜时重启进程以便保存当日数据并开始新的一天
+SetTimer, Reload, % countdown()             ; 设置一个计时器用于跨夜时重启进程以便保存当日数据并开始新的一天
 SetTimer, ReloadHook, % 60000*10        ; 每10分钟重载一次钩子，避免用户的按键映射型钩子的影响
+OnMessage(0x0138, "WM_CTLCOLORSTATIC")  ; 拦截控件着色消息以实现热力图颜色
 OnExit("ExitFunc")                      ; 退出时在这里卸载钩子并保存参数
 
 return
@@ -87,8 +89,10 @@ CreateGui1:
       ; 增加 v变量 ，形如 “keysc123” 。
       ; 完全是给 WM_MOUSEMOVE 用的，因为 A_GuiControl 只显示文本或 v变量 。
       p.=" vkey" control.Hwnd
-      ; 创建按键。使用 Text 控件并添加边框，实现更好的垂直居中效果。
-      Gui, Add, Text, % "C" Opt.TextColor " Center -WantCtrlA -TabStop +Border" p, % control.Text
+      ; 创建按键。使用 Text 控件，圆角处理实现现代外观。
+      Gui, Add, Text, % "C" Opt.TextColor " Center -WantCtrlA -TabStop" p, % control.Text
+      GuiControlGet, hCtrl, Hwnd, % "key" control.Hwnd
+      MakeRoundRect(hCtrl, control.w, control.h, 4)
     }
     else if (control.Hwnd="Message")
     {
@@ -102,16 +106,9 @@ CreateGui1:
                       , L_gui1_侧键点击
                       , L_gui1_屏幕尺寸]
         LV_Add("", field)
-
-      LV_ModifyCol(2, "Right")                            ; 文本右对齐
-      LV_ModifyCol(3, "Right")
-      LV_ModifyCol(4, "Right")
-      LV_ModifyCol(5, "Right")
-      LV_ModifyCol(1, 70)                                 ; 1 列宽度设为70
-      LV_ModifyCol(3, 0)                                  ; 3、4 列宽度设为0
-      LV_ModifyCol(4, 0)
-      LV_ModifyCol(2, (control.w-70-Ceil(22*scale))//2)   ; 2、5 列平分剩下的宽度
-      LV_ModifyCol(5, (control.w-70-Ceil(22*scale))//2)   ; 即使关闭了 DPIScale 滚动条的宽度依然受影响 所以需要乘以系数
+      LV_ModifyCol(1, 100)
+      LV_ModifyCol(2, (control.w-100-40)//2)
+      LV_ModifyCol(3, (control.w-100-40)//2)
     }
   }
   Gui, Show, Hide
@@ -168,80 +165,75 @@ return
 
 CreateGui2:
 {
-  Gui, 2:Color, 444444, 444444
+  Gui, 2:Color, 1E293B, 1E293B
 
-  Gui, 2:Font, s19 Bold cEEEEEE, 微软雅黑
-  Gui, 2:Add, Text, x16 y24 w216 h30 +0x200, %L_gui2_历史数据%
+  Gui, 2:Font, s16 Bold cF1F5F9, Microsoft YaHei
+  Gui, 2:Add, Text, x20 y20 w360 h30 +0x200, %L_gui2_设置%
   Gui, 2:Font
-  Gui, 2:Font, cEEEEEE, 微软雅黑
-  Gui, 2:Add, Text, x16 yp+40 w216 h23, %L_gui2_sub1%
 
-  Gui, 2:Add, Text, x16 yp+40 w85 h23, %L_gui2_存储%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vdsd, % DataStorageDays
-  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_天%
-
-  Gui, 2:Font, s19 Bold cEEEEEE, 微软雅黑
-  Gui, 2:Add, Text, x16 yp+48 w216 h30 +0x200, %L_gui2_屏幕尺寸%
+  ; 历史数据
+  Gui, 2:Font, s11 Bold c94A3B8, Microsoft YaHei
+  Gui, 2:Add, Text, x20 yp+50 w360 h24, %L_gui2_历史数据%
   Gui, 2:Font
-  Gui, 2:Font, cEEEEEE, 微软雅黑
-  Gui, 2:Add, Text, x16 yp+40 w216 h23, %L_gui2_sub2%
+  Gui, 2:Font, cCBD5E1, Microsoft YaHei
+  Gui, 2:Add, Text, x20 yp+28 w360 h20, %L_gui2_sub1%
+  Gui, 2:Add, Text, x20 yp+28 w80 h23, %L_gui2_存储%:
+  Gui, 2:Add, Edit, x105 yp-2 w70 h23 Number Limit -Multi vdsd, % DataStorageDays
+  Gui, 2:Add, Text, x183 yp+2 w40 h23, %L_gui2_天%
 
-  Gui, 2:Add, Text, x16 yp+40 w85 h23, %L_gui2_屏幕宽%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vdw, % devicecaps.w
-  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_毫米%
-
-  Gui, 2:Add, Text, x16 yp+32 w85 h23, %L_gui2_屏幕高%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vdh, % devicecaps.h
-  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_毫米%
-
-  Gui, 2:Font, s19 Bold cEEEEEE, 微软雅黑
-  Gui, 2:Add, Text, x16 yp+48 w216 h30 +0x200, %L_gui2_键盘布局%
+  ; 屏幕尺寸
+  Gui, 2:Font, s11 Bold c94A3B8, Microsoft YaHei
+  Gui, 2:Add, Text, x20 yp+40 w360 h24, %L_gui2_屏幕尺寸%
   Gui, 2:Font
-  Gui, 2:Font, cEEEEEE, 微软雅黑
-  Gui, 2:Add, Text, x16 yp+40 w216 h23, %L_gui2_sub3%
+  Gui, 2:Font, cCBD5E1, Microsoft YaHei
+  Gui, 2:Add, Text, x20 yp+28 w360 h20, %L_gui2_sub2%
+  Gui, 2:Add, Text, x20 yp+26 w80 h23, %L_gui2_屏幕宽%:
+  Gui, 2:Add, Edit, x105 yp-2 w70 h23 Number Limit -Multi vdw, % devicecaps.w
+  Gui, 2:Add, Text, x183 yp+2 w40 h23, %L_gui2_毫米%
+  Gui, 2:Add, Text, x20 yp+32 w80 h23, %L_gui2_屏幕高%:
+  Gui, 2:Add, Edit, x105 yp-2 w70 h23 Number Limit -Multi vdh, % devicecaps.h
+  Gui, 2:Add, Text, x183 yp+2 w40 h23, %L_gui2_毫米%
 
-  Gui, 2:Add, Text, x16 yp+40 w85 h23, %L_gui2_键宽%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vlkw, % layout.kw
-  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_像素%
-
-  Gui, 2:Add, Text, x16 yp+32 w85 h23, %L_gui2_键高%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vlkh, % layout.kh
-  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_像素%
-
-  Gui, 2:Add, Text, x16 yp+32 w85 h23, %L_gui2_键间距%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vlks, % layout.ks
-  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_像素%
-
-  Gui, 2:Add, Text, x16 yp+32 w85 h23, %L_gui2_区域水平间距%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vlkhs, % layout.khs
-  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_像素%
-
-  Gui, 2:Add, Text, x16 yp+32 w85 h23, %L_gui2_区域垂直间距%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vlkvs, % layout.kvs
-  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_像素%
+  ; 键盘布局
+  Gui, 2:Font, s11 Bold c94A3B8, Microsoft YaHei
+  Gui, 2:Add, Text, x20 yp+40 w360 h24, %L_gui2_键盘布局%
+  Gui, 2:Font
+  Gui, 2:Font, cCBD5E1, Microsoft YaHei
+  Gui, 2:Add, Text, x20 yp+28 w360 h20, %L_gui2_sub3%
+  Gui, 2:Add, Text, x20 yp+26 w80 h23, %L_gui2_键宽%:
+  Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlkw, % layout.kw
+  Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_像素%
+  Gui, 2:Add, Text, x220 yp-25 w80 h23, %L_gui2_键高%:
+  Gui, 2:Add, Edit, x270 yp-2 w60 h23 Number Limit -Multi vlkh, % layout.kh
+  Gui, 2:Add, Text, x338 yp+2 w40 h23, %L_gui2_像素%
+  Gui, 2:Add, Text, x20 yp+32 w80 h23, %L_gui2_键间距%:
+  Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlks, % layout.ks
+  Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_像素%
+  Gui, 2:Add, Text, x20 yp+32 w100 h23, %L_gui2_区域水平间距%:
+  Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlkhs, % layout.khs
+  Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_像素%
+  Gui, 2:Add, Text, x220 yp-25 w100 h23, %L_gui2_区域垂直间距%:
+  Gui, 2:Add, Edit, x270 yp-2 w60 h23 Number Limit -Multi vlkvs, % layout.kvs
+  Gui, 2:Add, Text, x338 yp+2 w40 h23, %L_gui2_像素%
 
   ; 键盘外观
-  Gui, 2:Font, s19 Bold cEEEEEE, 微软雅黑
-  Gui, 2:Add, Text, x16 yp+48 w216 h30 +0x200, %L_gui2_键盘外观%
+  Gui, 2:Font, s11 Bold c94A3B8, Microsoft YaHei
+  Gui, 2:Add, Text, x20 yp+40 w360 h24, %L_gui2_键盘外观%
   Gui, 2:Font
-  Gui, 2:Font, cEEEEEE, 微软雅黑
-  Gui, 2:Add, Text, x16 yp+40 w85 h23, %L_gui2_字体大小%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 Number Limit -Multi vlfs, % layout.fs
-  Gui, 2:Add, Text, x197 yp+2 w30 h23, %L_gui2_号%
-  
-  Gui, 2:Add, Text, x16 yp+40 w85 h23, %L_gui2_高亮颜色%:
-  Gui, 2:Add, Text, x16 yp+32 w85 h23, %L_gui2_起始颜色%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 -Multi vhighlightStart, % layout.highlightStart
-  Gui, 2:Add, Text, x16 yp+32 w85 h23, %L_gui2_结束颜色%:
-  Gui, 2:Add, Edit, x104 yp-2 w85 h19 -Multi vhighlightEnd, % layout.highlightEnd
+  Gui, 2:Font, cCBD5E1, Microsoft YaHei
+  Gui, 2:Add, Text, x20 yp+28 w80 h23, %L_gui2_字体大小%:
+  Gui, 2:Add, Edit, x105 yp-2 w60 h23 Number Limit -Multi vlfs, % layout.fs
+  Gui, 2:Add, Text, x173 yp+2 w40 h23, %L_gui2_号%
+  Gui, 2:Add, Text, x20 yp+32 w80 h23, %L_gui2_起始颜色%:
+  Gui, 2:Add, Edit, x105 yp-2 w120 h23 -Multi vhighlightStart, % layout.highlightStart
+  Gui, 2:Add, Text, x20 yp+32 w80 h23, %L_gui2_结束颜色%:
+  Gui, 2:Add, Edit, x105 yp-2 w120 h23 -Multi vhighlightEnd, % layout.highlightEnd
 
-  Gui, 2:Add, Button, x16 yp+48 w80 h30 gCancelSetting hwndhBT1, %L_gui2_取消%
-  Gui, 2:Add, Button, x140 yp+0 w80 h30 gSaveSetting hwndhBT2, %L_gui2_保存%
-  Gui, 2:Add, Button, x16 yp+40 w204 h30 gRestoreDefaultSetting hwndhBT3, %L_gui2_恢复默认%
+  Gui, 2:Add, Button, x20 yp+48 w100 h30 gCancelSetting, %L_gui2_取消%
+  Gui, 2:Add, Button, x130 yp+0 w100 h30 gSaveSetting, %L_gui2_保存%
+  Gui, 2:Add, Button, x240 yp+0 w130 h30 gRestoreDefaultSetting, %L_gui2_恢复默认%
 
-  ; Removed custom button styling for compilation compatibility
-
-  Gui, 2:Show, w235 h820 Hide
+  Gui, 2:Show, w400 h640 Hide
 }
 return
 
@@ -281,8 +273,8 @@ RestoreDefaultSetting:
   defaultKhs := Round(10*ratio)
   defaultKvs := Round(10*ratio)
   defaultFs := 9
-  defaultHighlightStart := "EEEEEE"
-  defaultHighlightEnd := "B26C65"
+  defaultHighlightStart := "D1D5DB"
+  defaultHighlightEnd := "3B82F6"
   
   GuiControl, 2:, lkw, % defaultKw
   GuiControl, 2:, lkh, % defaultKh
@@ -306,8 +298,8 @@ RestoreDefaultSetting:
   IniWrite, % defaultKhs, KMCounter.ini, layout, khs
   IniWrite, % defaultKvs, KMCounter.ini, layout, kvs
   IniWrite, 9, KMCounter.ini, layout, fs
-  IniWrite, EEEEEEEE, KMCounter.ini, layout, highlightStart
-  IniWrite, B26C65, KMCounter.ini, layout, highlightEnd
+  IniWrite, D1D5DB, KMCounter.ini, layout, highlightStart
+  IniWrite, 3B82F6, KMCounter.ini, layout, highlightEnd
   
   ; 显示恢复成功提示
   MsgBox, 0x40040, %L_gui2_恢复默认%, % "已恢复默认设置！"
@@ -398,22 +390,14 @@ ShowHeatMap:
   ; 一定要先 Show 再设置按键颜色，否则不定时出错  
   Gui, Show, , % Format("{1} v{2} | {3} - {4}", APPName, ver, L_gui1_当前显示数据, date)
   ; 先显示文字统计信息
-  LV_Modify(1,,, Format("{:.2f} {2}", mouse[date].move,          L_gui1_米),,
-               , Format("{:.2f} {2}", mouse.total.move,          L_gui1_米))
-  LV_Modify(2,,, Format("{1} {2}",    keyboard[date].keystrokes, L_gui1_次),,
-               , Format("{1} {2}",    keyboard.total.keystrokes, L_gui1_次))
-  LV_Modify(3,,, Format("{1} {2}",    mouse[date].lbcount,       L_gui1_次),,
-               , Format("{1} {2}",    mouse.total.lbcount,       L_gui1_次))
-  LV_Modify(4,,, Format("{1} {2}",    mouse[date].rbcount,       L_gui1_次),,
-               , Format("{1} {2}",    mouse.total.rbcount,       L_gui1_次))
-  LV_Modify(5,,, Format("{1} {2}",    mouse[date].mbcount,       L_gui1_次),,
-               , Format("{1} {2}",    mouse.total.mbcount,       L_gui1_次))
-  LV_Modify(6,,, Format("{1} {2}",    mouse[date].wheel,         L_gui1_次),,
-               , Format("{1} {2}",    mouse.total.wheel,         L_gui1_次))
-  LV_Modify(7,,, Format("{1} {2}",    mouse[date].hwheel,        L_gui1_次),,
-               , Format("{1} {2}",    mouse.total.hwheel,        L_gui1_次))
-  LV_Modify(8,,, Format("{1} {2}",    mouse[date].xbcount,       L_gui1_次),,
-               , Format("{1} {2}",    mouse.total.xbcount,       L_gui1_次))
+  LV_Modify(1,,, Format("{:.2f} {2}", mouse[date].move,          L_gui1_米), Format("{:.2f} {2}", mouse.total.move,          L_gui1_米))
+  LV_Modify(2,,, Format("{1} {2}",    keyboard[date].keystrokes, L_gui1_次), Format("{1} {2}",    keyboard.total.keystrokes, L_gui1_次))
+  LV_Modify(3,,, Format("{1} {2}",    mouse[date].lbcount,       L_gui1_次), Format("{1} {2}",    mouse.total.lbcount,       L_gui1_次))
+  LV_Modify(4,,, Format("{1} {2}",    mouse[date].rbcount,       L_gui1_次), Format("{1} {2}",    mouse.total.rbcount,       L_gui1_次))
+  LV_Modify(5,,, Format("{1} {2}",    mouse[date].mbcount,       L_gui1_次), Format("{1} {2}",    mouse.total.mbcount,       L_gui1_次))
+  LV_Modify(6,,, Format("{1} {2}",    mouse[date].wheel,         L_gui1_次), Format("{1} {2}",    mouse.total.wheel,         L_gui1_次))
+  LV_Modify(7,,, Format("{1} {2}",    mouse[date].hwheel,        L_gui1_次), Format("{1} {2}",    mouse.total.hwheel,        L_gui1_次))
+  LV_Modify(8,,, Format("{1} {2}",    mouse[date].xbcount,       L_gui1_次), Format("{1} {2}",    mouse.total.xbcount,       L_gui1_次))
   LV_Modify(9,,, Format("{:.1f} {2}", devicecaps.size,           L_gui1_寸))
   ; 有了一定的数据量后再显示图案，同时可以避免初始颜色显示错误
   if (keyboard[date].keystrokes >= 100)
@@ -557,8 +541,8 @@ LoadData(date)
   layout.khs   := IniRead("KMCounter.ini", "layout", "khs", Round(10*ratio))  ; 区域水平间距
   layout.kvs   := IniRead("KMCounter.ini", "layout", "kvs", Round(10*ratio))  ; 区域垂直间距
   layout.fs    := IniRead("KMCounter.ini", "layout", "fs",  9)                ; 字体大小
-  layout.highlightStart := IniRead("KMCounter.ini", "layout", "highlightStart", "EEEEEE")  ; 高亮起始颜色
-  layout.highlightEnd := IniRead("KMCounter.ini", "layout", "highlightEnd", "B26C65")  ; 高亮结束颜色
+  layout.highlightStart := IniRead("KMCounter.ini", "layout", "highlightStart", "D1D5DB")  ; 高亮起始颜色
+  layout.highlightEnd := IniRead("KMCounter.ini", "layout", "highlightEnd", "3B82F6")  ; 高亮结束颜色
   ; 获取鼠标信息
   for k, v in ["lbcount", "rbcount", "mbcount", "xbcount", "wheel", "hwheel", "move"]
   {
@@ -735,7 +719,7 @@ UpdateDeviceCaps(w:="", h:="")
   devicecaps.size := (Sqrt(devicecaps.w**2 + devicecaps.h**2)/25.4)         ; 英寸 勾股求斜边
 }
 
-UpdateLayout(lkw, lkh, lks, lkhs, lkvs, lfs, highlightStart:="EEEEEE", highlightEnd:="B26C65")
+UpdateLayout(lkw, lkh, lks, lkhs, lkvs, lfs, highlightStart:="D1D5DB", highlightEnd:="3B82F6")
 {
   layout.kw  := lkw
   layout.kh  := lkh
@@ -940,7 +924,7 @@ LoadControlList(layout:="")
                  , "sc82",  "sc83"]
 
   ; Color 没有 0x 前缀。背景色影响 GUI 信息框 当日按键数据太少时的按键。不影响数据量足够后的按键。
-  list.Opt := {Font:"comic sans ms", FontSize:NonNull_Ret(layout.fs, 9, 6), BackgroundColor:"EEEEEE", TextColor:"575757"}
+  list.Opt := {Font:"Microsoft YaHei", FontSize:NonNull_Ret(layout.fs, 9, 6), BackgroundColor:"F0F2F5", TextColor:"1A2332"}
 
   return, list
 }
@@ -955,7 +939,7 @@ MultiLanguage:
     L_menu_退出:="退出"
 
     L_gui1_当前显示数据:="当前显示数据"
-    L_gui1_LV标题:="项目|今日|本周|本月|总计"
+    L_gui1_LV标题:="项目|今日|总计"
     L_gui1_鼠标移动:="鼠标移动"
     L_gui1_键盘敲击:="键盘敲击"
     L_gui1_左键点击:="左键点击"
@@ -1004,7 +988,7 @@ MultiLanguage:
     L_menu_退出:="Exit"
 
     L_gui1_当前显示数据:="Current Data"
-    L_gui1_LV标题:="Item|Today|Week|Month|Total"
+    L_gui1_LV标题:="Item|Today|Total"
     L_gui1_鼠标移动:="Mouse Movement"
     L_gui1_键盘敲击:="Keyboard Clicks"
     L_gui1_左键点击:="Left Clicks"
@@ -1045,15 +1029,43 @@ MultiLanguage:
   }
 return
 
-; Removed external library dependencies for compilation compatibility
-
-; Simple functions instead of CtlColors class for better compilation compatibility
-ChangeControlColor(control, bgColor, textColor) {
-    ; Simplified implementation that works with compilation
-    ; This function is kept for compatibility but doesn't actually change colors
+; 通过 WM_CTLCOLORSTATIC 消息实现按键热力图颜色控制
+WM_CTLCOLORSTATIC(wParam, lParam, msg, hwnd) {
+    global ControlColors, ControlBrushes
+    controlHwnd := lParam
+    if (ControlColors.HasKey(controlHwnd)) {
+        DllCall("SetTextColor", "Ptr", wParam, "UInt", ControlColors[controlHwnd].text)
+        DllCall("SetBkMode", "Ptr", wParam, "Int", 1)
+        if (!ControlBrushes.HasKey(controlHwnd))
+            ControlBrushes[controlHwnd] := DllCall("CreateSolidBrush", "UInt", ControlColors[controlHwnd].bg, "Ptr")
+        return ControlBrushes[controlHwnd]
+    }
 }
+
+MakeRoundRect(hwnd, w, h, r) {
+    hrgn := DllCall("CreateRoundRectRgn", "Int", 0, "Int", 0, "Int", w, "Int", h, "Int", r, "Int", r)
+    DllCall("SetWindowRgn", "Ptr", hwnd, "Ptr", hrgn, "Int", 1)
+}
+
+ChangeControlColor(key, bgColor, textColor) {
+    global ControlColors, ControlBrushes
+    GuiControlGet, hCtrl, Hwnd, % "key" key
+    if (hCtrl = "")
+        return
+    if (ControlBrushes.HasKey(hCtrl)) {
+        DllCall("DeleteObject", "Ptr", ControlBrushes[hCtrl])
+        ControlBrushes.Delete(hCtrl)
+    }
+    ControlColors[hCtrl] := {bg: "0x" bgColor, text: "0x" textColor}
+    ControlBrushes[hCtrl] := DllCall("CreateSolidBrush", "UInt", "0x" bgColor, "Ptr")
+    WinSet, Redraw,, ahk_id %hCtrl%
+}
+
 FreeControlColors() {
-    ; Empty implementation for compatibility
+    global ControlBrushes
+    for k, v in ControlBrushes
+        DllCall("DeleteObject", "Ptr", v)
+    ControlBrushes := {}
 }
 
 ; Utility functions that were missing from the script

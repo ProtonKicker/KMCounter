@@ -1119,7 +1119,7 @@ GenerateKeyboardHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,mw,sw,tw) {
     h .= "<div class='hdr'>"
     h .= "<span class='t'>KMCounter</span><span class='v'>v3.8</span>"
     h .= "<span class='d' id='dt'>" today "</span>"
-    h .= "<span class='g' onclick='document.title=`"settings`";setTimeout(function(){document.title=``},50)'>⚙</span>"
+    h .= "<span class='g' onclick='document.title=`"settings`";setTimeout(function(){document.title=''},50)'>⚙</span>"
     h .= "</div>"
     h .= "<div class='cols'>"
     h .= "<div class='main'>"

@@ -1118,8 +1118,8 @@ GenerateKeyboardHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,mw,sw,tw) {
     h .= "</style></head><body>"
     h .= "<div class='hdr'>"
     h .= "<span class='t'>KMCounter</span><span class='v'>v3.8</span>"
-    h .= "<span class='d' id='dt'>" today "</span>"
-    h .= "<span class='g' onclick='document.title=`"settings`";setTimeout(function(){document.title=''},50)'>⚙</span>"
+    h .= "<span class='d' id='dt'>" . today . "</span>"
+    h .= "<span class='g' id='gear'>⚙</span>"
     h .= "</div>"
     h .= "<div class='cols'>"
     h .= "<div class='main'>"
@@ -1152,6 +1152,7 @@ GenerateKeyboardHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,mw,sw,tw) {
     h .= "function sc(c){document.title='c:'+c;setTimeout(function(){document.title=''},50)}"
     h .= "document.addEventListener('wheel',function(e){if(e.deltaY>0)sc('w-1');else if(e.deltaY<0)sc('w1')},{passive:true})"
     h .= "document.addEventListener('keydown',function(e){var k=e.key;if(k==='PageDown'||k==='ArrowDown'){sc('n-1');e.preventDefault()}else if(k==='PageUp'||k==='ArrowUp'){sc('n1');e.preventDefault()}})"
+    h .= "document.getElementById('gear').onclick=function(){document.title='settings';setTimeout(function(){document.title=''},50)}"
     h .= "</script></body></html>"
     return h
 }

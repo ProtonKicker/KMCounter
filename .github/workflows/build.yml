@@ -16,12 +16,18 @@ jobs:
         run: |
           curl.exe -sL "https://github.com/AutoHotkey/AutoHotkey/releases/download/v1.1.37.02/AutoHotkey_1.1.37.02_setup.exe" -o ahk_setup.exe
           7z x ahk_setup.exe -oahk | Out-Null
-          Get-ChildItem ahk -Name | Select-String "AutoHotkey" | ForEach-Object { Write-Output $_ }
+          Get-ChildItem ahk -Recurse -File | Select-Object FullName
 
       - name: Compile KMCounter.exe
         shell: pwsh
         run: |
-          .\ahk\Compiler\Ahk2Exe.exe /in KMCounter.ahk /out KMCounter.exe /base .\ahk\AutoHotkeyU32.exe /icon resouces/KMCounter.ico
+          $a2e = Resolve-Path "ahk/Compiler/Ahk2Exe.exe"
+          $base = Resolve-Path "ahk/AutoHotkeyU32.exe"
+          Write-Output "Ahk2Exe: $a2e"
+          Write-Output "Base: $base"
+          & $a2e /in KMCounter.ahk /out KMCounter.exe /base $base /icon resouces/KMCounter.ico
+          if (Test-Path "KMCounter.exe") { Write-Output "SUCCESS: KMCounter.exe created" }
+          else { Write-Output "FAIL: KMCounter.exe not found" }
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

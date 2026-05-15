@@ -1,8 +1,12 @@
+# Web artifacts
+*.html.swp
+*.tmp
 
-KMCounter.ini
-todo.txt
-*.exe
-*.log
-*.pyc
-__pycache__/
-screenshots/
+# General temp files
+*.tmp
+*.swp
+
+# Local environment
+.env.local
+.env
+*.env.*

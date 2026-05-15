@@ -67,7 +67,8 @@ body {
 .main-body { padding: 8px 12px 12px; }
 
 .kb { display: flex; flex-direction: column; }
-.kb-row { display: flex; gap: 2px; margin-bottom: 3px; }
+  .kb-row { display: flex; gap: 2px; margin-bottom: 3px; }
+  .kb-row .gap { flex-shrink: 0; }
 
 .key {
   background: #3A3A3C; border-radius: 4px;
@@ -81,15 +82,15 @@ body {
 }
 .key:hover { z-index: 2; box-shadow: 0 3px 8px rgba(0,0,0,.5); }
 
-.key.r1 { height: 22px; font-size: 7px; }
+.key.r1 { height: 22px; font-size: 8px; }
 .key.r2 { height: 45px; font-size: 11px; }
 .key.r3 { height: 45px; font-size: 11px; }
 .key.r4 { height: 45px; font-size: 11px; }
 .key.r5 { height: 45px; font-size: 11px; }
 .key.r6 { height: 45px; font-size: 10px; }
-.key.sm { font-size: 7px; letter-spacing: -0.3px; }
+.key.sm { font-size: 9px; letter-spacing: -0.2px; }
 
-.stats { margin-top: 6px; background: #252528; border-radius: 6px; overflow: hidden; min-width:640px; }
+.stats { margin-top: 6px; background: #252528; border-radius: 6px; overflow: hidden; width:380px; }
 .stats table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .stats th { background: #2A2A2D; color: #94A3B8; padding: 5px 10px; text-align: left; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
 .stats th:last-child, .stats th:nth-last-child(2) { text-align: right; }
@@ -98,29 +99,28 @@ body {
 .stats tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
 .stats .rv { text-align: right; color: #A0A0A4; font-variant-numeric: tabular-nums; }
 
-.settings-window {
-  background: #1E1E1E; border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.4);
-  width: 420px; overflow: hidden; flex-shrink: 0;
+.bottom-row { display: flex; gap: 8px; margin-top: 6px; align-items: stretch; }
+.bottom-row > * { flex: 1 1 0; min-width: 0; }
+
+.inline-settings {
+  background: #1E1E1E; border-radius: 6px; padding: 12px 16px;
+  flex:1; border:1px solid #2A2A2D; min-width:200px;
 }
-.settings-title { font-size: 14px; font-weight: 700; color: #F1F5F9; padding: 16px 20px 0; }
-.settings-body { padding: 4px 20px 20px; }
-.sec { margin-top: 16px; }
-.sec h3 { font-size: 11px; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-.sec .sub { font-size: 10px; color: #64748B; margin-bottom: 8px; }
-.fr { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 11px; color: #CBD5E1; }
-.fr .lbl { min-width: 72px; flex-shrink: 0; }
-.fr input { background: #2A2A2D; border: 1px solid #3A3A3C; border-radius: 4px; padding: 3px 6px; color: #F1F5F9; font-size: 11px; font-family: inherit; width: 52px; outline: none; }
-.fr input:focus { border-color: #3B82F6; }
-.fr input.wide { width: 80px; }
-.fr .unit { color: #64748B; font-size: 10px; }
-.br { display: flex; gap: 8px; margin-top: 20px; }
-.btn { padding: 5px 14px; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; }
-.btn-d { background: #334155; color: #CBD5E1; }
-.btn-d:hover { background: #475569; }
-.btn-p { background: #3B82F6; color: #fff; }
+.is-title { font-size: 11px; font-weight:700; color:#94A3B8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
+.is-sec { margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid #2A2A2D; }
+.is-sec:last-of-type { border-bottom:none; }
+.is-h { font-size:9px; font-weight:600; color:#64748B; margin-bottom:4px; text-transform:uppercase; }
+.is-r { display:flex; align-items:center; gap:4px; font-size:10px; color:#CBD5E1; margin-bottom:4px; }
+.is-l { flex-shrink:0; color:#94A3B8; min-width:30px; font-size:10px; }
+.is-inp { background:#2A2A2D; border:1px solid #3A3A3C; border-radius:3px; padding:3px 5px; color:#F1F5F9; font-size:10px; font-family:inherit; width:40px; outline:none; }
+.is-inp:focus { border-color:#3B82F6; }
+.is-inp.wd { width:56px; }
+.is-u { color:#64748B; font-size:9px; }
+.is-btns { display:flex; gap:8px; margin-top:8px; }
+
+.btn-p { background: #3B82F6; color: #fff; border:none; border-radius:3px; cursor:pointer; }
 .btn-p:hover { background: #2563EB; }
-.btn-r { background: transparent; color: #94A3B8; border: 1px solid #334155; }
+.btn-r { background: transparent; color: #94A3B8; border: 1px solid #334155; border-radius:3px; cursor:pointer; }
 .btn-r:hover { background: #2A2A2D; border-color: #475569; }
 
 @media (max-width:1100px) { body { flex-direction:column; align-items:center; } }
@@ -139,9 +139,9 @@ body {
   <div class="settingsbar">
     <span class="label">Store:</span><input type="text" value="9999"><span class="value">d</span>
     <span class="label" style="margin-left:4px">Theme:</span><span class="theme-btn">Blue</span>
-    <span class="label" style="margin-left:4px">KW:</span><input type="text" value="52">
-    <span class="label" style="margin-left:4px">KH:</span><input type="text" value="45">
-    <span class="label" style="margin-left:4px">FS:</span><input type="text" value="9">
+    <span class="label" style="margin-left:4px">Key Width:</span><input type="text" value="52">
+    <span class="label" style="margin-left:4px">Key Height:</span><input type="text" value="45">
+    <span class="label" style="margin-left:4px">Font Size:</span><input type="text" value="9">
     <button class="btn-apply">&#10003;</button>
   </div>
 
@@ -149,26 +149,27 @@ body {
     <div class="kb">
       <!-- Row 1: half-height, Esc F1-F12 Ins Del NumLk * -->
       <div class="kb-row">
-        <div class="key r1 sm" style="width:52px">Esc</div>
-        <div class="key r1 sm" style="width:52px">F1</div>
-        <div class="key r1 sm" style="width:52px">F2</div>
-        <div class="key r1 sm" style="width:52px">F3</div>
-        <div class="key r1 sm" style="width:52px">F4</div>
-        <div class="key r1 sm" style="width:52px">F5</div>
-        <div class="key r1 sm" style="width:52px">F6</div>
-        <div class="key r1 sm" style="width:52px">F7</div>
-        <div class="key r1 sm" style="width:52px">F8</div>
-        <div class="key r1 sm" style="width:52px">F9</div>
-        <div class="key r1 sm" style="width:52px">F10</div>
-        <div class="key r1 sm" style="width:52px">F11</div>
-        <div class="key r1 sm" style="width:52px">F12</div>
-        <div class="key r1 sm" style="width:52px">Ins</div>
-        <div class="key r1 sm" style="width:52px">Del</div>
-        <div class="key r1 sm" style="width:52px">NumLk</div>
+        <div class="key r1 sm" style="width:43px">Esc</div>
+        <div class="key r1 sm" style="width:43px">F1</div>
+        <div class="key r1 sm" style="width:43px">F2</div>
+        <div class="key r1 sm" style="width:43px">F3</div>
+        <div class="key r1 sm" style="width:43px">F4</div>
+        <div class="key r1 sm" style="width:43px">F5</div>
+        <div class="key r1 sm" style="width:43px">F6</div>
+        <div class="key r1 sm" style="width:43px">F7</div>
+        <div class="key r1 sm" style="width:43px">F8</div>
+        <div class="key r1 sm" style="width:43px">F9</div>
+        <div class="key r1 sm" style="width:43px">F10</div>
+        <div class="key r1 sm" style="width:43px">F11</div>
+        <div class="key r1 sm" style="width:43px">F12</div>
+        <div class="key r1 sm" style="width:43px">Ins</div>
+        <div class="key r1 sm" style="width:43px">Del</div>
+        <div class="gap"></div>
+        <div class="key r1 sm" style="width:52px">NumLock</div>
         <div class="key r1 sm" style="width:52px">*</div>
       </div>
 
-      <!-- Row 2: `(narrower) 1-0 - = Bksp(2u) / - + . -->
+      <!-- Row 2: `(narrower) 1-0 - = Bksp(2u) / - + -->
       <div class="kb-row">
         <div class="key r2" style="width:40px">`</div>
         <div class="key r2" style="width:48px">1</div>
@@ -184,28 +185,29 @@ body {
         <div class="key r2" style="width:48px">-</div>
         <div class="key r2" style="width:48px">=</div>
         <div class="key r2 sm" style="width:106px">BackSpace</div>
+        <div class="gap"></div>
         <div class="key r2" style="width:48px">/</div>
         <div class="key r2" style="width:48px">-</div>
         <div class="key r2" style="width:48px">+</div>
-        <div class="key r2" style="width:48px">.</div>
       </div>
 
       <!-- Row 3: Tab(<Caps) q-p [ ] \(1.5u) 7 8 9 -->
       <div class="kb-row">
         <div class="key r3 sm" style="width:54px">Tab</div>
-        <div class="key r3" style="width:48px">q</div>
-        <div class="key r3" style="width:48px">w</div>
-        <div class="key r3" style="width:48px">e</div>
-        <div class="key r3" style="width:48px">r</div>
-        <div class="key r3" style="width:48px">t</div>
-        <div class="key r3" style="width:48px">y</div>
-        <div class="key r3" style="width:48px">u</div>
-        <div class="key r3" style="width:48px">i</div>
-        <div class="key r3" style="width:48px">o</div>
-        <div class="key r3" style="width:48px">p</div>
+        <div class="key r3" style="width:48px">Q</div>
+        <div class="key r3" style="width:48px">W</div>
+        <div class="key r3" style="width:48px">E</div>
+        <div class="key r3" style="width:48px">R</div>
+        <div class="key r3" style="width:48px">T</div>
+        <div class="key r3" style="width:48px">Y</div>
+        <div class="key r3" style="width:48px">U</div>
+        <div class="key r3" style="width:48px">I</div>
+        <div class="key r3" style="width:48px">O</div>
+        <div class="key r3" style="width:48px">P</div>
         <div class="key r3" style="width:48px">[</div>
         <div class="key r3" style="width:48px">]</div>
         <div class="key r3 sm" style="width:86px">\</div>
+        <div class="gap"></div>
         <div class="key r3" style="width:48px">7</div>
         <div class="key r3" style="width:48px">8</div>
         <div class="key r3" style="width:48px">9</div>
@@ -214,18 +216,19 @@ body {
       <!-- Row 4: Caps(>Tab) a-; ' Enter(2u) 4 5 6 -->
       <div class="kb-row">
         <div class="key r4 sm" style="width:77px">Caps</div>
-        <div class="key r4" style="width:48px">a</div>
-        <div class="key r4" style="width:48px">s</div>
-        <div class="key r4" style="width:48px">d</div>
-        <div class="key r4" style="width:48px">f</div>
-        <div class="key r4" style="width:48px">g</div>
-        <div class="key r4" style="width:48px">h</div>
-        <div class="key r4" style="width:48px">j</div>
-        <div class="key r4" style="width:48px">k</div>
-        <div class="key r4" style="width:48px">l</div>
+        <div class="key r4" style="width:48px">A</div>
+        <div class="key r4" style="width:48px">S</div>
+        <div class="key r4" style="width:48px">D</div>
+        <div class="key r4" style="width:48px">F</div>
+        <div class="key r4" style="width:48px">G</div>
+        <div class="key r4" style="width:48px">H</div>
+        <div class="key r4" style="width:48px">J</div>
+        <div class="key r4" style="width:48px">K</div>
+        <div class="key r4" style="width:48px">L</div>
         <div class="key r4" style="width:48px">;</div>
         <div class="key r4" style="width:48px">'</div>
         <div class="key r4 sm" style="width:106px">Enter</div>
+        <div class="gap"></div>
         <div class="key r4" style="width:48px">4</div>
         <div class="key r4" style="width:48px">5</div>
         <div class="key r4" style="width:48px">6</div>
@@ -234,18 +237,19 @@ body {
       <!-- Row 5: Shift(2u=Ctrl+Fn) z-m , . / Shift(1.25u) ▲ 1 2 3 -->
       <div class="kb-row">
         <div class="key r5 sm" style="width:100px">Shift</div>
-        <div class="key r5" style="width:48px">z</div>
-        <div class="key r5" style="width:48px">x</div>
-        <div class="key r5" style="width:48px">c</div>
-        <div class="key r5" style="width:48px">v</div>
-        <div class="key r5" style="width:48px">b</div>
-        <div class="key r5" style="width:48px">n</div>
-        <div class="key r5" style="width:48px">m</div>
+        <div class="key r5" style="width:48px">Z</div>
+        <div class="key r5" style="width:48px">X</div>
+        <div class="key r5" style="width:48px">C</div>
+        <div class="key r5" style="width:48px">V</div>
+        <div class="key r5" style="width:48px">B</div>
+        <div class="key r5" style="width:48px">N</div>
+        <div class="key r5" style="width:48px">M</div>
         <div class="key r5" style="width:48px">,</div>
         <div class="key r5" style="width:48px">.</div>
         <div class="key r5" style="width:48px">/</div>
         <div class="key r5 sm" style="width:60px">Shift</div>
         <div class="key r5" style="width:48px">&#9650;</div>
+        <div class="gap"></div>
         <div class="key r5" style="width:48px">1</div>
         <div class="key r5" style="width:48px">2</div>
         <div class="key r5" style="width:48px">3</div>
@@ -257,66 +261,58 @@ body {
         <div class="key r6 sm" style="width:48px">Fn</div>
         <div class="key r6 sm" style="width:48px">Win</div>
         <div class="key r6 sm" style="width:48px">Alt</div>
-        <div class="key r6 sm" style="width:308px">Space</div>
+        <div class="key r6 sm" style="width:248px"></div>
         <div class="key r6 sm" style="width:48px">Alt</div>
         <div class="key r6 sm" style="width:48px">Copilot</div>
         <div class="key r6 sm" style="width:60px">Ctrl</div>
         <div class="key r6" style="width:48px">&#9664;</div>
         <div class="key r6" style="width:48px">&#9660;</div>
+        <div class="gap"></div>
         <div class="key r6" style="width:48px">&#9654;</div>
         <div class="key r6" style="width:48px">0</div>
+        <div class="key r6" style="width:48px">.</div>
       </div>
     </div>
 
-    <div class="stats">
-      <table>
-        <thead><tr><th>Item</th><th>Today</th><th>Total</th></tr></thead>
-        <tbody>
-          <tr><td>Mouse Movement</td><td class="rv">12.34 m</td><td class="rv">587.21 m</td></tr>
-          <tr><td>Keyboard Clicks</td><td class="rv">1,847</td><td class="rv">92,561</td></tr>
-          <tr><td>Left Clicks</td><td class="rv">423</td><td class="rv">18,290</td></tr>
-          <tr><td>Right Clicks</td><td class="rv">87</td><td class="rv">3,412</td></tr>
-          <tr><td>Middle Clicks</td><td class="rv">12</td><td class="rv">891</td></tr>
-          <tr><td>Wheel Scrolls</td><td class="rv">256</td><td class="rv">14,033</td></tr>
-          <tr><td>Wheel Tilt</td><td class="rv">3</td><td class="rv">167</td></tr>
-          <tr><td>Side Clicks</td><td class="rv">0</td><td class="rv">45</td></tr>
-          <tr><td>Screen Size</td><td class="rv">23.8 in</td><td class="rv"></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+    <div class="bottom-row">
+      <div class="stats">
+        <table>
+          <thead><tr><th>Item</th><th>Today</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td>Mouse Movement</td><td class="rv">12.34 m</td><td class="rv">587.21 m</td></tr>
+            <tr><td>Keyboard Clicks</td><td class="rv">1,847</td><td class="rv">92,561</td></tr>
+            <tr><td>Left Clicks</td><td class="rv">423</td><td class="rv">18,290</td></tr>
+            <tr><td>Right Clicks</td><td class="rv">87</td><td class="rv">3,412</td></tr>
+            <tr><td>Middle Clicks</td><td class="rv">12</td><td class="rv">891</td></tr>
+            <tr><td>Wheel Scrolls</td><td class="rv">256</td><td class="rv">14,033</td></tr>
+            <tr><td>Wheel Tilt</td><td class="rv">3</td><td class="rv">167</td></tr>
+            <tr><td>Side Clicks</td><td class="rv">0</td><td class="rv">45</td></tr>
+            <tr><td>Screen Size</td><td class="rv">23.8 in</td><td class="rv"></td></tr>
+          </tbody>
+        </table>
+      </div>
 
-<div class="settings-window">
-  <div class="settings-title">Settings</div>
-  <div class="settings-body">
-    <div class="sec">
-      <h3>History Data</h3>
-      <div class="sub">Set how long to keep historical data.</div>
-      <div class="fr"><span class="lbl">Storage:</span><input type="text" value="9999"><span class="unit">days</span></div>
-    </div>
-    <div class="sec">
-      <h3>Screen Size</h3>
-      <div class="sub">Set the actual size of your monitor.</div>
-      <div class="fr"><span class="lbl">Screen Width:</span><input type="text" value="520"><span class="unit">mm</span><span class="lbl" style="min-width:50px;margin-left:12px">Screen Height:</span><input type="text" value="320"><span class="unit">mm</span></div>
-    </div>
-    <div class="sec">
-      <h3>Keyboard Layout</h3>
-      <div class="sub">Set the size of the keyboard heatmap.</div>
-      <div class="fr"><span class="lbl">Key Width:</span><input type="text" value="52"><span class="unit">px</span><span class="lbl" style="min-width:50px;margin-left:12px">Key Height:</span><input type="text" value="45"><span class="unit">px</span></div>
-      <div class="fr"><span class="lbl">Key Spacing:</span><input type="text" value="2"><span class="unit">px</span></div>
-      <div class="fr"><span class="lbl">H. Spacing:</span><input type="text" value="4"><span class="unit">px</span><span class="lbl" style="min-width:50px;margin-left:12px">V. Spacing:</span><input type="text" value="4"><span class="unit">px</span></div>
-    </div>
-    <div class="sec">
-      <h3>Keyboard Appearance</h3>
-      <div class="fr" style="margin-top:8px"><span class="lbl">Font Size:</span><input type="text" value="9"><span class="unit">pt</span></div>
-      <div class="fr"><span class="lbl">Start Color:</span><input type="text" value="3A3A3C" class="wide"><span style="display:inline-block;width:18px;height:18px;background:#3A3A3C;border-radius:3px;border:1px solid #3A3A3C"></span></div>
-      <div class="fr"><span class="lbl">End Color:</span><input type="text" value="3B82F6" class="wide"><span style="display:inline-block;width:18px;height:18px;background:#3B82F6;border-radius:3px;border:1px solid #3B82F6"></span></div>
-    </div>
-    <div class="br">
-      <button class="btn btn-d">Cancel</button>
-      <button class="btn btn-p">Save</button>
-      <button class="btn btn-r">Restore Default</button>
+      <div class="inline-settings">
+        <div class="is-title">Settings</div>
+        <div class="is-sec">
+          <div class="is-h">History</div>
+          <div class="is-r"><span class="is-l">Store:</span><input type="text" value="9999" class="is-inp"><span class="is-u">days</span></div>
+        </div>
+        <div class="is-sec">
+          <div class="is-h">Keyboard</div>
+          <div class="is-r"><span class="is-l">Key Width:</span><input type="text" value="52" class="is-inp"><span class="is-u">px</span><span class="is-l" style="margin-left:6px">Key Height:</span><input type="text" value="45" class="is-inp"><span class="is-u">px</span></div>
+          <div class="is-r"><span class="is-l">Spacing:</span><input type="text" value="2" class="is-inp"><span class="is-u">px</span><span class="is-l" style="margin-left:6px">Font Size:</span><input type="text" value="9" class="is-inp"><span class="is-u">pt</span></div>
+        </div>
+        <div class="is-sec">
+          <div class="is-h">Colors</div>
+          <div class="is-r"><span class="is-l">Start Color:</span><input type="text" value="3A3A3C" class="is-inp wd"><span style="display:inline-block;width:14px;height:14px;background:#3A3A3C;border-radius:2px;border:1px solid #3A3A3C"></span></div>
+          <div class="is-r"><span class="is-l">End Color:</span><input type="text" value="3B82F6" class="is-inp wd"><span style="display:inline-block;width:14px;height:14px;background:#3B82F6;border-radius:2px;border:1px solid #3B82F6"></span></div>
+        </div>
+        <div class="is-btns">
+          <button class="btn-p" style="padding:3px 10px;font-size:10px">Apply</button>
+          <button class="btn-r" style="padding:3px 10px;font-size:10px">Reset</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

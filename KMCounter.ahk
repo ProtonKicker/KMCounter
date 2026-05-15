@@ -81,15 +81,15 @@ CreateGui1:
   Gui, Font, s7 cD4D4D4, Microsoft YaHei
   Gui, Add, Text, x+2 ys w50 h18 vThemeDisplay gThemeCycle, % currentTheme
   Gui, Font, s7 c94A3B8, Microsoft YaHei
-  Gui, Add, Text, x+8 ys w18 h18, KW:
+  Gui, Add, Text, x+8 ys w42 h18, Key Width:
   Gui, Font, s7 cD4D4D4, Microsoft YaHei
   Gui, Add, Edit, x+2 ys-2 w36 h18 Number Limit vlkw1, % layout.kw
   Gui, Font, s7 c94A3B8, Microsoft YaHei
-  Gui, Add, Text, x+6 ys w18 h18, KH:
+  Gui, Add, Text, x+6 ys w44 h18, Key Height:
   Gui, Font, s7 cD4D4D4, Microsoft YaHei
   Gui, Add, Edit, x+2 ys-2 w36 h18 Number Limit vlkh1, % layout.kh
   Gui, Font, s7 c94A3B8, Microsoft YaHei
-  Gui, Add, Text, x+6 ys w16 h18, FS:
+  Gui, Add, Text, x+6 ys w36 h18, Font Size:
   Gui, Font, s7 cD4D4D4, Microsoft YaHei
   Gui, Add, Edit, x+2 ys-2 w32 h18 Number Limit vlfs1, % layout.fs
   Gui, Font, s7 cFFFFFF, Microsoft YaHei
@@ -447,7 +447,7 @@ LoadControlList(layout:="")
   wTilde:= w*3//4
   list:=[]
 
-  ; Row 1: Esc | F1-F12 (no gaps) | Ins | Del | NumLk | * | FP
+  ; Row 1: Esc | F1-F12 (no gaps) | Ins | Del | NumLock | *
   list.push({Hwnd:"sc1",   Text:"Esc",     x:"m", y:"", w:w, h:h})
   list.push({Hwnd:"sc59",  Text:"F1",      x:m.2, y:"", w:w, h:h})
   list.push({Hwnd:"sc60",  Text:"F2",      x:m.2, y:"", w:w, h:h})
@@ -480,23 +480,22 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc11",  Text:"0",       x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc12",  Text:"-",       x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc13",  Text:"=",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc14",  Text:"BkSp",    x:m.2, y:"",  w:wBksp, h:h})
+  list.push({Hwnd:"sc14",  Text:"⌫",    x:m.2, y:"",  w:wBksp, h:h})
   list.push({Hwnd:"sc309", Text:"/",       x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc74",  Text:"-",       x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc78",  Text:"+",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc83",  Text:".",       x:m.2, y:"",  w:w, h:h})
   ; Row 3: Tab(1.5u) | q-p | [ | ] | \(1.5u) | NP7 | NP8 | NP9
   list.push({Hwnd:"sc15",  Text:"Tab",     x:"m", y:m.2, w:wTab, h:h})
-  list.push({Hwnd:"sc16",  Text:"q",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc17",  Text:"w",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc18",  Text:"e",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc19",  Text:"r",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc20",  Text:"t",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc21",  Text:"y",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc22",  Text:"u",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc23",  Text:"i",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc24",  Text:"o",       x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc25",  Text:"p",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc16",  Text:"Q",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc17",  Text:"W",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc18",  Text:"E",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc19",  Text:"R",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc20",  Text:"T",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc21",  Text:"Y",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc22",  Text:"U",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc23",  Text:"I",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc24",  Text:"O",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc25",  Text:"P",       x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc26",  Text:"[",       x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc27",  Text:"]",       x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc43",  Text:"\",       x:m.2, y:"",  w:wBackslash, h:h})
@@ -505,15 +504,15 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc73",  Text:"9",       x:m.2, y:"",  w:w, h:h})
   ; Row 4: CapsLock(1.83u) | a-; | ' | Enter(2u) | NP4 | NP5 | NP6
   list.push({Hwnd:"sc58",  Text:"Caps",  x:"m", y:m.2, w:wCaps, h:h})
-  list.push({Hwnd:"sc30",  Text:"a",         x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc31",  Text:"s",         x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc32",  Text:"d",         x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc33",  Text:"f",         x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc34",  Text:"g",         x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc35",  Text:"h",         x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc36",  Text:"j",         x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc37",  Text:"k",         x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc38",  Text:"l",         x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc30",  Text:"A",         x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc31",  Text:"S",         x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc32",  Text:"D",         x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc33",  Text:"F",         x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc34",  Text:"G",         x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc35",  Text:"H",         x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc36",  Text:"J",         x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc37",  Text:"K",         x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc38",  Text:"L",         x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc39",  Text:";",         x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc40",  Text:"'",         x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc28",  Text:"Enter",     x:m.2, y:"",  w:wEnter, h:h})
@@ -522,13 +521,13 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc77",  Text:"6",         x:m.2, y:"",  w:w, h:h})
   ; Row 5: Shift(2u) | z-m | , | . | / | Shift(1.25u) | ▲ | NP1 | NP2 | NP3
   list.push({Hwnd:"sc42",  Text:"Shift",  x:"m", y:m.2, w:wLShift, h:h})
-  list.push({Hwnd:"sc44",  Text:"z",      x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc45",  Text:"x",      x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc46",  Text:"c",      x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc47",  Text:"v",      x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc48",  Text:"b",      x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc49",  Text:"n",      x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc50",  Text:"m",      x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc44",  Text:"Z",      x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc45",  Text:"X",      x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc46",  Text:"C",      x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc47",  Text:"V",      x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc48",  Text:"B",      x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc49",  Text:"N",      x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc50",  Text:"M",      x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc51",  Text:",",      x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc52",  Text:".",      x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc53",  Text:"/",      x:m.2, y:"",  w:w, h:h})
@@ -542,7 +541,7 @@ LoadControlList(layout:="")
   list.push({Hwnd:"scFn",   Text:"Fn",      x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc347",  Text:"Win",     x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc56",   Text:"Alt",     x:m.2, y:"",  w:w, h:h})
-  list.push({Hwnd:"sc57",   Text:"Space",   x:m.2, y:"",  w:wSpace, h:h})
+  list.push({Hwnd:"sc57",   Text:"",   x:m.2, y:"",  w:wSpace, h:h})
   list.push({Hwnd:"sc312",  Text:"Alt",     x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"scCopilot", Text:"Copilot", x:m.2, y:"", w:w, h:h})
   list.push({Hwnd:"sc285",  Text:"Ctrl",    x:m.2, y:"",  w:wRCtrl, h:h})
@@ -550,10 +549,11 @@ LoadControlList(layout:="")
   list.push({Hwnd:"sc336",  Text:"▼",       x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc333",  Text:"▶",       x:m.2, y:"",  w:w, h:h})
   list.push({Hwnd:"sc82",   Text:"0",       x:m.2, y:"",  w:w, h:h})
+  list.push({Hwnd:"sc83",   Text:".",       x:m.2, y:"",  w:w, h:h})
 
-  ; Stats area below keyboard, full width
+  ; Stats area below keyboard, half-ish width
     temp1:="m"
-  , temp2:=17*w + m.1*16
+  , temp2:=8*w + m.1*7
   , temp3:=300
   list.push({Hwnd:"Message", Text:"",      x:temp1, y:"m+" . (h*6 + m.1*5), w:temp2, h:temp3})
 
@@ -831,7 +831,7 @@ BuildHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,kfs,t,mw,sw) {
     wRCtrl:= w*5//4
     wBackslash:= w*3//2
     wCaps := (wTab + wLShift)//2
-    wSpace:= w*6
+    wSpace:= 5*w + 4*ks   ; from left of C to right of M
     wTilde:= w*3//4
     wEnter:= w*2
     kfsm  := Max(kfs-3, 7)
@@ -839,10 +839,10 @@ BuildHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,kfs,t,mw,sw) {
     h := h . "<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1E1E1E;font-family:Microsoft YaHei,sans-serif;color:#D4D4D4;overflow-y:auto;user-select:none;padding:8px 12px 0}"
     h := h . ".row{display:flex;gap:2px;margin-bottom:3px}"
     h := h . ".k{height:" . kh . "px;background:#3A3A3C;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:" . kfs . "px;color:#D4D4D4;box-shadow:0 1px 2px rgba(0,0,0,0.3);cursor:default;flex-shrink:0;position:relative;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 2px;line-height:1.1}"
-    h := h . ".r1{height:" . (kh//2) . "px;font-size:" . Max(kfs-4, 6) . "px}.k:hover{z-index:2;box-shadow:0 3px 8px rgba(0,0,0,0.5)}"
+    h := h . ".r1{height:" . (kh//2) . "px;font-size:" . Max(kfs-2, 8) . "px}.k:hover{z-index:2;box-shadow:0 3px 8px rgba(0,0,0,0.5)}.g{flex-shrink:0}"
     h := h . ".k .tt{display:none;position:absolute;bottom:calc(100%+4px);left:50%;transform:translateX(-50%);background:#1A1A1C;color:#D4D4D4;padding:3px 8px;border-radius:4px;font-size:10px;white-space:nowrap;pointer-events:none;z-index:10;border:1px solid #3A3A3C}"
     h := h . ".k:hover .tt{display:block}"
-    h := h . ".st{margin-top:8px;background:#252528;border-radius:6px;overflow:hidden}"
+    h := h . ".st{margin-top:8px;background:#252528;border-radius:6px;overflow:hidden;width:fit-content;min-width:300px}"
     h := h . ".st table{width:100%;border-collapse:collapse;font-size:12px}"
     h := h . ".st th{background:#2A2A2D;color:#94A3B8;padding:5px 10px;text-align:left;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:0.5px}"
     h := h . ".st td{padding:4px 10px;border-top:1px solid #2E2E30;font-size:12px}"
@@ -855,7 +855,7 @@ BuildHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,kfs,t,mw,sw) {
         sc := ["sc59","sc60","sc61","sc62","sc63","sc64","sc65","sc66","sc67","sc68","sc87","sc88"][A_Index]
         h := h . "<div class='k r1' data-s='" . sc . "' style='width:" . w . "px'>F" . A_Index . "</div>"
     }
-    h := h . "<div class='k r1' data-s='sc338' style='width:" . w . "px'>Ins</div><div class='k r1' data-s='sc339' style='width:" . w . "px'>Del</div><div class='k r1' data-s='sc325' style='width:" . w . "px'>NumLock</div><div class='k r1' data-s='sc55' style='width:" . w . "px'>*</div></div>"
+    h := h . "<div class='k r1' data-s='sc338' style='width:" . w . "px'>Ins</div><div class='k r1' data-s='sc339' style='width:" . w . "px'>Del</div><div class='g' style='width:10px'></div><div class='k r1' data-s='sc325' style='width:" . w . "px'>NumLock</div><div class='k r1' data-s='sc55' style='width:" . w . "px'>*</div></div>"
     ; Row 2: `(smaller) 1-0 - = Bksp(2u) / - + .
     h := h . "<div class='row'><div class='k' data-s='sc41' style='width:" . wTilde . "px'>&#96;</div>"
     Loop 10 {
@@ -863,33 +863,33 @@ BuildHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,kfs,t,mw,sw) {
         n := A_Index = 10 ? 0 : A_Index
         h := h . "<div class='k' data-s='" . sc . "' style='width:" . w . "px'>" . n . "</div>"
     }
-    h := h . "<div class='k' data-s='sc12' style='width:" . w . "px'>-</div><div class='k' data-s='sc13' style='width:" . w . "px'>=</div><div class='k' data-s='sc14' style='width:" . wBksp . "px'>BkSp</div><div class='k' data-s='sc309' style='width:" . w . "px'>/</div><div class='k' data-s='sc74' style='width:" . w . "px'>-</div><div class='k' data-s='sc78' style='width:" . w . "px'>+</div></div>"
+    h := h . "<div class='k' data-s='sc12' style='width:" . w . "px'>-</div><div class='k' data-s='sc13' style='width:" . w . "px'>=</div><div class='k' data-s='sc14' style='width:" . wBksp . "px'>⌫</div><div class='g' style='width:10px'></div><div class='k' data-s='sc309' style='width:" . w . "px'>/</div><div class='k' data-s='sc74' style='width:" . w . "px'>-</div><div class='k' data-s='sc78' style='width:" . w . "px'>+</div></div>"
     ; Row 3: Tab(1.15u) q-p [ ] \(1.5u) 7 8 9
     h := h . "<div class='row'><div class='k' data-s='sc15' style='width:" . wTab . "px'>Tab</div>"
-    letters := ["q","w","e","r","t","y","u","i","o","p"]
+    letters := ["Q","W","E","R","T","Y","U","I","O","P"]
     scs := ["sc16","sc17","sc18","sc19","sc20","sc21","sc22","sc23","sc24","sc25"]
     Loop 10 {
         h := h . "<div class='k' data-s='" . scs[A_Index] . "' style='width:" . w . "px'>" . letters[A_Index] . "</div>"
     }
-    h := h . "<div class='k' data-s='sc26' style='width:" . w . "px'>[</div><div class='k' data-s='sc27' style='width:" . w . "px'>]</div><div class='k' data-s='sc43' style='width:" . wBackslash . "px'>\</div><div class='k' data-s='sc71' style='width:" . w . "px'>7</div><div class='k' data-s='sc72' style='width:" . w . "px'>8</div><div class='k' data-s='sc73' style='width:" . w . "px'>9</div></div>"
+    h := h . "<div class='k' data-s='sc26' style='width:" . w . "px'>[</div><div class='k' data-s='sc27' style='width:" . w . "px'>]</div><div class='k' data-s='sc43' style='width:" . wBackslash . "px'>\</div><div class='g' style='width:10px'></div><div class='k' data-s='sc71' style='width:" . w . "px'>7</div><div class='k' data-s='sc72' style='width:" . w . "px'>8</div><div class='k' data-s='sc73' style='width:" . w . "px'>9</div></div>"
     ; Row 4: Caps a-; ' Enter(2u) 4 5 6
     h := h . "<div class='row'><div class='k' data-s='sc58' style='width:" . wCaps . "px'>Caps</div>"
-    letters2 := ["a","s","d","f","g","h","j","k","l",";","'"]
+    letters2 := ["A","S","D","F","G","H","J","K","L",";","'"]
     scs2 := ["sc30","sc31","sc32","sc33","sc34","sc35","sc36","sc37","sc38","sc39","sc40"]
     Loop 11 {
         h := h . "<div class='k' data-s='" . scs2[A_Index] . "' style='width:" . w . "px'>" . letters2[A_Index] . "</div>"
     }
-    h := h . "<div class='k' data-s='sc28' style='width:" . wEnter . "px'>Enter</div><div class='k' data-s='sc75' style='width:" . w . "px'>4</div><div class='k' data-s='sc76' style='width:" . w . "px'>5</div><div class='k' data-s='sc77' style='width:" . w . "px'>6</div></div>"
+    h := h . "<div class='k' data-s='sc28' style='width:" . wEnter . "px'>Enter</div><div class='g' style='width:10px'></div><div class='k' data-s='sc75' style='width:" . w . "px'>4</div><div class='k' data-s='sc76' style='width:" . w . "px'>5</div><div class='k' data-s='sc77' style='width:" . w . "px'>6</div></div>"
     ; Row 5: Shift(2u) z-m , . / Shift(1.25u) ▲ 1 2 3
     h := h . "<div class='row'><div class='k' data-s='sc42' style='width:" . wLShift . "px'>Shift</div>"
-    letters3 := ["z","x","c","v","b","n","m"]
+    letters3 := ["Z","X","C","V","B","N","M"]
     scs3 := ["sc44","sc45","sc46","sc47","sc48","sc49","sc50"]
     Loop 7 {
         h := h . "<div class='k' data-s='" . scs3[A_Index] . "' style='width:" . w . "px'>" . letters3[A_Index] . "</div>"
     }
-    h := h . "<div class='k' data-s='sc51' style='width:" . w . "px'>,</div><div class='k' data-s='sc52' style='width:" . w . "px'>.</div><div class='k' data-s='sc53' style='width:" . w . "px'>/</div><div class='k' data-s='sc310' style='width:" . wRShift . "px'>Shift</div><div class='k' data-s='sc328' style='width:" . w . "px'>▲</div><div class='k' data-s='sc79' style='width:" . w . "px'>1</div><div class='k' data-s='sc80' style='width:" . w . "px'>2</div><div class='k' data-s='sc81' style='width:" . w . "px'>3</div></div>"
+    h := h . "<div class='k' data-s='sc51' style='width:" . w . "px'>,</div><div class='k' data-s='sc52' style='width:" . w . "px'>.</div><div class='k' data-s='sc53' style='width:" . w . "px'>/</div><div class='k' data-s='sc310' style='width:" . wRShift . "px'>Shift</div><div class='k' data-s='sc328' style='width:" . w . "px'>▲</div><div class='g' style='width:10px'></div><div class='k' data-s='sc79' style='width:" . w . "px'>1</div><div class='k' data-s='sc80' style='width:" . w . "px'>2</div><div class='k' data-s='sc81' style='width:" . w . "px'>3</div></div>"
     ; Row 6: Ctrl Fn Win Alt Space(C→M) Alt Copilot Ctrl(1.25u) ◀ ▼ ▶ 0 .
-    h := h . "<div class='row'><div class='k' data-s='sc29' style='width:" . w . "px'>Ctrl</div><div class='k' data-s='scFn' style='width:" . w . "px'>Fn</div><div class='k' data-s='sc347' style='width:" . w . "px'>Win</div><div class='k' data-s='sc56' style='width:" . w . "px'>Alt</div><div class='k' data-s='sc57' style='width:" . wSpace . "px'>Space</div><div class='k' data-s='sc312' style='width:" . w . "px'>Alt</div><div class='k' data-s='scCopilot' style='width:" . w . "px'>Copilot</div><div class='k' data-s='sc285' style='width:" . wRCtrl . "px'>Ctrl</div><div class='k' data-s='sc331' style='width:" . w . "px'>◀</div><div class='k' data-s='sc336' style='width:" . w . "px'>▼</div><div class='k' data-s='sc333' style='width:" . w . "px'>▶</div><div class='k' data-s='sc82' style='width:" . w . "px'>0</div><div class='k' data-s='sc83' style='width:" . w . "px'>.</div></div>"
+    h := h . "<div class='row'><div class='k' data-s='sc29' style='width:" . w . "px'>Ctrl</div><div class='k' data-s='scFn' style='width:" . w . "px'>Fn</div><div class='k' data-s='sc347' style='width:" . w . "px'>Win</div><div class='k' data-s='sc56' style='width:" . w . "px'>Alt</div><div class='k' data-s='sc57' style='width:" . wSpace . "px'></div><div class='k' data-s='sc312' style='width:" . w . "px'>Alt</div><div class='k' data-s='scCopilot' style='width:" . w . "px'>Copilot</div><div class='k' data-s='sc285' style='width:" . wRCtrl . "px'>Ctrl</div><div class='k' data-s='sc331' style='width:" . w . "px'>◀</div><div class='k' data-s='sc336' style='width:" . w . "px'>▼</div><div class='g' style='width:10px'></div><div class='k' data-s='sc333' style='width:" . w . "px'>▶</div><div class='k' data-s='sc82' style='width:" . w . "px'>0</div><div class='k' data-s='sc83' style='width:" . w . "px'>.</div></div>"
     ; Stats table
     h := h . "<div class='st'><table><thead><tr><th>Item</th><th style='text-align:right'>Today</th><th style='text-align:right'>Total</th></tr></thead><tbody id='tb'>"
     h := h . "<tr><td>Mouse Movement</td><td class='rv'>-</td><td class='rv'>-</td></tr><tr><td>Keyboard Clicks</td><td class='rv'>-</td><td class='rv'>-</td></tr><tr><td>Left Clicks</td><td class='rv'>-</td><td class='rv'>-</td></tr><tr><td>Right Clicks</td><td class='rv'>-</td><td class='rv'>-</td></tr><tr><td>Middle Clicks</td><td class='rv'>-</td><td class='rv'>-</td></tr><tr><td>Wheel Scrolls</td><td class='rv'>-</td><td class='rv'>-</td></tr><tr><td>Wheel Tilt</td><td class='rv'>-</td><td class='rv'>-</td></tr><tr><td>Side Clicks</td><td class='rv'>-</td><td class='rv'>-</td></tr><tr><td>Screen Size</td><td class='rv'>-</td><td class='rv'>-</td></tr></tbody></table></div>"
@@ -897,7 +897,7 @@ BuildHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,kfs,t,mw,sw) {
     h := h . "function ud(d){var ks=d.ks||{},mk=d.tk/10||1;gg(d.hs,d.he,100);var els=document.querySelectorAll('.k[data-s]');for(var i=0;i<els.length;i++){var e=els[i],sc=e.getAttribute('data-s'),cnt=parseInt(ks[sc])||0;if(cnt>=mk)e.style.background='#'+d.he;else if(cnt<mk/100)e.style.background='#3A3A3C';else e.style.background=gc[Math.floor(cnt/mk*100)-1]||gc[0];var tt=e.querySelector('.tt');if(!tt){tt=document.createElement('div');tt.className='tt';e.appendChild(tt)}tt.textContent=cnt}"
     h := h . "var tb=document.getElementById('tb');if(tb&&d.st){tb.innerHTML='';for(var i=0;i<d.st.length;i++){var s=d.st[i];tb.innerHTML+='<tr><td>'+s.n+'</td><td class=\'rv\'>'+s.t+'</td><td class=\'rv\'>'+s.t2+'</td></tr>'}}}"
     h := h . "function sc(c){document.title='n:'+c;setTimeout(function(){document.title=''},50)}"
-    h := h . "document.querySelectorAll('.k').forEach(function(e){if(e.textContent.length>3&&!e.querySelector('span')){e.style.fontSize='7px'}})"
+    h := h . "document.querySelectorAll('.k').forEach(function(e){if(e.textContent.length>3&&!e.querySelector('span')){e.style.fontSize='9px'}})"
     h := h . "document.addEventListener('wheel',function(e){if(e.deltaY>0)sc('-1');else if(e.deltaY<0)sc('1')},{passive:true})"
     h := h . "document.addEventListener('keydown',function(e){var k=e.key;if(k==='PageDown'||k==='ArrowDown'){sc('-1');e.preventDefault()}else if(k==='PageUp'||k==='ArrowUp'){sc('1');e.preventDefault()}})</script></body></html>"
     return h

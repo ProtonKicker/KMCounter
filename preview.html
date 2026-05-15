@@ -8,514 +8,315 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  background: #E2E5E9;
+  background: #0F1117;
   font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-  padding: 40px;
+  padding: 32px;
   display: flex;
-  gap: 32px;
+  gap: 24px;
   align-items: flex-start;
   justify-content: center;
   min-height: 100vh;
+  color: #D4D4D4;
 }
 
-/* === Main Window === */
 .main-window {
-  background: #F0F2F5;
+  background: #1E1E1E;
   border-radius: 8px;
-  box-shadow: 0 4px 24px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.08);
-  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.2);
   width: fit-content;
+  overflow: hidden;
 }
 
-.titlebar {
-  background: #E4E7EB;
-  padding: 8px 16px;
+.appbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #D0D5DD;
-  user-select: none;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #1A1A1C;
+  border-bottom: 1px solid #2A2A2D;
 }
+.appbar .title { font-size: 12px; font-weight: 700; color: #fff; }
+.appbar .ver { font-size: 9px; color: #94A3B8; }
+.appbar .date { font-size: 10px; color: #3B82F6; font-weight: 600; }
+.appbar .gear { font-size: 14px; color: #3B82F6; cursor: pointer; width:22px; height:22px; display:flex; align-items:center; justify-content:center; border-radius:4px; }
+.appbar .gear:hover { background: #2A2A2D; }
 
-.titlebar h1 {
-  font-size: 12px;
-  font-weight: 600;
-  color: #1A2332;
-}
-
-.titlebar span {
-  font-size: 11px;
-  color: #64748B;
-}
-
-.titlebar .date-badge {
-  font-size: 10px;
-  background: #3B82F6;
-  color: #fff;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-weight: 600;
-}
-
-.main-body {
+.settingsbar {
   display: flex;
-  padding: 16px;
-  gap: 16px;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: #1E1E1E;
+  border-bottom: 1px solid #2A2A2D;
+  font-size: 10px;
+  flex-wrap: wrap;
 }
+.settingsbar .label { color: #94A3B8; font-weight: 600; }
+.settingsbar .value { color: #D4D4D4; }
+.settingsbar input {
+  background: #2A2A2D; border: 1px solid #3A3A3C; border-radius: 3px;
+  padding: 2px 4px; color: #D4D4D4; font-size: 10px; font-family: inherit;
+  width: 36px; outline: none; text-align: center;
+}
+.settingsbar input:focus { border-color: #3B82F6; }
+.settingsbar .btn-apply { background: #3B82F6; color: #fff; border: none; border-radius: 3px; padding: 2px 10px; font-size: 10px; cursor: pointer; }
+.settingsbar .btn-apply:hover { background: #2563EB; }
+.settingsbar .theme-btn { color: #3B82F6; cursor: pointer; padding: 1px 6px; border-radius: 3px; }
+.settingsbar .theme-btn:hover { background: #2A2A2D; }
 
-/* === Keyboard === */
-.keyboard {
-  display: grid;
-  grid-template-columns: repeat(15, 52px);
-  gap: 2px;
-  align-content: start;
-}
+.main-body { padding: 8px 12px 12px; }
+
+.kb { display: flex; flex-direction: column; }
+.kb-row { display: flex; gap: 2px; margin-bottom: 3px; }
 
 .key {
-  height: 45px;
-  background: #fff;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  color: #1A2332;
-  font-weight: 500;
-  box-shadow: 0 1px 1px rgba(0,0,0,.06);
-  transition: background .2s;
-  cursor: default;
+  background: #3A3A3C; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: #D4D4D4; box-shadow: 0 1px 2px rgba(0,0,0,.3);
+  cursor: default; flex-shrink: 0;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  transition: background .15s;
+  position: relative;
+  line-height: 1.1;
 }
+.key:hover { z-index: 2; box-shadow: 0 3px 8px rgba(0,0,0,.5); }
 
-.key.wide2 { grid-column: span 2; }
-.key.wide3 { grid-column: span 3; }
-.key.wide4 { grid-column: span 4; }
-.key.tall2 { grid-row: span 2; height: 92px; }
+.key.r1 { height: 22px; font-size: 7px; }
+.key.r2 { height: 45px; font-size: 11px; }
+.key.r3 { height: 45px; font-size: 11px; }
+.key.r4 { height: 45px; font-size: 11px; }
+.key.r5 { height: 45px; font-size: 11px; }
+.key.r6 { height: 45px; font-size: 10px; }
+.key.sm { font-size: 7px; letter-spacing: -0.3px; }
 
-.key.offset1 { margin-left: 56px; }
-.key.offset2 { margin-left: 114px; }
-.key.offset3 { margin-left: 68px; }
+.stats { margin-top: 6px; background: #252528; border-radius: 6px; overflow: hidden; min-width:640px; }
+.stats table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.stats th { background: #2A2A2D; color: #94A3B8; padding: 5px 10px; text-align: left; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.stats th:last-child, .stats th:nth-last-child(2) { text-align: right; }
+.stats td { padding: 4px 10px; border-top: 1px solid #2E2E30; font-size: 12px; }
+.stats tr:first-child td { border-top: none; }
+.stats tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+.stats .rv { text-align: right; color: #A0A0A4; font-variant-numeric: tabular-nums; }
 
-.key.sub { font-size: 8px; color: #64748B; }
-
-/* special key widths */
-.key.w-tab { width: 86px; }
-.key.w-cap { width: 86px; }
-.key.w-lsft { width: 102px; }
-.key.w-rsft { width: 114px; }
-.key.w-ctrl { width: 62px; }
-.key.w-alt { width: 52px; }
-.key.w-win { width: 52px; }
-.key.w-space { width: 196px; }
-.key.w-bksp { width: 86px; }
-.key.w-ent { width: 86px; }
-
-.key.nav { background: #E8ECF0; }
-.key.numpad { background: #E8ECF0; }
-
-/* Heatmap colors */
-.key.hot1 { background: #D1D5DB; }
-.key.hot2 { background: #B3C7F0; }
-.key.hot3 { background: #89AFF0; }
-.key.hot4 { background: #5C8FEF; }
-.key.hot5 { background: #3B82F6; color: #fff; }
-
-/* === Stats Panel === */
-.stats-panel {
-  width: 260px;
-  flex-shrink: 0;
-}
-
-.stats-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-}
-
-.stats-table th {
-  text-align: left;
-  padding: 6px 8px;
-  color: #1A2332;
-  font-weight: 600;
-  border-bottom: 2px solid #D0D5DD;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-}
-
-.stats-table th:not(:first-child) {
-  text-align: right;
-}
-
-.stats-table td {
-  padding: 5px 8px;
-  border-bottom: 1px solid #E4E7EB;
-  color: #1A2332;
-}
-
-.stats-table td:not(:first-child) {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.stats-table tr:last-child td {
-  border-bottom: none;
-}
-
-.stats-table tr:hover td {
-  background: #E8ECF0;
-}
-
-/* === Settings Window === */
 .settings-window {
-  background: #1E293B;
-  border-radius: 8px;
-  box-shadow: 0 4px 24px rgba(0,0,0,.2), 0 1px 3px rgba(0,0,0,.1);
-  width: 400px;
-  overflow: hidden;
-  flex-shrink: 0;
+  background: #1E1E1E; border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  width: 420px; overflow: hidden; flex-shrink: 0;
 }
+.settings-title { font-size: 14px; font-weight: 700; color: #F1F5F9; padding: 16px 20px 0; }
+.settings-body { padding: 4px 20px 20px; }
+.sec { margin-top: 16px; }
+.sec h3 { font-size: 11px; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.sec .sub { font-size: 10px; color: #64748B; margin-bottom: 8px; }
+.fr { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 11px; color: #CBD5E1; }
+.fr .lbl { min-width: 72px; flex-shrink: 0; }
+.fr input { background: #2A2A2D; border: 1px solid #3A3A3C; border-radius: 4px; padding: 3px 6px; color: #F1F5F9; font-size: 11px; font-family: inherit; width: 52px; outline: none; }
+.fr input:focus { border-color: #3B82F6; }
+.fr input.wide { width: 80px; }
+.fr .unit { color: #64748B; font-size: 10px; }
+.br { display: flex; gap: 8px; margin-top: 20px; }
+.btn { padding: 5px 14px; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; }
+.btn-d { background: #334155; color: #CBD5E1; }
+.btn-d:hover { background: #475569; }
+.btn-p { background: #3B82F6; color: #fff; }
+.btn-p:hover { background: #2563EB; }
+.btn-r { background: transparent; color: #94A3B8; border: 1px solid #334155; }
+.btn-r:hover { background: #2A2A2D; border-color: #475569; }
 
-.settings-titlebar {
-  padding: 20px 24px 0;
-}
-
-.settings-titlebar h2 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #F1F5F9;
-}
-
-.settings-body {
-  padding: 4px 24px 24px;
-}
-
-.section {
-  margin-top: 20px;
-}
-
-.section-header {
-  font-size: 13px;
-  font-weight: 700;
-  color: #94A3B8;
-  margin-bottom: 4px;
-}
-
-.section-sub {
-  font-size: 11px;
-  color: #64748B;
-  margin-bottom: 12px;
-}
-
-.field-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  font-size: 12px;
-  color: #CBD5E1;
-}
-
-.field-row .label {
-  min-width: 72px;
-  flex-shrink: 0;
-}
-
-.field-row input {
-  background: #0F172A;
-  border: 1px solid #334155;
-  border-radius: 4px;
-  padding: 4px 8px;
-  color: #F1F5F9;
-  font-size: 12px;
-  font-family: inherit;
-  width: 60px;
-  outline: none;
-  transition: border-color .15s;
-}
-
-.field-row input:focus {
-  border-color: #3B82F6;
-}
-
-.field-row input.wide {
-  width: 120px;
-}
-
-.field-row .unit {
-  color: #64748B;
-  font-size: 11px;
-}
-
-.field-row .unit-spacer {
-  width: 40px;
-}
-
-.btn-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 28px;
-}
-
-.btn {
-  padding: 6px 16px;
-  border: none;
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background .15s, opacity .15s;
-}
-
-.btn-default {
-  background: #334155;
-  color: #CBD5E1;
-}
-.btn-default:hover { background: #475569; }
-
-.btn-primary {
-  background: #3B82F6;
-  color: #fff;
-}
-.btn-primary:hover { background: #2563EB; }
-
-.btn-danger {
-  background: transparent;
-  color: #94A3B8;
-  border: 1px solid #334155;
-}
-.btn-danger:hover { background: #1E293B; border-color: #475569; }
-
-.tag { font-size: 10px; color: #64748B; margin-top: 4px; }
-
-@media (max-width: 1100px) {
-  body { flex-direction: column; align-items: center; }
-}
+@media (max-width:1100px) { body { flex-direction:column; align-items:center; } }
 </style>
 </head>
 <body>
 
-<!-- ===== Main Window ===== -->
 <div class="main-window">
-  <div class="titlebar">
-    <div style="display:flex;align-items:center;gap:8px">
-      <h1>KMCounter</h1>
-      <span>v3.7</span>
-    </div>
-    <span class="date-badge">Today</span>
+  <div class="appbar">
+    <span class="title">KMCounter</span>
+    <span class="date">20260515</span>
+    <span style="flex:1"></span>
+    <span class="gear">&#9881;</span>
   </div>
+
+  <div class="settingsbar">
+    <span class="label">Store:</span><input type="text" value="9999"><span class="value">d</span>
+    <span class="label" style="margin-left:4px">Theme:</span><span class="theme-btn">Blue</span>
+    <span class="label" style="margin-left:4px">KW:</span><input type="text" value="52">
+    <span class="label" style="margin-left:4px">KH:</span><input type="text" value="45">
+    <span class="label" style="margin-left:4px">FS:</span><input type="text" value="9">
+    <button class="btn-apply">&#10003;</button>
+  </div>
+
   <div class="main-body">
-    <!-- Keyboard -->
-    <div class="keyboard">
-      <!-- Row 1: Esc F1-F12 -->
-      <div class="key" style="grid-column:1">Esc</div>
-      <div class="key" style="grid-column:3">F1</div>
-      <div class="key">F2</div>
-      <div class="key">F3</div>
-      <div class="key">F4</div>
-      <div class="key offset1">F5</div>
-      <div class="key">F6</div>
-      <div class="key">F7</div>
-      <div class="key">F8</div>
-      <div class="key offset1">F9</div>
-      <div class="key">F10</div>
-      <div class="key">F11</div>
-      <div class="key">F12</div>
+    <div class="kb">
+      <!-- Row 1: half-height, Esc F1-F12 Ins Del NumLk * -->
+      <div class="kb-row">
+        <div class="key r1 sm" style="width:52px">Esc</div>
+        <div class="key r1 sm" style="width:52px">F1</div>
+        <div class="key r1 sm" style="width:52px">F2</div>
+        <div class="key r1 sm" style="width:52px">F3</div>
+        <div class="key r1 sm" style="width:52px">F4</div>
+        <div class="key r1 sm" style="width:52px">F5</div>
+        <div class="key r1 sm" style="width:52px">F6</div>
+        <div class="key r1 sm" style="width:52px">F7</div>
+        <div class="key r1 sm" style="width:52px">F8</div>
+        <div class="key r1 sm" style="width:52px">F9</div>
+        <div class="key r1 sm" style="width:52px">F10</div>
+        <div class="key r1 sm" style="width:52px">F11</div>
+        <div class="key r1 sm" style="width:52px">F12</div>
+        <div class="key r1 sm" style="width:52px">Ins</div>
+        <div class="key r1 sm" style="width:52px">Del</div>
+        <div class="key r1 sm" style="width:52px">NumLk</div>
+        <div class="key r1 sm" style="width:52px">*</div>
+      </div>
 
-      <!-- Row spacer -->
-      <div style="grid-column:1/-1;height:4px"></div>
+      <!-- Row 2: `(narrower) 1-0 - = Bksp(2u) / - + . -->
+      <div class="kb-row">
+        <div class="key r2" style="width:40px">`</div>
+        <div class="key r2" style="width:48px">1</div>
+        <div class="key r2 hot-5" style="width:48px">2</div>
+        <div class="key r2" style="width:48px">3</div>
+        <div class="key r2" style="width:48px">4</div>
+        <div class="key r2" style="width:48px">5</div>
+        <div class="key r2" style="width:48px">6</div>
+        <div class="key r2" style="width:48px">7</div>
+        <div class="key r2" style="width:48px">8</div>
+        <div class="key r2" style="width:48px">9</div>
+        <div class="key r2" style="width:48px">0</div>
+        <div class="key r2" style="width:48px">-</div>
+        <div class="key r2" style="width:48px">=</div>
+        <div class="key r2 sm" style="width:106px">BackSpace</div>
+        <div class="key r2" style="width:48px">/</div>
+        <div class="key r2" style="width:48px">-</div>
+        <div class="key r2" style="width:48px">+</div>
+        <div class="key r2" style="width:48px">.</div>
+      </div>
 
-      <!-- Row 2: ` 1 2 3 4 5 6 7 8 9 0 - = BackSpace -->
-      <div class="key hot2">`</div>
-      <div class="key hot5" style="color:#fff">1</div>
-      <div class="key hot3">2</div>
-      <div class="key">3</div>
-      <div class="key">4</div>
-      <div class="key">5</div>
-      <div class="key hot1">6</div>
-      <div class="key">7</div>
-      <div class="key">8</div>
-      <div class="key">9</div>
-      <div class="key">0</div>
-      <div class="key">-</div>
-      <div class="key hot2">=</div>
-      <div class="key wide2" style="grid-column:span 2">BackSpace</div>
+      <!-- Row 3: Tab(<Caps) q-p [ ] \(1.5u) 7 8 9 -->
+      <div class="kb-row">
+        <div class="key r3 sm" style="width:54px">Tab</div>
+        <div class="key r3" style="width:48px">q</div>
+        <div class="key r3" style="width:48px">w</div>
+        <div class="key r3" style="width:48px">e</div>
+        <div class="key r3" style="width:48px">r</div>
+        <div class="key r3" style="width:48px">t</div>
+        <div class="key r3" style="width:48px">y</div>
+        <div class="key r3" style="width:48px">u</div>
+        <div class="key r3" style="width:48px">i</div>
+        <div class="key r3" style="width:48px">o</div>
+        <div class="key r3" style="width:48px">p</div>
+        <div class="key r3" style="width:48px">[</div>
+        <div class="key r3" style="width:48px">]</div>
+        <div class="key r3 sm" style="width:86px">\</div>
+        <div class="key r3" style="width:48px">7</div>
+        <div class="key r3" style="width:48px">8</div>
+        <div class="key r3" style="width:48px">9</div>
+      </div>
 
-      <!-- Row 3: Tab q w e r t y u i o p [ ] \ -->
-      <div class="key wide2 hot1" style="grid-column:span 2">Tab</div>
-      <div class="key hot4" style="color:#fff">q</div>
-      <div class="key hot5" style="color:#fff">w</div>
-      <div class="key hot3">e</div>
-      <div class="key hot2">r</div>
-      <div class="key">t</div>
-      <div class="key">y</div>
-      <div class="key hot1">u</div>
-      <div class="key">i</div>
-      <div class="key">o</div>
-      <div class="key">p</div>
-      <div class="key">[</div>
-      <div class="key">]</div>
-      <div class="key wide2" style="grid-column:span 2">\</div>
+      <!-- Row 4: Caps(>Tab) a-; ' Enter(2u) 4 5 6 -->
+      <div class="kb-row">
+        <div class="key r4 sm" style="width:77px">Caps</div>
+        <div class="key r4" style="width:48px">a</div>
+        <div class="key r4" style="width:48px">s</div>
+        <div class="key r4" style="width:48px">d</div>
+        <div class="key r4" style="width:48px">f</div>
+        <div class="key r4" style="width:48px">g</div>
+        <div class="key r4" style="width:48px">h</div>
+        <div class="key r4" style="width:48px">j</div>
+        <div class="key r4" style="width:48px">k</div>
+        <div class="key r4" style="width:48px">l</div>
+        <div class="key r4" style="width:48px">;</div>
+        <div class="key r4" style="width:48px">'</div>
+        <div class="key r4 sm" style="width:106px">Enter</div>
+        <div class="key r4" style="width:48px">4</div>
+        <div class="key r4" style="width:48px">5</div>
+        <div class="key r4" style="width:48px">6</div>
+      </div>
 
-      <!-- Row 4: CapsLock a s d f g h j k l ; ' Enter -->
-      <div class="key wide2" style="grid-column:span 2">CapsLock</div>
-      <div class="key hot3">a</div>
-      <div class="key hot4" style="color:#fff">s</div>
-      <div class="key hot5" style="color:#fff">d</div>
-      <div class="key hot4" style="color:#fff">f</div>
-      <div class="key hot2">g</div>
-      <div class="key hot1">h</div>
-      <div class="key">j</div>
-      <div class="key">k</div>
-      <div class="key">l</div>
-      <div class="key">;</div>
-      <div class="key hot1">'</div>
-      <div class="key wide2" style="grid-column:span 2">Enter</div>
+      <!-- Row 5: Shift(2u=Ctrl+Fn) z-m , . / Shift(1.25u) ▲ 1 2 3 -->
+      <div class="kb-row">
+        <div class="key r5 sm" style="width:100px">Shift</div>
+        <div class="key r5" style="width:48px">z</div>
+        <div class="key r5" style="width:48px">x</div>
+        <div class="key r5" style="width:48px">c</div>
+        <div class="key r5" style="width:48px">v</div>
+        <div class="key r5" style="width:48px">b</div>
+        <div class="key r5" style="width:48px">n</div>
+        <div class="key r5" style="width:48px">m</div>
+        <div class="key r5" style="width:48px">,</div>
+        <div class="key r5" style="width:48px">.</div>
+        <div class="key r5" style="width:48px">/</div>
+        <div class="key r5 sm" style="width:60px">Shift</div>
+        <div class="key r5" style="width:48px">&#9650;</div>
+        <div class="key r5" style="width:48px">1</div>
+        <div class="key r5" style="width:48px">2</div>
+        <div class="key r5" style="width:48px">3</div>
+      </div>
 
-      <!-- Row 5: Shift z x c v b n m , . / Shift -->
-      <div class="key offset1">Shift</div>
-      <div class="key hot2">z</div>
-      <div class="key hot3">x</div>
-      <div class="key hot4" style="color:#fff">c</div>
-      <div class="key hot5" style="color:#fff">v</div>
-      <div class="key hot3">b</div>
-      <div class="key hot2">n</div>
-      <div class="key hot1">m</div>
-      <div class="key">,</div>
-      <div class="key">.</div>
-      <div class="key hot1">/</div>
-      <div class="key offset1">Shift</div>
-
-      <!-- Row 6: Ctrl Win Alt Space Alt Win Ctrl -->
-      <div class="key">Ctrl</div>
-      <div class="key">Win</div>
-      <div class="key">Alt</div>
-      <div class="key" style="grid-column:span 7; width: auto;">Space</div>
-      <div class="key">Alt</div>
-      <div class="key">Win</div>
-      <div class="key">Ctrl</div>
-
-      <!-- Padding row before nav cluster -->
-      <div style="grid-column:1/-1;height:8px"></div>
-
-      <!-- Nav cluster: Insert Home PgUp / Delete End PgDn -->
-      <div class="key nav" style="grid-column:13">Ins</div>
-      <div class="key nav">Home</div>
-      <div class="key nav">PgUp</div>
-      <div class="key nav" style="grid-column:13">Del</div>
-      <div class="key nav">End</div>
-      <div class="key nav">PgDn</div>
-
-      <!-- Arrow keys: ↑ ← ↓ → -->
-      <div style="grid-column:1/-1;height:2px"></div>
-      <div class="key nav" style="grid-column:14">▲</div>
-      <div class="key nav" style="grid-column:13">◀</div>
-      <div class="key nav">▼</div>
-      <div class="key nav">▶</div>
+      <!-- Row 6: Ctrl Fn Win Alt Space(C→M) Alt Copilot Ctrl(1.25u) ← ↓ → 0 -->
+      <div class="kb-row">
+        <div class="key r6 sm" style="width:48px">Ctrl</div>
+        <div class="key r6 sm" style="width:48px">Fn</div>
+        <div class="key r6 sm" style="width:48px">Win</div>
+        <div class="key r6 sm" style="width:48px">Alt</div>
+        <div class="key r6 sm" style="width:308px">Space</div>
+        <div class="key r6 sm" style="width:48px">Alt</div>
+        <div class="key r6 sm" style="width:48px">Copilot</div>
+        <div class="key r6 sm" style="width:60px">Ctrl</div>
+        <div class="key r6" style="width:48px">&#9664;</div>
+        <div class="key r6" style="width:48px">&#9660;</div>
+        <div class="key r6" style="width:48px">&#9654;</div>
+        <div class="key r6" style="width:48px">0</div>
+      </div>
     </div>
 
-    <!-- Stats Panel -->
-    <div class="stats-panel">
-      <table class="stats-table">
-        <thead>
-          <tr><th>Item</th><th>Today</th><th>Total</th></tr>
-        </thead>
+    <div class="stats">
+      <table>
+        <thead><tr><th>Item</th><th>Today</th><th>Total</th></tr></thead>
         <tbody>
-          <tr><td>Mouse Movement</td><td>12.34 m</td><td>587.21 m</td></tr>
-          <tr><td>Keyboard Clicks</td><td>1,847</td><td>92,561</td></tr>
-          <tr><td>Left Clicks</td><td>423</td><td>18,290</td></tr>
-          <tr><td>Right Clicks</td><td>87</td><td>3,412</td></tr>
-          <tr><td>Middle Clicks</td><td>12</td><td>891</td></tr>
-          <tr><td>Wheel Scrolls</td><td>256</td><td>14,033</td></tr>
-          <tr><td>Wheel Tilt</td><td>3</td><td>167</td></tr>
-          <tr><td>Side Clicks</td><td>0</td><td>45</td></tr>
-          <tr><td>Screen Size</td><td colspan="2">23.8 in</td></tr>
+          <tr><td>Mouse Movement</td><td class="rv">12.34 m</td><td class="rv">587.21 m</td></tr>
+          <tr><td>Keyboard Clicks</td><td class="rv">1,847</td><td class="rv">92,561</td></tr>
+          <tr><td>Left Clicks</td><td class="rv">423</td><td class="rv">18,290</td></tr>
+          <tr><td>Right Clicks</td><td class="rv">87</td><td class="rv">3,412</td></tr>
+          <tr><td>Middle Clicks</td><td class="rv">12</td><td class="rv">891</td></tr>
+          <tr><td>Wheel Scrolls</td><td class="rv">256</td><td class="rv">14,033</td></tr>
+          <tr><td>Wheel Tilt</td><td class="rv">3</td><td class="rv">167</td></tr>
+          <tr><td>Side Clicks</td><td class="rv">0</td><td class="rv">45</td></tr>
+          <tr><td>Screen Size</td><td class="rv">23.8 in</td><td class="rv"></td></tr>
         </tbody>
       </table>
-      <div class="tag" style="margin-top:12px;text-align:center">Scroll / PgUp PgDn to browse history</div>
     </div>
   </div>
 </div>
 
-<!-- ===== Settings Window ===== -->
 <div class="settings-window">
-  <div class="settings-titlebar">
-    <h2>Settings</h2>
-  </div>
+  <div class="settings-title">Settings</div>
   <div class="settings-body">
-    <div class="section">
-      <div class="section-header">History Data</div>
-      <div class="section-sub">Set how long to keep historical data.</div>
-      <div class="field-row">
-        <span class="label">Storage:</span>
-        <input type="text" value="30">
-        <span class="unit">days</span>
-      </div>
+    <div class="sec">
+      <h3>History Data</h3>
+      <div class="sub">Set how long to keep historical data.</div>
+      <div class="fr"><span class="lbl">Storage:</span><input type="text" value="9999"><span class="unit">days</span></div>
     </div>
-
-    <div class="section">
-      <div class="section-header">Screen Size</div>
-      <div class="section-sub">Set the actual size of your monitor.</div>
-      <div class="field-row">
-        <span class="label">Screen Width:</span>
-        <input type="text" value="520">
-        <span class="unit">mm</span>
-      </div>
-      <div class="field-row">
-        <span class="label">Screen Height:</span>
-        <input type="text" value="320">
-        <span class="unit">mm</span>
-      </div>
+    <div class="sec">
+      <h3>Screen Size</h3>
+      <div class="sub">Set the actual size of your monitor.</div>
+      <div class="fr"><span class="lbl">Screen Width:</span><input type="text" value="520"><span class="unit">mm</span><span class="lbl" style="min-width:50px;margin-left:12px">Screen Height:</span><input type="text" value="320"><span class="unit">mm</span></div>
     </div>
-
-    <div class="section">
-      <div class="section-header">Keyboard Layout</div>
-      <div class="section-sub">Set the size of the keyboard heatmap.</div>
-      <div class="field-row">
-        <span class="label">Key Width:</span>
-        <input type="text" value="52">
-        <span class="unit">px</span>
-        <span class="label" style="min-width:40px;margin-left:24px">Key Height:</span>
-        <input type="text" value="45">
-        <span class="unit">px</span>
-      </div>
-      <div class="field-row">
-        <span class="label">Key Spacing:</span>
-        <input type="text" value="2">
-        <span class="unit">px</span>
-      </div>
-      <div class="field-row">
-        <span class="label">H. Spacing:</span>
-        <input type="text" value="10">
-        <span class="unit">px</span>
-        <span class="label" style="min-width:40px;margin-left:24px">V. Spacing:</span>
-        <input type="text" value="10">
-        <span class="unit">px</span>
-      </div>
+    <div class="sec">
+      <h3>Keyboard Layout</h3>
+      <div class="sub">Set the size of the keyboard heatmap.</div>
+      <div class="fr"><span class="lbl">Key Width:</span><input type="text" value="52"><span class="unit">px</span><span class="lbl" style="min-width:50px;margin-left:12px">Key Height:</span><input type="text" value="45"><span class="unit">px</span></div>
+      <div class="fr"><span class="lbl">Key Spacing:</span><input type="text" value="2"><span class="unit">px</span></div>
+      <div class="fr"><span class="lbl">H. Spacing:</span><input type="text" value="4"><span class="unit">px</span><span class="lbl" style="min-width:50px;margin-left:12px">V. Spacing:</span><input type="text" value="4"><span class="unit">px</span></div>
     </div>
-
-    <div class="section">
-      <div class="section-header">Keyboard Appearance</div>
-      <div class="field-row">
-        <span class="label">Font Size:</span>
-        <input type="text" value="9">
-        <span class="unit">pt</span>
-      </div>
-      <div class="field-row">
-        <span class="label">Start Color:</span>
-        <input type="text" value="D1D5DB" class="wide">
-        <span style="display:inline-block;width:20px;height:20px;background:#D1D5DB;border-radius:3px;border:1px solid #334155"></span>
-      </div>
-      <div class="field-row">
-        <span class="label">End Color:</span>
-        <input type="text" value="3B82F6" class="wide">
-        <span style="display:inline-block;width:20px;height:20px;background:#3B82F6;border-radius:3px;border:1px solid #334155"></span>
-      </div>
+    <div class="sec">
+      <h3>Keyboard Appearance</h3>
+      <div class="fr" style="margin-top:8px"><span class="lbl">Font Size:</span><input type="text" value="9"><span class="unit">pt</span></div>
+      <div class="fr"><span class="lbl">Start Color:</span><input type="text" value="3A3A3C" class="wide"><span style="display:inline-block;width:18px;height:18px;background:#3A3A3C;border-radius:3px;border:1px solid #3A3A3C"></span></div>
+      <div class="fr"><span class="lbl">End Color:</span><input type="text" value="3B82F6" class="wide"><span style="display:inline-block;width:18px;height:18px;background:#3B82F6;border-radius:3px;border:1px solid #3B82F6"></span></div>
     </div>
-
-    <div class="btn-row">
-      <button class="btn btn-default">Cancel</button>
-      <button class="btn btn-primary">Save</button>
-      <button class="btn btn-danger">Restore Default</button>
+    <div class="br">
+      <button class="btn btn-d">Cancel</button>
+      <button class="btn btn-p">Save</button>
+      <button class="btn btn-r">Restore Default</button>
     </div>
   </div>
 </div>

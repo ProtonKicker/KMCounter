@@ -426,22 +426,22 @@ LoadControlList(layout:="")
   w    := KeyW
   h    := KeyH
   ; Row 1: half-height keys (rendered at half height via CSS)
-  ; Row 2: `(narrower) + 1-0 + - + = + Bksp(2u) + NP/(calc) + NP-(calc) + NP+(calc) + NP.(calc)
-  ; Row 3: Tab + q-p + [ + ] + \(1.5u) + NP7 + NP8 + NP9
-  ; Row 4: CapsLock + a-; + ' + Enter(2u) + NP4 + NP5 + NP6
+  ; Row 2: `(narrower) + 1-0 + - + = + Bksp(1.5u) + NP/(calc) + NP-(calc) + NP+(calc) + NP.(calc)
+  ; Row 3: Tab(1u) + q-p + [ + ] + \(1.25u) + NP7 + NP8 + NP9
+  ; Row 4: CapsLock(1.5u) + a-; + ' + Enter(1.75u) + NP4 + NP5 + NP6
   ; Row 5: Shift(2u) + z-m + , + . + / + Shift(1.25u) + ▲ + NP1 + NP2 + NP3
   ; Row 6: Ctrl + Fn + Win + Alt + Space(6u C→M) + Alt + Copilot + Ctrl(1.25u) + ◀ + ▼ + ▶ + NP0
 
   ; Column grid: 17 columns of 1u each, gaps between
   ; Left Shift = 2u, Tab = 1.5u, CapsLock = ~1.83u, Bksp = ~2u, Enter = ~2u, RShift = 1.25u, RCtrl = 1.25u
 
-  wBksp := w*2
-  wTab  := w*23//20   ; ~1.15u, slightly wider than standard
+  wBksp := w*3//2     ; 1.5u, narrowed to align main section right edge with row 6
+  wTab  := w           ; 1u, narrowed to align with row 6
   wCaps := (wTab + wLShift)//2  ; midway between Tab and LShift
-  wEnter:= w*2-4
+  wEnter:= w*7//4      ; 1.75u, narrowed to align with row 6
   wLShift:= w*2
   wRShift:= w*5//4
-  wBackslash:= w*3//2
+  wBackslash:= w*5//4  ; 1.25u, narrowed to align with row 6
   wRCtrl:= w*5//4
   wSpace:= 5*w + 4*ks   ; from left of C to right of M
   wTilde:= w*3//4
@@ -824,16 +824,16 @@ return
 
 BuildHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,kfs,t,mw,sw) {
     w := kw
-    wBksp := w*2
-    wTab  := w*23//20
+    wBksp := w*3//2     ; 1.5u
+    wTab  := w           ; 1u
     wLShift:= w*2
     wRShift:= w*5//4
     wRCtrl:= w*5//4
-    wBackslash:= w*3//2
+    wBackslash:= w*5//4  ; 1.25u
     wCaps := (wTab + wLShift)//2
-    wSpace:= 5*w + 4*ks   ; from left of C to right of M
+    wSpace:= 5*w + 4*ks
     wTilde:= w*3//4
-    wEnter:= w*2
+    wEnter:= w*7//4      ; 1.75u
     kfsm  := Max(kfs-3, 7)
     h := "<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'>"
     h := h . "<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#1E1E1E;font-family:Microsoft YaHei,sans-serif;color:#D4D4D4;overflow-y:auto;user-select:none;padding:8px 12px 0}"
@@ -856,7 +856,7 @@ BuildHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,kfs,t,mw,sw) {
         h := h . "<div class='k r1' data-s='" . sc . "' style='width:" . w . "px'>F" . A_Index . "</div>"
     }
     h := h . "<div class='k r1' data-s='sc338' style='width:" . w . "px'>Ins</div><div class='k r1' data-s='sc339' style='width:" . w . "px'>Del</div><div class='g' style='width:10px'></div><div class='k r1' data-s='sc325' style='width:" . w . "px'>NumLock</div><div class='k r1' data-s='sc55' style='width:" . w . "px'>*</div></div>"
-    ; Row 2: `(smaller) 1-0 - = Bksp(2u) / - + .
+    ; Row 2: `(smaller) 1-0 - = Bksp(1.5u) / - + .
     h := h . "<div class='row'><div class='k' data-s='sc41' style='width:" . wTilde . "px'>&#96;</div>"
     Loop 10 {
         sc := ["sc2","sc3","sc4","sc5","sc6","sc7","sc8","sc9","sc10","sc11"][A_Index]
@@ -864,7 +864,7 @@ BuildHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,kfs,t,mw,sw) {
         h := h . "<div class='k' data-s='" . sc . "' style='width:" . w . "px'>" . n . "</div>"
     }
     h := h . "<div class='k' data-s='sc12' style='width:" . w . "px'>-</div><div class='k' data-s='sc13' style='width:" . w . "px'>=</div><div class='k' data-s='sc14' style='width:" . wBksp . "px'>⌫</div><div class='g' style='width:10px'></div><div class='k' data-s='sc309' style='width:" . w . "px'>/</div><div class='k' data-s='sc74' style='width:" . w . "px'>-</div><div class='k' data-s='sc78' style='width:" . w . "px'>+</div></div>"
-    ; Row 3: Tab(1.15u) q-p [ ] \(1.5u) 7 8 9
+    ; Row 3: Tab(1u) q-p [ ] \(1.25u) 7 8 9
     h := h . "<div class='row'><div class='k' data-s='sc15' style='width:" . wTab . "px'>Tab</div>"
     letters := ["Q","W","E","R","T","Y","U","I","O","P"]
     scs := ["sc16","sc17","sc18","sc19","sc20","sc21","sc22","sc23","sc24","sc25"]
@@ -872,7 +872,7 @@ BuildHtml(kw,kh,ks,khs,kvs,w2,w3,w4,w5,w6_1,w6_2,w6_3,m7,kfs,t,mw,sw) {
         h := h . "<div class='k' data-s='" . scs[A_Index] . "' style='width:" . w . "px'>" . letters[A_Index] . "</div>"
     }
     h := h . "<div class='k' data-s='sc26' style='width:" . w . "px'>[</div><div class='k' data-s='sc27' style='width:" . w . "px'>]</div><div class='k' data-s='sc43' style='width:" . wBackslash . "px'>\</div><div class='g' style='width:10px'></div><div class='k' data-s='sc71' style='width:" . w . "px'>7</div><div class='k' data-s='sc72' style='width:" . w . "px'>8</div><div class='k' data-s='sc73' style='width:" . w . "px'>9</div></div>"
-    ; Row 4: Caps a-; ' Enter(2u) 4 5 6
+    ; Row 4: Caps(1.5u) a-; ' Enter(1.75u) 4 5 6
     h := h . "<div class='row'><div class='k' data-s='sc58' style='width:" . wCaps . "px'>Caps</div>"
     letters2 := ["A","S","D","F","G","H","J","K","L",";","'"]
     scs2 := ["sc30","sc31","sc32","sc33","sc34","sc35","sc36","sc37","sc38","sc39","sc40"]
